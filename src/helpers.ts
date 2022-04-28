@@ -14,3 +14,7 @@ export const isMessageItem = (
   item: ReactionAddedEvent['item'],
 ): item is ReactionMessageItem =>
   (item as ReactionMessageItem).type === 'message';
+
+export function capitalize(text: string) {
+  return text.charAt(0).toUpperCase() + text.slice(1);
+}

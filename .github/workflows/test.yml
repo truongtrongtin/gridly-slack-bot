@@ -1,0 +1,63 @@
+name: Lint, Test, Build and Deploy
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Skip husky
+        run: npm set-script prepare ""
+
+      - name: Cache node modules
+        uses: actions/cache@v3
+        id: npm-cache
+        with:
+          path: '**/node_modules'
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+
+      - name: Install
+        if: steps.npm-cache.outputs.cache-hit != 'true'
+        run: npm i
+
+      - name: Build
+        run: npm run build
+
+      - name: Copy package.json to built folder
+        run: cp package.json dist/
+
+      - id: auth
+        uses: google-github-actions/auth@v0
+        with:
+          workload_identity_provider: projects/96573011708/locations/global/workloadIdentityPools/gh-pool/providers/gh-provider
+          service_account: github-actions-service-account@my-project-1540367072726.iam.gserviceaccount.com
+
+      - id: deploy
+        uses: google-github-actions/deploy-cloud-functions@v0
+        with:
+          name: app
+          runtime: nodejs16
+          memory_mb: 128
+          source_dir: dist
+          entry_point: app
+          env_vars: >
+            SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }},
+            SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }},
+            GOOGLE_CALENDAR_ID=${{ secrets.GOOGLE_CALENDAR_ID }},
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }},
+            GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }},
