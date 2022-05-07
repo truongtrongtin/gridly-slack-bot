@@ -1,4 +1,4 @@
-name: Lint, Test, Build and Deploy
+name: Deploy
 on:
   push:
     branches:
@@ -49,7 +49,7 @@ jobs:
       - id: deploy
         uses: google-github-actions/deploy-cloud-functions@v0
         with:
-          name: app
+          name: gridly-bot
           runtime: nodejs16
           memory_mb: 128
           source_dir: dist
@@ -57,6 +57,7 @@ jobs:
           env_vars: >
             SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }},
             SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }},
+            SLACK_CHANNEL=${{ secrets.SLACK_CHANNEL }},
             GOOGLE_CALENDAR_ID=${{ secrets.GOOGLE_CALENDAR_ID }},
             GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }},

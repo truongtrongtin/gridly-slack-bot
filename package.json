@@ -1,5 +1,5 @@
 {
-  "name": "ld-slack-bot",
+  "name": "gridly-bot",
   "version": "1.0.0",
   "description": "Bolt getting started app in TypeScript",
   "main": "app.js",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@slack/bolt": "^3.11.0",
     "axios": "^0.27.2",
+    "date-fns": "^2.28.0",
     "dotenv": "^16.0.0"
   },
   "devDependencies": {
@@ -21,10 +22,10 @@
     "@typescript-eslint/eslint-plugin": "^5.22.0",
     "@typescript-eslint/parser": "^5.22.0",
     "commitlint": "^16.2.4",
-    "eslint": "^8.14.0",
+    "eslint": "^8.15.0",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.0.0",
-    "husky": "^7.0.4",
+    "husky": "^8.0.1",
     "lint-staged": "^12.4.1",
     "nodemon": "^2.0.16",
     "prettier": "^2.6.2",
@@ -66,5 +67,13 @@
   "lint-staged": {
     "*.ts": "eslint --fix",
     "*.js": "eslint --cache --fix"
+  },
+  "nodemonConfig": {
+    "watch": [
+      "src"
+    ],
+    "ignore": [
+      "src/**/*.spec.ts"
+    ]
   }
 }
