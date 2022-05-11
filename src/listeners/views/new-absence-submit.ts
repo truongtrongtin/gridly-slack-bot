@@ -10,7 +10,7 @@ import {
   isSameDay,
   startOfDay,
 } from 'date-fns';
-import { capitalize, generateTimeText } from '../../helpers';
+import { capitalize, generateTimeText, isWeekendInRange } from '../../helpers';
 import members from '../../member-list.json';
 import { DayPart } from '../../types';
 import appHomeView from '../../user-interface/app-home';
@@ -50,6 +50,16 @@ export default function newAbsenceSubmit(app: App) {
           response_action: 'errors',
           errors: {
             'start-date-block': 'Not allow date in the past',
+          },
+        });
+        return;
+      }
+
+      if (isWeekendInRange(new Date(startDate), new Date(endDate))) {
+        await ack({
+          response_action: 'errors',
+          errors: {
+            'start-date-block': 'Not allow weekend',
           },
         });
         return;
