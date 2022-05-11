@@ -14,13 +14,13 @@
     "@slack/bolt": "^3.11.0",
     "axios": "^0.27.2",
     "date-fns": "^2.28.0",
-    "dotenv": "^16.0.0"
+    "dotenv": "^16.0.1"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "^16.2.4",
-    "@types/node": "^17.0.31",
-    "@typescript-eslint/eslint-plugin": "^5.22.0",
-    "@typescript-eslint/parser": "^5.22.0",
+    "@types/node": "^17.0.32",
+    "@typescript-eslint/eslint-plugin": "^5.23.0",
+    "@typescript-eslint/parser": "^5.23.0",
     "commitlint": "^16.2.4",
     "eslint": "^8.15.0",
     "eslint-config-prettier": "^8.5.0",
