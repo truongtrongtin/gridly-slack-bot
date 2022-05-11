@@ -164,7 +164,6 @@ export default function newAbsenceSubmit(app: App) {
           channel: process.env.SLACK_CHANNEL!,
           text: `<@${user}> will be absent on *${timeText}*.${reasonText}`,
         });
-        console.log(JSON.stringify(newMessage, null, 2));
 
         // Create new event on google calendar
         await axios.post(
