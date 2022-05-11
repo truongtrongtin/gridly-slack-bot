@@ -196,7 +196,6 @@ export default function newAbsenceSubmit(app: App) {
           timeMin: startOfDay(new Date()).toISOString(),
           timeMax: endOfYear(new Date()).toISOString(),
           q: email!,
-          orderBy: 'updated',
         }).toString();
         const newEventListResponse = await axios.get(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${newQueryParams}`,
