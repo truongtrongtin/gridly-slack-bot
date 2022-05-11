@@ -49,7 +49,7 @@ jobs:
       - id: deploy
         uses: google-github-actions/deploy-cloud-functions@v0
         with:
-          name: gridly-bot
+          name: gridly-slack-bot
           runtime: nodejs16
           memory_mb: 128
           source_dir: dist
