@@ -53,3 +53,17 @@ export function generateTimeText(
 
   return timeText;
 }
+
+export function isWeekendInRange(startDate: Date, endDate: Date) {
+  let isWeekend = false;
+
+  while (startDate <= endDate) {
+    const day = startDate.getDay();
+    isWeekend = day === 6 || day === 0;
+    if (isWeekend) {
+      return true;
+    } // return immediately if weekend found
+    startDate.setDate(startDate.getDate() + 1);
+  }
+  return false;
+}
