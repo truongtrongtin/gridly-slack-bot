@@ -22,8 +22,8 @@ const expressApp = expressReceiver.app;
 
 // actions
 appHomeOpened(app);
-appHomeRefresh(app);
 appHomeAbsenceDelete(app);
+appHomeRefresh(app);
 
 // events
 appHomeNewAbsence(app);

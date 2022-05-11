@@ -30,15 +30,15 @@ export default function appHomeView(
             },
             style: 'primary',
           },
-          {
-            type: 'button',
-            action_id: 'app-home-refresh',
-            text: {
-              type: 'plain_text',
-              text: 'Refresh',
-              emoji: true,
-            },
-          },
+          // {
+          //   type: 'button',
+          //   action_id: 'app-home-refresh',
+          //   text: {
+          //     type: 'plain_text',
+          //     text: 'Refresh',
+          //     emoji: true,
+          //   },
+          // },
         ],
       },
       {
