@@ -6,6 +6,7 @@ import {
 } from '@slack/bolt';
 import { format, isSameDay } from 'date-fns';
 import { DayPart } from './types';
+import members from './member-list.json';
 
 export const isGenericMessageEvent = (
   msg: MessageEvent,
@@ -56,14 +57,16 @@ export function generateTimeText(
 
 export function isWeekendInRange(startDate: Date, endDate: Date) {
   let isWeekend = false;
+  const start = new Date(startDate);
+  const end = new Date(endDate);
 
-  while (startDate <= endDate) {
-    const day = startDate.getDay();
+  while (start <= end) {
+    const day = start.getDay();
     isWeekend = day === 6 || day === 0;
     if (isWeekend) {
       return true;
-    } // return immediately if weekend found
-    startDate.setDate(startDate.getDate() + 1);
+    }
+    start.setDate(start.getDate() + 1);
   }
   return false;
 }
