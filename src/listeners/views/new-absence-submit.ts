@@ -1,15 +1,6 @@
 import { App } from '@slack/bolt';
 import axios from 'axios';
-import {
-  addDays,
-  addMonths,
-  endOfDay,
-  endOfYear,
-  format,
-  isBefore,
-  isSameDay,
-  startOfDay,
-} from 'date-fns';
+import { addDays, addMonths, format, startOfDay } from 'date-fns';
 import { capitalize, generateTimeText, isWeekendInRange } from '../../helpers';
 import members from '../../member-list.json';
 import { DayPart } from '../../types';
@@ -19,11 +10,11 @@ export default function newAbsenceSubmit(app: App) {
   app.view(
     'new-absence-submit',
     async ({ ack, body, view, client, logger }) => {
-      const startDate =
+      const startDateString =
         view['state']['values']['start-date-block']['start-date-action']
           .selected_date;
 
-      if (!startDate) {
+      if (!startDateString) {
         await ack({
           response_action: 'errors',
           errors: {
@@ -33,75 +24,81 @@ export default function newAbsenceSubmit(app: App) {
         return;
       }
 
-      const endDate =
+      const endDateString =
         view['state']['values']['end-date-block']['end-date-action']
-          .selected_date || startDate;
+          .selected_date || startDateString;
       const dayPart = view['state']['values']['day-part-block'][
         'day-part-action'
       ].selected_option?.value as DayPart;
       const reason =
         view['state']['values']['reason-block']['reason-action'].value || '';
 
-      if (
-        new Date(startDate).setHours(0, 0, 0, 0) <
-        new Date().setHours(0, 0, 0, 0)
-      ) {
+      const isSingleMode = startDateString === endDateString;
+      const startDate = new Date(startDateString);
+      const endDate = new Date(endDateString);
+      const today = startOfDay(new Date());
+      const userId = body['user']['id'];
+
+      if (startDate < today) {
         await ack({
           response_action: 'errors',
           errors: {
-            'start-date-block': 'Not allow date in the past',
+            'start-date-block': 'Not allow day in the past',
           },
         });
         return;
       }
 
-      if (isWeekendInRange(new Date(startDate), new Date(endDate))) {
+      if (isWeekendInRange(startDate, endDate)) {
+        if (isSingleMode) {
+          await ack({
+            response_action: 'errors',
+            errors: {
+              'start-date-block': 'Not allow weekend',
+            },
+          });
+        } else {
+          await ack({
+            response_action: 'errors',
+            errors: {
+              'start-date-block': 'Not allow weekend in range',
+              'end-date-block': 'Not allow weekend in range',
+            },
+          });
+        }
+        return;
+      }
+
+      if (endDate < startDate) {
         await ack({
           response_action: 'errors',
           errors: {
-            'start-date-block': 'Not allow weekend',
+            'end-date-block': 'Must not be earlier than start date',
           },
         });
         return;
       }
 
-      if (
-        new Date(startDate).setHours(0, 0, 0, 0) >
-        addMonths(new Date(), 1).setHours(0, 0, 0, 0)
-      ) {
+      if (startDate > addMonths(today, 3)) {
         await ack({
           response_action: 'errors',
           errors: {
-            'start-date-block': 'Must not be later than 1 month from now',
+            'start-date-block': 'Must not be later than 3 months from now',
           },
         });
         return;
       }
 
-      if (
-        new Date(endDate).setHours(0, 0, 0, 0) >
-        addMonths(new Date(), 1).setHours(0, 0, 0, 0)
-      ) {
+      if (endDate > addMonths(today, 3)) {
         await ack({
           response_action: 'errors',
           errors: {
-            'end-date-block': 'Must not be later than 1 month from now',
+            'end-date-block': 'Must not be later than 3 months from now',
           },
         });
         return;
       }
 
-      if (isBefore(new Date(endDate), new Date(startDate))) {
-        await ack({
-          response_action: 'errors',
-          errors: {
-            'end-date-block': 'Must not be smaller than start date',
-          },
-        });
-        return;
-      }
-
-      const isSingleMode = isSameDay(new Date(startDate), new Date(endDate));
       if (!isSingleMode && dayPart !== DayPart.ALL) {
         await ack({
           response_action: 'errors',
@@ -115,9 +112,8 @@ export default function newAbsenceSubmit(app: App) {
       await ack();
 
       try {
-        const user = body['user']['id'];
         // Get slack message 's author info
-        const userInfo = await client.users.info({ user });
+        const userInfo = await client.users.info({ user: userId });
         const email = userInfo?.user?.profile?.email;
         const firstName = userInfo?.user?.profile?.first_name;
         logger.info(`${firstName} is submiting absence`);
@@ -143,8 +139,8 @@ export default function newAbsenceSubmit(app: App) {
 
         // Get events from google calendar
         const queryParams = new URLSearchParams({
-          timeMin: startOfDay(new Date(startDate)).toISOString(),
-          timeMax: endOfDay(new Date(endDate)).toISOString(),
+          timeMin: startDate.toISOString(),
+          timeMax: addDays(endDate, 1).toISOString(),
           q: email!,
         }).toString();
         const eventListResponse = await axios.get(
@@ -153,17 +149,13 @@ export default function newAbsenceSubmit(app: App) {
         );
         const absenceEvents = eventListResponse.data?.items;
 
-        const timeText = generateTimeText(
-          new Date(startDate),
-          new Date(endDate),
-          dayPart,
-        );
+        const timeText = generateTimeText(startDate, endDate, dayPart);
         // If has absence, send ephemeral error message to user
         if (absenceEvents.length) {
           const failureText = `:x: Failed to create. You already have absence on`;
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
-            user,
+            user: userId,
             text: `${failureText} *${timeText}*.`,
           });
           return;
@@ -172,7 +164,7 @@ export default function newAbsenceSubmit(app: App) {
 
         const newMessage = await client.chat.postMessage({
           channel: process.env.SLACK_CHANNEL!,
-          text: `<@${user}> will be absent on *${timeText}*.${reasonText}`,
+          text: `<@${userId}> will be absent on *${timeText}*.${reasonText}`,
         });
 
         // Create new event on google calendar
@@ -180,10 +172,10 @@ export default function newAbsenceSubmit(app: App) {
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events`,
           {
             start: {
-              date: startDate,
+              date: startDateString,
             },
             end: {
-              date: format(addDays(new Date(endDate), 1), 'yyyy-MM-dd'),
+              date: format(addDays(endDate, 1), 'yyyy-MM-dd'),
             },
             summary: `${memberName || email} ${dayPartText}`,
             description: JSON.stringify({
@@ -202,8 +194,8 @@ export default function newAbsenceSubmit(app: App) {
         );
 
         const newQueryParams = new URLSearchParams({
-          timeMin: startOfDay(new Date()).toISOString(),
-          timeMax: endOfYear(new Date()).toISOString(),
+          timeMin: today.toISOString(),
+          timeMax: addMonths(today, 3).toISOString(),
           q: email!,
         }).toString();
         const newEventListResponse = await axios.get(
@@ -214,7 +206,7 @@ export default function newAbsenceSubmit(app: App) {
 
         // Update app home
         await client.views.publish({
-          user_id: user,
+          user_id: userId,
           view: appHomeView(newAbsenceEvents, firstName!),
         });
       } catch (error) {
