@@ -1,11 +1,41 @@
-import { View } from '@slack/bolt';
+import { KnownBlock, Option, View } from '@slack/bolt';
 import { format } from 'date-fns';
 import { DayPart } from '../../types';
 
-export default function newAbsenceModal(): View {
+export default function newAbsenceModal(
+  isAdmin: boolean,
+  userId: string,
+): View {
+  const dayPartOptions: Option[] = [
+    {
+      text: {
+        type: 'plain_text',
+        text: ':beach_with_umbrella: All day',
+        emoji: true,
+      },
+      value: DayPart.ALL,
+    },
+    {
+      text: {
+        type: 'plain_text',
+        text: `:sunny: Morning`,
+        emoji: true,
+      },
+      value: DayPart.MORNING,
+    },
+    {
+      text: {
+        type: 'plain_text',
+        text: ':city_sunset: Afternoon',
+        emoji: true,
+      },
+      value: DayPart.AFTERNOON,
+    },
+  ];
+
   return {
     type: 'modal',
-    callback_id: 'new-absence-submit',
+    callback_id: isAdmin ? 'admin-new-absence-submit' : 'new-absence-submit',
     // notify_on_close: true,
     // private_metadata: privateMetadata,
     title: {
@@ -23,14 +53,37 @@ export default function newAbsenceModal(): View {
       emoji: true,
     },
     blocks: [
+      ...(isAdmin
+        ? [
+            {
+              type: 'input',
+              block_id: 'member_block',
+              element: {
+                type: 'users_select',
+                placeholder: {
+                  type: 'plain_text',
+                  text: 'Select a member',
+                  emoji: true,
+                },
+                initial_user: userId,
+                action_id: 'member-action',
+              },
+              label: {
+                type: 'plain_text',
+                text: 'Member',
+                emoji: true,
+              },
+            } as KnownBlock,
+          ]
+        : []),
       {
         type: 'input',
         block_id: 'start-date-block',
-        // dispatch_action: true,
         element: {
           type: 'datepicker',
           initial_date: format(new Date(), 'yyyy-MM-dd'),
           action_id: 'start-date-action',
+          focus_on_load: true,
         },
         label: {
           type: 'plain_text',
@@ -57,40 +110,8 @@ export default function newAbsenceModal(): View {
         block_id: 'day-part-block',
         element: {
           type: 'radio_buttons',
-          initial_option: {
-            text: {
-              type: 'plain_text',
-              text: ':beach_with_umbrella: All day',
-              emoji: true,
-            },
-            value: 'all',
-          },
-          options: [
-            {
-              text: {
-                type: 'plain_text',
-                text: ':beach_with_umbrella: All day',
-                emoji: true,
-              },
-              value: DayPart.ALL,
-            },
-            {
-              text: {
-                type: 'plain_text',
-                text: `:sunny: Morning`,
-                emoji: true,
-              },
-              value: DayPart.MORNING,
-            },
-            {
-              text: {
-                type: 'plain_text',
-                text: ':city_sunset: Afternoon',
-                emoji: true,
-              },
-              value: DayPart.AFTERNOON,
-            },
-          ],
+          initial_option: dayPartOptions[0],
+          options: dayPartOptions,
           action_id: 'day-part-action',
         },
         label: {

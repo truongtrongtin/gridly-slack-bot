@@ -9,8 +9,8 @@ export default function appHomeOpened(app: App) {
     try {
       const userInfo = await client.users.info({ user: event.user });
       const email = userInfo.user?.profile?.email;
-      const firstName = userInfo.user?.profile?.first_name;
-      logger.info(`${firstName} is opening app home`);
+      const realName = userInfo.user?.profile?.real_name;
+      logger.info(`${realName} is opening app home`);
 
       // Get new google access token from refresh token
       const tokenResponse = await axios.post(
@@ -40,7 +40,7 @@ export default function appHomeOpened(app: App) {
       await client.views.publish({
         // Use the user ID associated with the event
         user_id: event.user,
-        view: appHomeView(absenceEvents, firstName!),
+        view: appHomeView(absenceEvents),
       });
     } catch (error) {
       logger.error(error);

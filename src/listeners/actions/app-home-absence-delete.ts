@@ -50,8 +50,8 @@ export default function appHomeAbsenceDelete(app: App) {
 
         const userInfo = await client.users.info({ user: body.user.id });
         const email = userInfo.user?.profile?.email;
-        const firstName = userInfo.user?.profile?.first_name;
-        logger.info(`${firstName} is deleting absence`);
+        const realName = userInfo.user?.profile?.real_name;
+        logger.info(`${realName} is deleting absence`);
 
         // Get events from google calendar
         const queryParams = new URLSearchParams({
@@ -74,7 +74,7 @@ export default function appHomeAbsenceDelete(app: App) {
         // Update app home
         client.views.update({
           view_id: body.view?.id,
-          view: appHomeView(absenceEvents, firstName!),
+          view: appHomeView(absenceEvents),
         });
       } catch (error) {
         logger.error(error);
