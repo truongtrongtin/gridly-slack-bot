@@ -1,34 +1,46 @@
 [
-  { "email": "cm@localizedirect.com", "possibleNames": ["chau"] },
-  { "email": "dng@localizedirect.com", "possibleNames": ["duong"] },
-  { "email": "dp@localizedirect.com", "possibleNames": ["dung"] },
-  { "email": "gn@localizedirect.com", "possibleNames": ["giang"] },
+  { "email": "cm@localizedirect.com", "possibleNames": ["Chau"] },
+  { "email": "dng@localizedirect.com", "possibleNames": ["Duong"] },
+  { "email": "dp@localizedirect.com", "possibleNames": ["Dung"] },
+  {
+    "email": "gn@localizedirect.com",
+    "possibleNames": ["Giang"],
+    "isAdmin": true
+  },
   {
     "email": "hh@localizedirect.com",
-    "possibleNames": ["hieu huynh", "hieu h", "hieu h."]
+    "possibleNames": ["Hieu H.", "Hieu Huynh", "Hieu H"]
   },
-  { "email": "hm@localizedirect.com", "possibleNames": ["huong"] },
+  { "email": "hm@localizedirect.com", "possibleNames": ["Huong"] },
   {
     "email": "kp@localizedirect.com",
-    "possibleNames": ["khanh", "khanh p", "khanh ph"]
+    "possibleNames": ["Khanh", "Khanh P", "Khanh P."]
   },
-  { "email": "ld@localizedirect.com", "possibleNames": ["lynh"] },
-  { "email": "ldv@localizedirect.com", "possibleNames": ["long"] },
-  { "email": "nn@localizedirect.com", "possibleNames": ["andy", "nha"] },
-  { "email": "nnc@localizedirect.com", "possibleNames": ["cuong", "jason"] },
-  { "email": "pia@localizedirect.com", "possibleNames": ["pia", "huyen"] },
-  { "email": "pv@localizedirect.com", "possibleNames": ["phu"] },
-  { "email": "qv@localizedirect.com", "possibleNames": ["quang"] },
-  { "email": "sn@localizedirect.com", "possibleNames": ["sang"] },
+  { "email": "ld@localizedirect.com", "possibleNames": ["Lynh"] },
+  { "email": "ldv@localizedirect.com", "possibleNames": ["Long"] },
+  { "email": "nn@localizedirect.com", "possibleNames": ["Andy", "Nha"] },
+  { "email": "nnc@localizedirect.com", "possibleNames": ["Jason", "Cuong"] },
+  {
+    "email": "pia@localizedirect.com",
+    "possibleNames": ["Pia", "Huyen"],
+    "isAdmin": true
+  },
+  { "email": "pv@localizedirect.com", "possibleNames": ["Phu"] },
+  { "email": "qv@localizedirect.com", "possibleNames": ["Quang"] },
+  { "email": "sn@localizedirect.com", "possibleNames": ["Sang"] },
   {
     "email": "tc@localizedirect.com",
-    "possibleNames": ["steve", "tri truong", "tri t."]
+    "possibleNames": ["Steve", "Tri Truong", "Tri T."]
   },
-  { "email": "th@localizedirect.com", "possibleNames": ["tan"] },
-  { "email": "tin@localizedirect.com", "possibleNames": ["tin"] },
-  { "email": "tlv@localizedirect.com", "possibleNames": ["win"] },
-  { "email": "tn@localizedirect.com", "possibleNames": ["truong"] },
-  { "email": "tnn@localizedirect.com", "possibleNames": ["thy"] },
-  { "email": "vtl@localizedirect.com", "possibleNames": ["trong"] },
-  { "email": "truongtrongtin0305@gmail.com", "possibleNames": ["tin"] }
+  { "email": "th@localizedirect.com", "possibleNames": ["Tan"] },
+  { "email": "tin@localizedirect.com", "possibleNames": ["Tin"] },
+  { "email": "tlv@localizedirect.com", "possibleNames": ["Win"] },
+  { "email": "tn@localizedirect.com", "possibleNames": ["Truong"] },
+  { "email": "tnn@localizedirect.com", "possibleNames": ["Thy"] },
+  { "email": "vtl@localizedirect.com", "possibleNames": ["Trong"] },
+  {
+    "email": "truongtrongtin0305@gmail.com",
+    "possibleNames": ["Tin"],
+    "isAdmin": true
+  }
 ]

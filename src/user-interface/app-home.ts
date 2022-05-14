@@ -2,10 +2,7 @@ import { Block, KnownBlock, View } from '@slack/bolt';
 import { subDays } from 'date-fns';
 import { generateTimeText, getDayPartFromEventSummary } from '../helpers';
 
-export default function appHomeView(
-  absenceEvents: any[],
-  firstName: string,
-): View {
+export default function appHomeView(absenceEvents: any[]): View {
   return {
     type: 'home',
     blocks: [
@@ -13,7 +10,7 @@ export default function appHomeView(
         type: 'header',
         text: {
           type: 'plain_text',
-          text: `:house: Hi ${firstName}! Here's what you can do:`,
+          text: `:house: Here's what you can do:`,
           emoji: true,
         },
       },
@@ -30,15 +27,6 @@ export default function appHomeView(
             },
             style: 'primary',
           },
-          // {
-          //   type: 'button',
-          //   action_id: 'app-home-refresh',
-          //   text: {
-          //     type: 'plain_text',
-          //     text: 'Refresh',
-          //     emoji: true,
-          //   },
-          // },
         ],
       },
       {

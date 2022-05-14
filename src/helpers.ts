@@ -70,3 +70,9 @@ export function isWeekendInRange(startDate: Date, endDate: Date) {
   }
   return false;
 }
+
+export function hasAdminRole(email: string) {
+  const foundMember = members.find((member) => member.email === email);
+  if (!foundMember) throw Error('member not found');
+  return Boolean(foundMember.isAdmin);
+}

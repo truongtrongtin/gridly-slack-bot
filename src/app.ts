@@ -3,9 +3,9 @@ import { App, ExpressReceiver, LogLevel } from '@slack/bolt';
 import 'dotenv/config';
 import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete';
 import appHomeNewAbsence from './listeners/actions/app-home-new-absence';
-import appHomeRefresh from './listeners/actions/app-home-refresh';
 import appHomeOpened from './listeners/events/app-home-opened';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
+import adminNewAbsenceSubmit from './listeners/views/admin-new-absence-submit';
 import newAbsenceSubmit from './listeners/views/new-absence-submit';
 
 const expressReceiver = new ExpressReceiver({
@@ -23,7 +23,6 @@ const expressApp = expressReceiver.app;
 // actions
 appHomeOpened(app);
 appHomeAbsenceDelete(app);
-appHomeRefresh(app);
 
 // events
 appHomeNewAbsence(app);
@@ -33,6 +32,7 @@ globalNewAbsence(app);
 
 // views
 newAbsenceSubmit(app);
+adminNewAbsenceSubmit(app);
 
 // Check the details of the error to handle cases where you should retry sending a message or stop the app
 app.error(async (error) => {

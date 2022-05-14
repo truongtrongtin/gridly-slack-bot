@@ -6,9 +6,9 @@ import members from '../../member-list.json';
 import { DayPart } from '../../types';
 import appHomeView from '../../user-interface/app-home';
 
-export default function newAbsenceSubmit(app: App) {
+export default function adminNewAbsenceSubmit(app: App) {
   app.view(
-    'new-absence-submit',
+    'admin-new-absence-submit',
     async ({ ack, body, view, client, logger }) => {
       const startDateString =
         view['state']['values']['start-date-block']['start-date-action']
@@ -19,6 +19,19 @@ export default function newAbsenceSubmit(app: App) {
           response_action: 'errors',
           errors: {
             'start-date-block': 'Start date is required',
+          },
+        });
+        return;
+      }
+
+      const memberId =
+        view['state']['values']['member_block']['member-action'].selected_user;
+
+      if (!memberId) {
+        await ack({
+          response_action: 'errors',
+          errors: {
+            member_block: 'Member is required',
           },
         });
         return;
@@ -38,16 +51,6 @@ export default function newAbsenceSubmit(app: App) {
       const endDate = new Date(endDateString);
       const today = startOfDay(new Date());
       const userId = body['user']['id'];
-
-      if (startDate < today) {
-        await ack({
-          response_action: 'errors',
-          errors: {
-            'start-date-block': 'Not allow day in the past',
-          },
-        });
-        return;
-      }
 
       if (isWeekendInRange(startDate, endDate)) {
         if (isSingleMode) {
@@ -114,11 +117,23 @@ export default function newAbsenceSubmit(app: App) {
       try {
         // Get slack message 's author info
         const userInfo = await client.users.info({ user: userId });
-        const email = userInfo?.user?.profile?.email;
-        const realName = userInfo?.user?.profile?.real_name;
-        logger.info(`${realName} is submiting absence`);
+        const userRealName = userInfo?.user?.profile?.real_name;
 
-        const foundMember = members.find((member) => member.email === email);
+        const memberInfo = await client.users.info({ user: memberId });
+        const memberRealName = memberInfo?.user?.profile?.real_name;
+        const memberEmail = memberInfo?.user?.profile?.email;
+
+        if (userId === memberId) {
+          logger.info(`${userRealName} is submiting absence`);
+        } else {
+          logger.info(
+            `admin ${userRealName} is submiting absence for ${memberRealName}`,
+          );
+        }
+
+        const foundMember = members.find(
+          (member) => member.email === memberEmail,
+        );
         if (!foundMember) throw Error('member not found');
         const memberName = foundMember.possibleNames[0];
 
@@ -141,7 +156,7 @@ export default function newAbsenceSubmit(app: App) {
         const queryParams = new URLSearchParams({
           timeMin: startDate.toISOString(),
           timeMax: addDays(endDate, 1).toISOString(),
-          q: email!,
+          q: memberEmail!,
         }).toString();
         const eventListResponse = await axios.get(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
@@ -177,14 +192,14 @@ export default function newAbsenceSubmit(app: App) {
             end: {
               date: format(addDays(endDate, 1), 'yyyy-MM-dd'),
             },
-            summary: `${memberName || email} ${dayPartText}`,
+            summary: `${memberName || memberEmail} ${dayPartText}`,
             description: JSON.stringify({
               message_ts: newMessage.message?.ts,
               reason,
             }),
             attendees: [
               {
-                email,
+                email: memberEmail,
                 responseStatus: 'accepted',
               },
             ],
@@ -196,7 +211,7 @@ export default function newAbsenceSubmit(app: App) {
         const newQueryParams = new URLSearchParams({
           timeMin: today.toISOString(),
           timeMax: addMonths(today, 3).toISOString(),
-          q: email!,
+          q: memberEmail!,
         }).toString();
         const newEventListResponse = await axios.get(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${newQueryParams}`,
