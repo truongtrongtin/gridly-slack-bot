@@ -72,5 +72,33 @@
     "ignore": [
       "src/**/*.spec.ts"
     ]
+  },
+  "renovate": {
+    "extends": [
+      "config:base",
+      ":preserveSemverRanges",
+      ":semanticCommitTypeAll(chore)"
+    ],
+    "semanticCommits": "enabled",
+    "separateMajorMinor": false,
+    "dependencyDashboard": false,
+    "packageRules": [
+      {
+        "matchUpdateTypes": [
+          "patch",
+          "minor"
+        ],
+        "groupName": "patch/minor dependencies",
+        "groupSlug": "all-non-major",
+        "automerge": true,
+        "automergeType": "branch"
+      }
+    ],
+    "schedule": [
+      "every weekday"
+    ]
+  },
+  "engines": {
+    "node": ">= 16.0.0"
   }
 }
