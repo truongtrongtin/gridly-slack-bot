@@ -76,7 +76,6 @@
   "renovate": {
     "extends": [
       "config:base",
-      ":preserveSemverRanges",
       ":semanticCommitTypeAll(chore)"
     ],
     "semanticCommits": "enabled",
