@@ -1,8 +1,14 @@
-import { Option, View } from '@slack/bolt';
+import { KnownBlock, Option, View } from '@slack/bolt';
 import { format } from 'date-fns';
 import { DayPart } from '../../types';
 
-export default function newAbsenceModal(): View {
+export default function newAbsenceModal({
+  showMemberSelect,
+  adminId,
+}: {
+  showMemberSelect: boolean;
+  adminId?: string;
+}): View {
   const dayPartOptions: Option[] = [
     {
       text: {
@@ -32,7 +38,9 @@ export default function newAbsenceModal(): View {
 
   return {
     type: 'modal',
-    callback_id: 'new-absence-submit',
+    callback_id: showMemberSelect
+      ? 'admin-new-absence-submit'
+      : 'new-absence-submit',
     // notify_on_close: true,
     // private_metadata: privateMetadata,
     title: {
@@ -50,6 +58,29 @@ export default function newAbsenceModal(): View {
       emoji: true,
     },
     blocks: [
+      ...(showMemberSelect
+        ? [
+            {
+              type: 'input',
+              block_id: 'member_block',
+              element: {
+                type: 'users_select',
+                placeholder: {
+                  type: 'plain_text',
+                  text: 'Select a member',
+                  emoji: true,
+                },
+                initial_user: adminId,
+                action_id: 'member-action',
+              },
+              label: {
+                type: 'plain_text',
+                text: 'Assign to',
+                emoji: true,
+              },
+            } as KnownBlock,
+          ]
+        : []),
       {
         type: 'input',
         block_id: 'start-date-block',
