@@ -4,6 +4,7 @@ import 'dotenv/config';
 import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete';
 import appHomeNewAbsence from './listeners/actions/app-home-new-absence';
 import appHomeOpened from './listeners/events/app-home-opened';
+import remindToUseMe from './listeners/messages/remind-to-use-me';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
 import adminNewAbsenceSubmit from './listeners/views/admin-new-absence-submit';
 import newAbsenceSubmit from './listeners/views/new-absence-submit';
@@ -29,6 +30,9 @@ appHomeNewAbsence(app);
 
 // shortcuts
 globalNewAbsence(app);
+
+// messages
+remindToUseMe(app);
 
 // views
 newAbsenceSubmit(app);
