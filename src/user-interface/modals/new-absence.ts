@@ -133,6 +133,11 @@ export default function newAbsenceModal({
         element: {
           type: 'plain_text_input',
           action_id: 'reason-action',
+          placeholder: {
+            type: 'plain_text',
+            text: 'Share your reason',
+            emoji: true,
+          },
         },
         label: {
           type: 'plain_text',
