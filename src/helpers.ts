@@ -71,8 +71,30 @@ export function isWeekendInRange(startDate: Date, endDate: Date) {
   return false;
 }
 
-export function hasAdminRole(email: string) {
+export function hasAdminRole(email: string | undefined) {
+  if (!email) return false;
   const foundMember = members.find((member) => member.email === email);
-  if (!foundMember) throw Error('member not found');
+  if (!foundMember) return false;
   return Boolean(foundMember.isAdmin);
+}
+
+export function findMemberByName(name: string) {
+  for (const member of members) {
+    for (const possibleName of member.possibleNames) {
+      if (possibleName.toLowerCase() === name.toLowerCase()) {
+        return member;
+      }
+    }
+  }
+  return null;
+}
+
+export function getMembersFromEventSummary(summary: string) {
+  const memberNames = summary.split('(off')[0].split(',');
+  const members = [];
+  for (const memberName of memberNames) {
+    const foundMember = findMemberByName(memberName);
+    if (foundMember) members.push(foundMember);
+  }
+  return members;
 }
