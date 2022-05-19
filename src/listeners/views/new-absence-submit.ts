@@ -196,7 +196,6 @@ export default function newAbsenceSubmit(app: App) {
         const newQueryParams = new URLSearchParams({
           timeMin: today.toISOString(),
           timeMax: addMonths(today, 3).toISOString(),
-          q: email!,
         }).toString();
         const newEventListResponse = await axios.get(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${newQueryParams}`,
@@ -207,7 +206,7 @@ export default function newAbsenceSubmit(app: App) {
         // Update app home
         await client.views.publish({
           user_id: userId,
-          view: appHomeView(newAbsenceEvents),
+          view: appHomeView(newAbsenceEvents, userInfo.user),
         });
       } catch (error) {
         logger.error(error);
