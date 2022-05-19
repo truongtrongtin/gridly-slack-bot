@@ -179,7 +179,7 @@ export default function adminNewAbsenceSubmit(app: App) {
 
         const newMessage = await client.chat.postMessage({
           channel: process.env.SLACK_CHANNEL!,
-          text: `<@${userId}> will be absent on *${timeText}*.${reasonText}`,
+          text: `<@${memberId}> will be absent on *${timeText}*.${reasonText}`,
         });
 
         // Create new event on google calendar
