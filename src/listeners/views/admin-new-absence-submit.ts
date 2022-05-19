@@ -115,13 +115,16 @@ export default function adminNewAbsenceSubmit(app: App) {
       await ack();
 
       try {
-        // Get slack message 's author info
-        const userInfo = await client.users.info({ user: userId });
-        const userRealName = userInfo?.user?.profile?.real_name;
-
-        const memberInfo = await client.users.info({ user: memberId });
-        const memberRealName = memberInfo?.user?.profile?.real_name;
-        const memberEmail = memberInfo?.user?.profile?.email;
+        // Get slack user and member info
+        const [user, member] = await Promise.all(
+          [userId, memberId].map(async (id: string) => {
+            const useInfoResponse = await client.users.info({ user: id });
+            return useInfoResponse.user;
+          }),
+        );
+        const userRealName = user?.profile?.real_name;
+        const memberRealName = member?.profile?.real_name;
+        const memberEmail = member?.profile?.email;
 
         if (userId === memberId) {
           logger.info(`${userRealName} is submiting absence`);
@@ -221,7 +224,7 @@ export default function adminNewAbsenceSubmit(app: App) {
         // Update app home
         await client.views.publish({
           user_id: userId,
-          view: appHomeView(newAbsenceEvents, userInfo.user!),
+          view: appHomeView(newAbsenceEvents, user!),
         });
       } catch (error) {
         logger.error(error);
