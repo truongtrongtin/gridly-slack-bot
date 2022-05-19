@@ -1,6 +1,6 @@
 import { App } from '@slack/bolt';
 import axios from 'axios';
-import { endOfYear, startOfDay } from 'date-fns';
+import { addMonths, startOfDay } from 'date-fns';
 import appHomeView from '../../user-interface/app-home';
 
 export default function appHomeOpened(app: App) {
@@ -8,7 +8,6 @@ export default function appHomeOpened(app: App) {
   app.event('app_home_opened', async ({ event, client, logger }) => {
     try {
       const userInfo = await client.users.info({ user: event.user });
-      const email = userInfo.user?.profile?.email;
       const realName = userInfo.user?.profile?.real_name;
       logger.info(`${realName} is opening app home`);
 
@@ -24,11 +23,10 @@ export default function appHomeOpened(app: App) {
       );
       const accessToken: string = tokenResponse.data.access_token;
 
-      // Get events from google calendar
+      // Get future absence from google calendar
       const queryParams = new URLSearchParams({
         timeMin: startOfDay(new Date()).toISOString(),
-        timeMax: endOfYear(new Date()).toISOString(),
-        q: email!,
+        timeMax: addMonths(new Date(), 3).toISOString(),
       }).toString();
       const eventListResponse = await axios.get(
         `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
@@ -40,7 +38,7 @@ export default function appHomeOpened(app: App) {
       await client.views.publish({
         // Use the user ID associated with the event
         user_id: event.user,
-        view: appHomeView(absenceEvents),
+        view: appHomeView(absenceEvents, userInfo.user),
       });
     } catch (error) {
       logger.error(error);
