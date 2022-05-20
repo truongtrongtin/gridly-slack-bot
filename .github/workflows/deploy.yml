@@ -55,6 +55,7 @@ jobs:
           source_dir: dist
           entry_point: app
           env_vars: >
+            TZ=${{ secrets.TZ }},
             SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }},
             SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }},
             SLACK_CHANNEL=${{ secrets.SLACK_CHANNEL }},
