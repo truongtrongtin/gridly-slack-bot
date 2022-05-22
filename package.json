@@ -76,10 +76,8 @@
   "renovate": {
     "extends": [
       "config:base",
-      ":semanticCommitTypeAll(chore)"
+      "schedule:daily"
     ],
-    "semanticCommits": "enabled",
-    "separateMajorMinor": false,
     "dependencyDashboard": false,
     "packageRules": [
       {
@@ -87,14 +85,9 @@
           "patch",
           "minor"
         ],
-        "groupName": "patch/minor dependencies",
-        "groupSlug": "all-non-major",
         "automerge": true,
         "automergeType": "branch"
       }
-    ],
-    "schedule": [
-      "every weekday"
     ]
   },
   "engines": {
