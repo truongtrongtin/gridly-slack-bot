@@ -3,8 +3,10 @@ import { App, ExpressReceiver, LogLevel } from '@slack/bolt';
 import 'dotenv/config';
 import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete';
 import appHomeNewAbsence from './listeners/actions/app-home-new-absence';
+import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes';
+import absenceSuggestionNo from './listeners/actions/absence-suggestion-no';
 import appHomeOpened from './listeners/events/app-home-opened';
-import remindToUseMe from './listeners/messages/remind-to-use-me';
+import suggestAbsence from './listeners/messages/absence-suggest';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
 import adminNewAbsenceSubmit from './listeners/views/admin-new-absence-submit';
 import newAbsenceSubmit from './listeners/views/new-absence-submit';
@@ -24,6 +26,8 @@ const expressApp = expressReceiver.app;
 // actions
 appHomeOpened(app);
 appHomeAbsenceDelete(app);
+absenceSuggestionYes(app);
+absenceSuggestionNo(app);
 
 // events
 appHomeNewAbsence(app);
@@ -32,7 +36,7 @@ appHomeNewAbsence(app);
 globalNewAbsence(app);
 
 // messages
-remindToUseMe(app);
+suggestAbsence(app);
 
 // views
 newAbsenceSubmit(app);
