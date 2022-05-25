@@ -4,7 +4,6 @@ import { addDays, addMonths, format, startOfDay } from 'date-fns';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
 import members from '../../member-list.json';
 import { DayPart } from '../../types';
-import appHomeView from '../../user-interface/app-home';
 
 export default function newAbsenceSubmit(app: App) {
   app.view(
@@ -192,22 +191,6 @@ export default function newAbsenceSubmit(app: App) {
           },
           { headers: { Authorization: `Bearer ${accessToken}` } },
         );
-
-        const newQueryParams = new URLSearchParams({
-          timeMin: today.toISOString(),
-          timeMax: addMonths(today, 3).toISOString(),
-        }).toString();
-        const newEventListResponse = await axios.get(
-          `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${newQueryParams}`,
-          { headers: { Authorization: `Bearer ${accessToken}` } },
-        );
-        const newAbsenceEvents = newEventListResponse.data?.items;
-
-        // Update app home
-        await client.views.publish({
-          user_id: userId,
-          view: appHomeView(newAbsenceEvents, userInfo.user),
-        });
       } catch (error) {
         logger.error(error);
       }

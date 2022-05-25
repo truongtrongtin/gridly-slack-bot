@@ -23,7 +23,7 @@ export default function appHomeOpened(app: App) {
       );
       const accessToken: string = tokenResponse.data.access_token;
 
-      // Get future absence from google calendar
+      // Get future absences from google calendar
       const queryParams = new URLSearchParams({
         timeMin: startOfDay(new Date()).toISOString(),
         timeMax: addMonths(new Date(), 3).toISOString(),
@@ -34,9 +34,7 @@ export default function appHomeOpened(app: App) {
       );
       const absenceEvents = eventListResponse.data.items;
 
-      // Call views.publish with the built-in client
       await client.views.publish({
-        // Use the user ID associated with the event
         user_id: event.user,
         view: appHomeView(absenceEvents, userInfo.user),
       });
