@@ -78,19 +78,24 @@
   },
   "renovate": {
     "extends": [
-      "config:base",
-      "schedule:daily"
+      "config:base"
     ],
     "dependencyDashboard": false,
+    "separateMajorMinor": false,
     "packageRules": [
       {
         "matchUpdateTypes": [
           "patch",
-          "minor"
+          "minor",
+          "pin",
+          "digest"
         ],
         "automerge": true,
         "automergeType": "branch"
       }
+    ],
+    "schedule": [
+      "every weekend"
     ]
   },
   "engines": {
