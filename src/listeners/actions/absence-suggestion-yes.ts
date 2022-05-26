@@ -11,9 +11,8 @@ export default function absenceSuggestionYes(app: App) {
 
     async ({ ack, say, payload, body, client, logger }) => {
       // console.log('body', JSON.stringify(body, null, 2));
-      const { startDateString, endDateString, dayPart, reason } = JSON.parse(
-        (<ButtonAction>payload).value,
-      );
+      const { startDateString, endDateString, dayPart, reason, authorId } =
+        JSON.parse((<ButtonAction>payload).value);
       const startDate = new Date(startDateString);
       const endDate = new Date(endDateString);
 
@@ -21,6 +20,8 @@ export default function absenceSuggestionYes(app: App) {
 
       try {
         const userId = body.user.id;
+        if (authorId !== userId) return;
+
         const userInfo = await client.users.info({ user: userId });
         const email = userInfo?.user?.profile?.email;
         const realName = userInfo?.user?.profile?.real_name;

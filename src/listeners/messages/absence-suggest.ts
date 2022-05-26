@@ -56,8 +56,6 @@ export default function suggestAbsence(app: App) {
     console.log('translatedText', translatedText);
 
     const ranges = chrono.parse(translatedText);
-
-    console.log(JSON.stringify(ranges, null, 2));
     if (ranges.length === 0) return;
     const startDate = ranges[0].start.date();
     const endDate = ranges[0].end?.date() || startDate;
@@ -124,6 +122,7 @@ export default function suggestAbsence(app: App) {
                 endDateString,
                 dayPart,
                 reason: message.text,
+                authorId: message.user,
               }),
             },
             {
