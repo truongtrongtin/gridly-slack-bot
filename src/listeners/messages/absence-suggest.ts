@@ -102,7 +102,7 @@ export default function suggestAbsence(app: App) {
           type: 'section',
           text: {
             type: 'mrkdwn',
-            text: `Are you going to be absent on *${timeText}*?`,
+            text: `>${message.text}\n<@${message.user}>, are you going to be absent on *${timeText}*?`,
           },
         },
         {
