@@ -54,14 +54,14 @@ jobs:
           memory_mb: 128
           source_dir: dist
           entry_point: app
-          env_vars: >
-            TZ=${{ secrets.TZ }},
-            SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }},
-            SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }},
-            SLACK_CHANNEL=${{ secrets.SLACK_CHANNEL }},
-            GOOGLE_CALENDAR_ID=${{ secrets.GOOGLE_CALENDAR_ID }},
-            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }},
-            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }},
-            GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }},
-            SERVICE_ACCOUNT_KEY_BASE64=${{ secrets.SERVICE_ACCOUNT_KEY_BASE64 }},
-            GOOGLE_PROJECT_ID=${{ secrets.GOOGLE_PROJECT_ID }},
+          env_vars: |-
+            TZ=${{ secrets.TZ }}
+            SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }}
+            SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }}
+            SLACK_CHANNEL=${{ secrets.SLACK_CHANNEL }}
+            GOOGLE_CALENDAR_ID=${{ secrets.GOOGLE_CALENDAR_ID }}
+            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+            GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }}
+            SERVICE_ACCOUNT_KEY_BASE64=${{ secrets.SERVICE_ACCOUNT_KEY_BASE64 }}
+            GOOGLE_PROJECT_ID=${{ secrets.GOOGLE_PROJECT_ID }}

@@ -1,10 +1,10 @@
-/* eslint-disable no-console */
 import { App, ExpressReceiver, LogLevel } from '@slack/bolt';
 import 'dotenv/config';
+import { Request, Response } from 'express';
+import absenceSuggestionNo from './listeners/actions/absence-suggestion-no';
+import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes';
 import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete';
 import appHomeNewAbsence from './listeners/actions/app-home-new-absence';
-import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes';
-import absenceSuggestionNo from './listeners/actions/absence-suggestion-no';
 import appHomeOpened from './listeners/events/app-home-opened';
 import suggestAbsence from './listeners/messages/absence-suggest';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
@@ -61,7 +61,7 @@ if (!isOnGoogleCloud()) {
   })();
 }
 
-module.exports.app = function (req: any, res: any) {
+exports.app = function (req: Request, res: Response) {
   // console.log(`Request header: ${JSON.stringify(req.headers)}`);
   // if (req.rawBody) {
   //   console.log(`Request body: ${req.rawBody}`);
