@@ -64,13 +64,13 @@ export default function appHomeAbsenceDelete(app: App) {
         const absenceEvents = eventListResponse.data.items;
 
         // Delete announced message
-        client.chat.delete({
+        await client.chat.delete({
           channel: process.env.SLACK_CHANNEL!,
           ts: message_ts,
         });
 
         // Update app home
-        client.views.update({
+        await client.views.update({
           view_id: body.view?.id,
           view: appHomeView(absenceEvents, userInfo.user),
         });
