@@ -18,16 +18,16 @@ export default function suggestAbsence(app: App) {
     if (message.channel !== process.env.SLACK_CHANNEL) return;
     if (!message.blocks) return;
 
-    const fileData = JSON.parse(
+    const serviceAccountKey = JSON.parse(
       Buffer.from(process.env.SERVICE_ACCOUNT_KEY_BASE64!, 'base64').toString(),
     );
     const jwtToken = jwt.sign(
       { scope: 'https://www.googleapis.com/auth/cloud-translation' },
-      fileData.private_key.replace(/\\n/gm, '\n'),
+      serviceAccountKey.private_key.replace(/\\n/gm, '\n'),
       {
         algorithm: 'RS256',
-        issuer: fileData.client_email,
-        audience: fileData.token_uri,
+        issuer: serviceAccountKey.client_email,
+        audience: serviceAccountKey.token_uri,
         expiresIn: '1h',
       },
     );
@@ -41,7 +41,7 @@ export default function suggestAbsence(app: App) {
     const accessToken = accessTokenResponse.data.access_token;
 
     const result = await axios.post(
-      `https://translation.googleapis.com/v3/projects/${process.env.GOOGLE_PROJECT_ID}:translateText`,
+      `https://translation.googleapis.com/v3/projects/${serviceAccountKey.project_id}:translateText`,
       {
         sourceLanguageCode: 'vi',
         targetLanguageCode: 'en',
