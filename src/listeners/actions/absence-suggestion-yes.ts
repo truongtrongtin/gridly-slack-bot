@@ -1,6 +1,6 @@
 import { App, ButtonAction } from '@slack/bolt';
 import axios from 'axios';
-import { addDays, format } from 'date-fns';
+import { addDays, format, startOfDay } from 'date-fns';
 import { generateTimeText } from '../../helpers';
 import members from '../../member-list.json';
 import { DayPart } from '../../types';
@@ -15,6 +15,8 @@ export default function absenceSuggestionYes(app: App) {
         JSON.parse((<ButtonAction>payload).value);
       const startDate = new Date(startDateString);
       const endDate = new Date(endDateString);
+      const today = startOfDay(new Date());
+      if (startDate < today) return;
 
       await ack();
 
@@ -72,7 +74,6 @@ export default function absenceSuggestionYes(app: App) {
 
         const newMessage = await say({
           channel: process.env.SLACK_CHANNEL!,
-          thread_ts: body.message?.thread_ts,
           text: `<@${userId}> will be absent on *${timeText}*.`,
         });
 
