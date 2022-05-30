@@ -33,7 +33,11 @@
     "possibleNames": ["Steve", "Tri Truong", "Tri T."]
   },
   { "email": "th@localizedirect.com", "possibleNames": ["Tan"] },
-  { "email": "tin@localizedirect.com", "possibleNames": ["Tin"] },
+  {
+    "email": "tin@localizedirect.com",
+    "possibleNames": ["Tin"],
+    "isAdmin": true
+  },
   { "email": "tlv@localizedirect.com", "possibleNames": ["Win"] },
   { "email": "tn@localizedirect.com", "possibleNames": ["Truong"] },
   { "email": "tnn@localizedirect.com", "possibleNames": ["Thy"] },
