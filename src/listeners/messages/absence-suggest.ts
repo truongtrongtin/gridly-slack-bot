@@ -1,7 +1,7 @@
 import { App } from '@slack/bolt';
 import axios from 'axios';
 import * as chrono from 'chrono-node';
-import { addMonths, startOfDay } from 'date-fns';
+import { addMonths, format, startOfDay } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import {
   generateTimeText,
@@ -61,8 +61,8 @@ export default function suggestAbsence(app: App) {
     const endDate = ranges[0].end?.date() || startDate;
     const today = startOfDay(new Date());
 
-    const startDateString = startDate.toISOString().split('T')[0];
-    const endDateString = endDate.toISOString().split('T')[0];
+    const startDateString = format(startDate, 'yyyy-MM-dd');
+    const endDateString = format(endDate, 'yyyy-MM-dd');
     const isSingleMode = startDateString === endDateString;
 
     console.log('startDate', startDate);

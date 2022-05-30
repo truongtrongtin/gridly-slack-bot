@@ -72,6 +72,7 @@ export default function absenceSuggestionYes(app: App) {
 
         const newMessage = await say({
           channel: process.env.SLACK_CHANNEL!,
+          thread_ts: body.message?.thread_ts,
           text: `<@${userId}> will be absent on *${timeText}*.`,
         });
 
