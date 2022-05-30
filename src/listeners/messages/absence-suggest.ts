@@ -86,7 +86,9 @@ export default function suggestAbsence(app: App) {
       dayPart = DayPart.AFTERNOON;
     }
 
-    if (startDate < today) return;
+    if (new Date(new Date(startDate).setHours(16, 0, 0, 0)) < new Date()) {
+      return;
+    }
     if (isWeekendInRange(startDate, endDate)) return;
     if (endDate < startDate) return;
     if (startDate > addMonths(today, 3)) return;
