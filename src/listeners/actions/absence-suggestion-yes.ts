@@ -15,14 +15,29 @@ export default function absenceSuggestionYes(app: App) {
         JSON.parse((<ButtonAction>payload).value);
       const startDate = new Date(startDateString);
       const endDate = new Date(endDateString);
-      const today = startOfDay(new Date());
-      if (startDate < today) return;
 
       await ack();
 
       try {
         const userId = body.user.id;
-        if (authorId !== userId) return;
+        if (authorId !== userId) {
+          await client.chat.postEphemeral({
+            channel: process.env.SLACK_CHANNEL!,
+            user: body.user.id,
+            text: ':x: You are not authorized to perform this action!',
+          });
+          return;
+        }
+
+        const today = startOfDay(new Date());
+        if (startDate < today) {
+          await client.chat.postEphemeral({
+            channel: process.env.SLACK_CHANNEL!,
+            user: body.user.id,
+            text: ':x: Not allow day in the past!',
+          });
+          return;
+        }
 
         const userInfo = await client.users.info({ user: userId });
         const email = userInfo?.user?.profile?.email;
