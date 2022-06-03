@@ -70,7 +70,7 @@ export default function appHomeView(
       },
       ...absenceEvents.reduce((results: (KnownBlock | Block)[], event: any) => {
         const dayPart = getDayPartFromEventSummary(event.summary);
-        const absenceEmail = event.attendees[0].email;
+        const absenceEmail = event.attendees?.[0]?.email;
         const memberName = event.summary.split('(off')[0];
         const userEmail = user.profile?.email;
         const isBelongToMe = absenceEmail === userEmail;
