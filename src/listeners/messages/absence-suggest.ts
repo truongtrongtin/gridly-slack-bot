@@ -45,7 +45,7 @@ export default function suggestAbsence(app: App) {
       {
         sourceLanguageCode: 'vi',
         targetLanguageCode: 'en',
-        contents: message.text,
+        contents: message.text?.replaceAll(/t(?=[2-6])/gi, 'thứ '),
         mimeType: 'text/plain',
       },
       {
