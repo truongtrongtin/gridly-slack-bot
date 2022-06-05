@@ -96,7 +96,7 @@
       }
     ],
     "schedule": [
-      "every weekend"
+      "every weekday"
     ]
   },
   "engines": {
