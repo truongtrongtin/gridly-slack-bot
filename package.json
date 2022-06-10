@@ -19,22 +19,22 @@
     "jsonwebtoken": "8.5.1"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "17.0.0",
+    "@commitlint/config-conventional": "17.0.2",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "8.5.8",
-    "@types/node": "17.0.34",
-    "@typescript-eslint/eslint-plugin": "5.25.0",
-    "@typescript-eslint/parser": "5.25.0",
-    "commitlint": "17.0.0",
-    "eslint": "8.15.0",
+    "@types/node": "17.0.41",
+    "@typescript-eslint/eslint-plugin": "5.27.1",
+    "@typescript-eslint/parser": "5.27.1",
+    "commitlint": "17.0.2",
+    "eslint": "8.17.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-prettier": "4.0.0",
     "husky": "8.0.1",
-    "lint-staged": "13.0.0",
+    "lint-staged": "13.0.1",
     "nodemon": "2.0.16",
     "prettier": "2.6.2",
-    "ts-node": "10.7.0",
-    "typescript": "4.6.4"
+    "ts-node": "10.8.1",
+    "typescript": "4.7.3"
   },
   "eslintConfig": {
     "parser": "@typescript-eslint/parser",
@@ -85,18 +85,17 @@
     "separateMajorMinor": false,
     "packageRules": [
       {
-        "matchUpdateTypes": [
-          "patch",
-          "minor",
-          "pin",
-          "digest"
+        "matchPackagePatterns": [
+          "*"
         ],
+        "groupName": "all dependencies",
+        "groupSlug": "all",
         "automerge": true,
-        "automergeType": "branch"
+        "automergeType": "branch",
+        "schedule": [
+          "every weekend"
+        ]
       }
-    ],
-    "schedule": [
-      "every weekday"
     ]
   },
   "engines": {
