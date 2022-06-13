@@ -9,7 +9,7 @@
   },
   {
     "email": "hh@localizedirect.com",
-    "possibleNames": ["Hieu H.", "Hieu Huynh", "Hieu H"]
+    "possibleNames": ["Hieu Huynh", "Hieu H.", "Hieu H"]
   },
   { "email": "hm@localizedirect.com", "possibleNames": ["Huong"] },
   {
@@ -26,7 +26,8 @@
     "isAdmin": true
   },
   { "email": "pv@localizedirect.com", "possibleNames": ["Phu"] },
-  { "email": "qv@localizedirect.com", "possibleNames": ["Quang"] },
+  { "email": "qh@localizedirect.com", "possibleNames": ["Quang Huynh"] },
+  { "email": "qv@localizedirect.com", "possibleNames": ["Quang Vo", "Quang"] },
   { "email": "sla@localizedirect.com", "possibleNames": ["Son"] },
   { "email": "sn@localizedirect.com", "possibleNames": ["Sang"] },
   {
