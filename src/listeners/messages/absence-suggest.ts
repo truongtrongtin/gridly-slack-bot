@@ -56,90 +56,91 @@ export default function suggestAbsence(app: App) {
     console.log('translatedText', translatedText);
 
     const ranges = chrono.parse(translatedText);
-    if (ranges.length === 0) return;
-    const startDate = ranges[0].start.date();
-    const endDate = ranges[0].end?.date() || startDate;
-    const today = startOfDay(new Date());
+    ranges.map(async (range) => {
+      const startDate = range.start.date();
+      const endDate = range.end?.date() || startDate;
+      const today = startOfDay(new Date());
 
-    const startDateString = format(startDate, 'yyyy-MM-dd');
-    const endDateString = format(endDate, 'yyyy-MM-dd');
-    const isSingleMode = startDateString === endDateString;
+      const startDateString = format(startDate, 'yyyy-MM-dd');
+      const endDateString = format(endDate, 'yyyy-MM-dd');
+      const isSingleMode = startDateString === endDateString;
 
-    console.log('startDate', startDate);
-    console.log('endDate', endDate);
-    console.log('startDate.getHours()', startDate.getHours());
-    console.log('endDate.getHours()', endDate.getHours());
+      console.log('startDate', startDate);
+      console.log('endDate', endDate);
+      console.log('startDate.getHours()', startDate.getHours());
+      console.log('endDate.getHours()', endDate.getHours());
 
-    if (!startDate) return;
-    let dayPart = DayPart.ALL;
-    if (
-      startDate.getTime() ===
-      new Date(new Date(startDate).setHours(6, 0, 0, 0)).getTime()
-    ) {
-      dayPart = DayPart.MORNING;
-    }
+      if (!startDate) return;
+      let dayPart = DayPart.ALL;
+      if (
+        startDate.getTime() ===
+        new Date(new Date(startDate).setHours(6, 0, 0, 0)).getTime()
+      ) {
+        dayPart = DayPart.MORNING;
+      }
 
-    if (
-      startDate.getTime() ===
-      new Date(new Date(startDate).setHours(15, 0, 0, 0)).getTime()
-    ) {
-      dayPart = DayPart.AFTERNOON;
-    }
+      if (
+        startDate.getTime() ===
+        new Date(new Date(startDate).setHours(15, 0, 0, 0)).getTime()
+      ) {
+        dayPart = DayPart.AFTERNOON;
+      }
 
-    if (new Date(new Date(startDate).setHours(16, 0, 0, 0)) < new Date()) {
-      return;
-    }
-    if (isWeekendInRange(startDate, endDate)) return;
-    if (endDate < startDate) return;
-    if (startDate > addMonths(today, 3)) return;
-    if (endDate > addMonths(today, 3)) return;
-    if (!isSingleMode && dayPart !== DayPart.ALL) return;
+      if (new Date(new Date(startDate).setHours(16, 0, 0, 0)) < new Date()) {
+        return;
+      }
+      if (isWeekendInRange(startDate, endDate)) return;
+      if (endDate < startDate) return;
+      if (startDate > addMonths(today, 3)) return;
+      if (endDate > addMonths(today, 3)) return;
+      if (!isSingleMode && dayPart !== DayPart.ALL) return;
 
-    const timeText = generateTimeText(startDate, endDate, dayPart);
+      const timeText = generateTimeText(startDate, endDate, dayPart);
 
-    await say({
-      thread_ts: message.ts,
-      blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `>${message.text}\n<@${message.user}>, are you going to be absent on *${timeText}*?`,
+      await say({
+        thread_ts: message.ts,
+        blocks: [
+          {
+            type: 'section',
+            text: {
+              type: 'mrkdwn',
+              text: `>${message.text}\n<@${message.user}>, are you going to be absent on *${timeText}*?`,
+            },
           },
-        },
-        {
-          type: 'actions',
-          elements: [
-            {
-              type: 'button',
-              action_id: 'absence-suggestion-yes',
-              text: {
-                type: 'plain_text',
-                emoji: true,
-                text: 'Yes',
+          {
+            type: 'actions',
+            elements: [
+              {
+                type: 'button',
+                action_id: 'absence-suggestion-yes',
+                text: {
+                  type: 'plain_text',
+                  emoji: true,
+                  text: 'Yes',
+                },
+                style: 'primary',
+                value: JSON.stringify({
+                  startDateString,
+                  endDateString,
+                  dayPart,
+                  reason: message.text,
+                  authorId: message.user,
+                }),
               },
-              style: 'primary',
-              value: JSON.stringify({
-                startDateString,
-                endDateString,
-                dayPart,
-                reason: message.text,
-                authorId: message.user,
-              }),
-            },
-            {
-              type: 'button',
-              action_id: 'absence-suggestion-no',
-              text: {
-                type: 'plain_text',
-                emoji: true,
-                text: 'No, submit myself',
+              {
+                type: 'button',
+                action_id: 'absence-suggestion-no',
+                text: {
+                  type: 'plain_text',
+                  emoji: true,
+                  text: 'No, submit myself',
+                },
               },
-            },
-          ],
-        },
-      ],
-      text: `Are you going to be absent on ${timeText}?`,
+            ],
+          },
+        ],
+        text: `Are you going to be absent on ${timeText}?`,
+      });
     });
   });
 }
