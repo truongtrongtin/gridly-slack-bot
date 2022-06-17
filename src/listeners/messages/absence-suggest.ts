@@ -11,7 +11,7 @@ import {
 import { DayPart } from '../../types';
 
 export default function suggestAbsence(app: App) {
-  app.message('off', async ({ message, say }) => {
+  app.message('off ', async ({ message, say }) => {
     // Filter out message events with subtypes (see https://api.slack.com/events/message)
     // Is there a way to do this in listener middleware with current type system?
     if (!isGenericMessageEvent(message)) return;
