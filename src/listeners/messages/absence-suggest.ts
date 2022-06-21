@@ -45,7 +45,11 @@ export default function suggestAbsence(app: App) {
       {
         sourceLanguageCode: 'vi',
         targetLanguageCode: 'en',
-        contents: message.text?.replaceAll(/t(?=[2-6])/gi, 'thứ '),
+        contents: message.text
+          ?.replaceAll(/t(?=[2-6])/gi, 'thứ ')
+          ?.replaceAll(/nghỉ/gi, 'off')
+          ?.replaceAll(/\//gi, ' tháng ')
+          ?.replaceAll(/-/gi, ' đến '),
         mimeType: 'text/plain',
       },
       {
