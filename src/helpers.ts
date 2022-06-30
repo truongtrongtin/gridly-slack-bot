@@ -98,3 +98,36 @@ export function getMembersFromEventSummary(summary: string) {
   }
   return members;
 }
+
+export type DateRange = {
+  start: Date;
+  end: Date;
+};
+
+export function splitRangeIntoWeekdayChunks({ start, end }: DateRange) {
+  const ranges: DateRange[] = [];
+  let startResult = null;
+  let endResult = null;
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+  startDate.setHours(0, 0, 0, 0);
+  endDate.setHours(0, 0, 0, 0);
+  while (startDate.getTime() <= end.getTime()) {
+    if (startDate.getDay() !== 0 && startDate.getDay() !== 6) {
+      if (!startResult) startResult = new Date(startDate);
+      endResult = new Date(startDate);
+    }
+
+    if (
+      startResult &&
+      endResult &&
+      (startDate.getDay() === 5 || startDate.getTime() === endDate.getTime())
+    ) {
+      ranges.push({ start: startResult, end: endResult });
+      startResult = null;
+      endResult = null;
+    }
+    startDate.setDate(startDate.getDate() + 1);
+  }
+  return ranges;
+}
