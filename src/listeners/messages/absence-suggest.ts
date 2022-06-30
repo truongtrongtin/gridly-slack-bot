@@ -11,7 +11,7 @@ import {
 import { DayPart } from '../../types';
 
 export default function suggestAbsence(app: App) {
-  app.message(/(off |nghỉ )/gi, async ({ message, say }) => {
+  app.message(/(off |nghỉ )/gi, async ({ message, say, client }) => {
     // Filter out message events with subtypes (see https://api.slack.com/events/message)
     // Is there a way to do this in listener middleware with current type system?
     if (!isGenericMessageEvent(message)) return;
@@ -93,7 +93,15 @@ export default function suggestAbsence(app: App) {
       if (new Date(new Date(startDate).setHours(16, 0, 0, 0)) < new Date()) {
         return;
       }
-      if (isWeekendInRange(startDate, endDate)) return;
+      if (isWeekendInRange(startDate, endDate)) {
+        const failureText = `:x: Failed to create. Not allow weekend in range`;
+        await client.chat.postEphemeral({
+          channel: process.env.SLACK_CHANNEL!,
+          user: message.user,
+          text: failureText,
+        });
+        return;
+      }
       if (endDate < startDate) return;
       if (startDate > addMonths(today, 3)) return;
       if (endDate > addMonths(today, 3)) return;
