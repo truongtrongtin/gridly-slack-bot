@@ -1,6 +1,6 @@
 import { App, ButtonAction } from '@slack/bolt';
 import axios from 'axios';
-import { addDays, format, startOfDay } from 'date-fns';
+import { addDays, format } from 'date-fns';
 import { generateTimeText } from '../../helpers';
 import members from '../../member-list.json';
 import { DayPart } from '../../types';
@@ -25,16 +25,6 @@ export default function absenceSuggestionYes(app: App) {
             channel: process.env.SLACK_CHANNEL!,
             user: body.user.id,
             text: ':x: You are not authorized to perform this action!',
-          });
-          return;
-        }
-
-        const today = startOfDay(new Date());
-        if (startDate < today) {
-          await client.chat.postEphemeral({
-            channel: process.env.SLACK_CHANNEL!,
-            user: body.user.id,
-            text: ':x: Not allow day in the past!',
           });
           return;
         }
