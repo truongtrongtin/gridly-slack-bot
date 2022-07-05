@@ -123,6 +123,7 @@ export default function newAbsenceSubmit(app: App) {
 
         const dayPartText =
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;
+        const summary = `${memberName} ${dayPartText}`;
 
         // Get new google access token from refresh token
         const tokenResponse = await axios.post(
@@ -140,7 +141,7 @@ export default function newAbsenceSubmit(app: App) {
         const queryParams = new URLSearchParams({
           timeMin: startDate.toISOString(),
           timeMax: addDays(endDate, 1).toISOString(),
-          q: email!,
+          q: summary,
         }).toString();
         const eventListResponse = await axios.get(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
@@ -176,7 +177,7 @@ export default function newAbsenceSubmit(app: App) {
             end: {
               date: format(addDays(endDate, 1), 'yyyy-MM-dd'),
             },
-            summary: `${memberName || email} ${dayPartText}`,
+            summary,
             description: JSON.stringify({
               message_ts: newMessage.message?.ts,
               reason,
