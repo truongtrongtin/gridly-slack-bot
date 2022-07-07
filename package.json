@@ -92,10 +92,13 @@
         "groupSlug": "all",
         "automerge": true,
         "automergeType": "branch",
-        "schedule": [
+        "automergeSchedule": [
           "every weekend"
         ]
       }
+    ],
+    "schedule": [
+      "every weekend"
     ]
   },
   "engines": {
