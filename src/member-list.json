@@ -1,6 +1,10 @@
 [
   { "email": "cm@localizedirect.com", "possibleNames": ["Chau"] },
-  { "email": "dng@localizedirect.com", "possibleNames": ["Duong"] },
+  {
+    "email": "dng@localizedirect.com",
+    "possibleNames": ["Duong Nguyen", "Duong"]
+  },
+  { "email": "dpn@localizedirect.com", "possibleNames": ["Duong Phung"] },
   { "email": "dp@localizedirect.com", "possibleNames": ["Dung"] },
   {
     "email": "gn@localizedirect.com",
@@ -13,8 +17,12 @@
   },
   { "email": "hm@localizedirect.com", "possibleNames": ["Huong"] },
   {
+    "email": "kl@localizedirect.com",
+    "possibleNames": ["Khanh Le"]
+  },
+  {
     "email": "kp@localizedirect.com",
-    "possibleNames": ["Khanh", "Khanh P", "Khanh P."]
+    "possibleNames": ["Khanh Pham", "Khanh", "Khanh P", "Khanh P."]
   },
   { "email": "ld@localizedirect.com", "possibleNames": ["Lynh"] },
   { "email": "ldv@localizedirect.com", "possibleNames": ["Long"] },
