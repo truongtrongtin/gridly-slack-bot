@@ -6,7 +6,8 @@ import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes';
 import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete';
 import appHomeNewAbsence from './listeners/actions/app-home-new-absence';
 import appHomeOpened from './listeners/events/app-home-opened';
-import suggestAbsence from './listeners/messages/absence-suggest';
+import messages from './listeners/events/messages';
+// import suggestAbsence from './listeners/messages/absence-suggest';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
 import adminNewAbsenceSubmit from './listeners/views/admin-new-absence-submit';
 import newAbsenceSubmit from './listeners/views/new-absence-submit';
@@ -31,12 +32,13 @@ absenceSuggestionNo(app);
 
 // events
 appHomeNewAbsence(app);
+messages(app);
 
 // shortcuts
 globalNewAbsence(app);
 
 // messages
-suggestAbsence(app);
+// suggestAbsence(app);
 
 // views
 newAbsenceSubmit(app);
