@@ -16,6 +16,9 @@ export default function messages(app: App) {
           message = event;
           break;
         case 'message_changed':
+          // ignore when delete a message of a thread, which is also fire a message_changed event
+          // @ts-ignore:next-line
+          if (event.message.text === event.previous_message.text) return;
           message = (event as MessageChangedEvent).message;
           break;
         default:
