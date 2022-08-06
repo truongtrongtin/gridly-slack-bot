@@ -138,7 +138,7 @@ export default function adminNewAbsenceSubmit(app: App) {
           (member) => member.email === memberEmail,
         );
         if (!foundMember) throw Error('member not found');
-        const memberName = foundMember.possibleNames[0];
+        const memberName = foundMember.names[0];
 
         const dayPartText =
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;

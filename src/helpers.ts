@@ -80,7 +80,7 @@ export function hasAdminRole(email: string | undefined) {
 
 export function findMemberByName(name: string) {
   for (const member of members) {
-    for (const possibleName of member.possibleNames) {
+    for (const possibleName of member.names) {
       if (possibleName.toLowerCase() === name.toLowerCase()) {
         return member;
       }

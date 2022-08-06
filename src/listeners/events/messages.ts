@@ -1,38 +1,57 @@
-import { App, MessageChangedEvent } from '@slack/bolt';
+import { App } from '@slack/bolt';
 import axios from 'axios';
 import * as chrono from 'chrono-node';
 import { addMonths, format, startOfDay } from 'date-fns';
 import jwt from 'jsonwebtoken';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
+import { addMessage, deleteMessages } from '../../services/message-history';
+import { serviceAccountKey } from '../../services/service-account-key';
 import { DayPart } from '../../types';
 
 export default function messages(app: App) {
   app.event('message', async ({ event, client, logger, say }) => {
     try {
+      // console.log(event);
       let message: any;
       switch (event.subtype) {
         case 'file_share':
-        case undefined:
+        case undefined: {
           message = event;
           break;
-        case 'message_changed':
+        }
+        case 'message_changed': {
+          message = event.message;
+          const previousMessage: any = event.previous_message;
           // ignore when delete a message of a thread, which is also fire a message_changed event
-          // @ts-ignore:next-line
-          if (event.message.text === event.previous_message.text) return;
-          message = (event as MessageChangedEvent).message;
+          if (message.text === previousMessage.text) return;
+          addMessage({
+            text: previousMessage.text,
+            originalTs: message.ts,
+            ts: previousMessage.edited
+              ? previousMessage.edited.ts
+              : previousMessage.ts,
+            channel: event.channel,
+            team: previousMessage.team,
+          });
           break;
+        }
+        case 'message_deleted': {
+          const previousMessage: any = event.previous_message;
+          if (previousMessage.edited) {
+            deleteMessages(
+              previousMessage.team,
+              event.channel,
+              previousMessage.ts,
+            );
+          }
+          return;
+        }
         default:
           return;
       }
 
       const regexp = /(^|\s)(off|nghỉ)([?!.,]|$|\s(?!sớm))/gi;
       if (!regexp.test(message.text)) return;
-      const serviceAccountKey = JSON.parse(
-        Buffer.from(
-          process.env.SERVICE_ACCOUNT_KEY_BASE64!,
-          'base64',
-        ).toString(),
-      );
       const jwtToken = jwt.sign(
         { scope: 'https://www.googleapis.com/auth/cloud-translation' },
         serviceAccountKey.private_key.replace(/\\n/gm, '\n'),
