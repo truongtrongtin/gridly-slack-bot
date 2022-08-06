@@ -1,0 +1,8 @@
+indexes:
+  - kind: Message
+    properties:
+      - name: channel
+      - name: team
+      - name: original_ts
+      - name: ts
+        direction: desc

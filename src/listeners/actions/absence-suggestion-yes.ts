@@ -36,7 +36,7 @@ export default function absenceSuggestionYes(app: App) {
 
         const foundMember = members.find((member) => member.email === email);
         if (!foundMember) throw Error('member not found');
-        const memberName = foundMember.possibleNames[0];
+        const memberName = foundMember.names[0];
 
         const dayPartText =
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;

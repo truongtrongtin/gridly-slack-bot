@@ -52,6 +52,7 @@ jobs:
           name: gridly-slack-bot
           runtime: nodejs16
           memory_mb: 128
+          region: europe-west3
           source_dir: dist
           entry_point: app
           env_vars: |-
