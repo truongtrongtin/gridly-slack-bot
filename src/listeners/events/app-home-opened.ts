@@ -28,7 +28,7 @@ export default function appHomeOpened(app: App) {
         timeMin: startOfDay(new Date()).toISOString(),
         timeMax: addMonths(new Date(), 3).toISOString(),
         q: 'off',
-      }).toString();
+      });
       const eventListResponse = await axios.get(
         `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
         { headers: { Authorization: `Bearer ${accessToken}` } },

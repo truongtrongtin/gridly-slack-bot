@@ -161,7 +161,7 @@ export default function adminNewAbsenceSubmit(app: App) {
           timeMin: startDate.toISOString(),
           timeMax: addDays(endDate, 1).toISOString(),
           q: summary,
-        }).toString();
+        });
         const eventListResponse = await axios.get(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
           { headers: { Authorization: `Bearer ${accessToken}` } },
@@ -215,7 +215,7 @@ export default function adminNewAbsenceSubmit(app: App) {
         const newQueryParams = new URLSearchParams({
           timeMin: today.toISOString(),
           timeMax: addMonths(new Date(), 3).toISOString(),
-        }).toString();
+        });
         const newEventListResponse = await axios.get(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${newQueryParams}`,
           { headers: { Authorization: `Bearer ${accessToken}` } },
