@@ -1,7 +1,7 @@
 import { App, ButtonAction } from '@slack/bolt';
 import axios from 'axios';
 import { addDays, format } from 'date-fns';
-import { generateTimeText } from '../../helpers';
+import { generateTimeText, hasAdminRole } from '../../helpers';
 import members from '../../member-list.json';
 import { DayPart } from '../../types';
 
@@ -19,8 +19,15 @@ export default function absenceSuggestionYes(app: App) {
       await ack();
 
       try {
-        const userId = body.user.id;
-        if (authorId !== userId) {
+        const actionUserId = body.user.id;
+        const [authorEmail, actionUserEmail] = await Promise.all(
+          [authorId, actionUserId].map(async (userId) => {
+            const userInfo = await client.users.info({ user: userId });
+            return userInfo?.user?.profile?.email;
+          }),
+        );
+
+        if (authorId !== actionUserId && !hasAdminRole(actionUserEmail)) {
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
             user: body.user.id,
@@ -29,12 +36,9 @@ export default function absenceSuggestionYes(app: App) {
           return;
         }
 
-        const userInfo = await client.users.info({ user: userId });
-        const email = userInfo?.user?.profile?.email;
-        const realName = userInfo?.user?.profile?.real_name;
-        logger.info(`${realName} is approving absence suggestion`);
-
-        const foundMember = members.find((member) => member.email === email);
+        const foundMember = members.find(
+          (member) => member.email === authorEmail,
+        );
         if (!foundMember) throw Error('member not found');
         const memberName = foundMember.names[0];
 
@@ -59,7 +63,7 @@ export default function absenceSuggestionYes(app: App) {
           timeMin: startDate.toISOString(),
           timeMax: addDays(endDate, 1).toISOString(),
           q: summary,
-        }).toString();
+        });
         const eventListResponse = await axios.get(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
           { headers: { Authorization: `Bearer ${accessToken}` } },
@@ -72,7 +76,7 @@ export default function absenceSuggestionYes(app: App) {
           const failureText = `:x: Failed to create. You already have absence on`;
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
-            user: userId,
+            user: actionUserId,
             text: `${failureText} *${timeText}*.`,
           });
           return;
@@ -80,7 +84,7 @@ export default function absenceSuggestionYes(app: App) {
 
         const newMessage = await say({
           channel: process.env.SLACK_CHANNEL!,
-          text: `<@${userId}> will be absent on *${timeText}*.`,
+          text: `<@${authorId}> will be absent on *${timeText}*.`,
         });
 
         // Create new event on google calendar
@@ -100,7 +104,7 @@ export default function absenceSuggestionYes(app: App) {
             }),
             attendees: [
               {
-                email,
+                email: authorEmail,
                 responseStatus: 'accepted',
               },
             ],
