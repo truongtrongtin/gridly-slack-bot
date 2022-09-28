@@ -159,6 +159,11 @@ export default function suggestAbsence(app: App) {
           text: `Are you going to be absent on ${timeText}?`,
         });
       });
+
+      await say({
+        thread_ts: message.ts,
+        text: '<@UL85VPR89>',
+      });
     },
   );
 }

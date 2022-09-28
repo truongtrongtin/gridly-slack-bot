@@ -1,4 +1,4 @@
-import { App } from '@slack/bolt';
+import { App, KnownBlock } from '@slack/bolt';
 import axios from 'axios';
 import * as chrono from 'chrono-node';
 import { addMonths, format, startOfDay } from 'date-fns';
@@ -91,7 +91,7 @@ export default function messages(app: App) {
       console.log('translatedText', translatedText);
 
       const ranges = chrono.parse(translatedText);
-      ranges.map(async (range) => {
+      ranges.map(async (range, index) => {
         const startDate = range.start.date();
         const endDate = range.end?.date() || startDate;
         const today = startOfDay(new Date());
@@ -147,7 +147,11 @@ export default function messages(app: App) {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `>${message.text}\n<@${message.user}>, are you going to be absent on *${timeText}*?`,
+                text: `>${message.text}\n<@${
+                  message.user
+                }>, are you going to be absent on *${timeText}*?${
+                  index === 0 && '\n<@U026KACHTM4> <@UL85VPR89>'
+                }`,
               },
             },
             {
