@@ -1,4 +1,4 @@
-import { App, KnownBlock } from '@slack/bolt';
+import { App } from '@slack/bolt';
 import axios from 'axios';
 import * as chrono from 'chrono-node';
 import { addMonths, format, startOfDay } from 'date-fns';

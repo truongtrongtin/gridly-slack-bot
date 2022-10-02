@@ -1,33 +1,18 @@
 [
   { "email": "cm@localizedirect.com", "names": ["Chau"] },
-  {
-    "email": "dng@localizedirect.com",
-    "names": ["Duong Nguyen", "Duong"]
-  },
-  { "email": "dpn@localizedirect.com", "names": ["Duong Phung"] },
+  { "email": "dng@localizedirect.com", "names": ["Duong Nguyen", "Duong"] },
   { "email": "dp@localizedirect.com", "names": ["Dung"] },
-  {
-    "email": "gn@localizedirect.com",
-    "names": ["Giang"],
-    "isAdmin": true
-  },
-  {
-    "email": "hh@localizedirect.com",
-    "names": ["Hieu Huynh", "Hieu H.", "Hieu H"]
-  },
+  { "email": "dpn@localizedirect.com", "names": ["Duong Phung"] },
+  { "email": "gn@localizedirect.com", "names": ["Giang"], "isAdmin": true },
+  { "email": "hh@localizedirect.com", "names": ["Hieu Huynh"] },
   { "email": "hm@localizedirect.com", "names": ["Huong"] },
-  {
-    "email": "kl@localizedirect.com",
-    "names": ["Khanh Le"]
-  },
-  {
-    "email": "kp@localizedirect.com",
-    "names": ["Khanh Pham", "Khanh", "Khanh P", "Khanh P."]
-  },
+  { "email": "kl@localizedirect.com", "names": ["Khanh Le"] },
+  { "email": "kp@localizedirect.com", "names": ["Khanh Pham", "Khanh"] },
   { "email": "ld@localizedirect.com", "names": ["Lynh"] },
   { "email": "ldv@localizedirect.com", "names": ["Long"] },
   { "email": "nn@localizedirect.com", "names": ["Andy", "Nha"] },
   { "email": "nnc@localizedirect.com", "names": ["Jason", "Cuong"] },
+  { "email": "np@localizedirect.com", "names": ["Ngan Phan"] },
   {
     "email": "pia@localizedirect.com",
     "names": ["Pia", "Huyen"],
@@ -38,20 +23,10 @@
   { "email": "qv@localizedirect.com", "names": ["Quang Vo", "Quang"] },
   { "email": "sla@localizedirect.com", "names": ["Son"] },
   { "email": "sn@localizedirect.com", "names": ["Sang"] },
-  {
-    "email": "tc@localizedirect.com",
-    "names": ["Steve", "Tri Truong", "Tri T."]
-  },
+  { "email": "tc@localizedirect.com", "names": ["Steve", "Tri Truong"] },
   { "email": "th@localizedirect.com", "names": ["Tan"] },
-  {
-    "email": "tp@localizedirect.com",
-    "names": ["Thanh Phan", "Thanh"]
-  },
-  {
-    "email": "tin@localizedirect.com",
-    "names": ["Tin"],
-    "isAdmin": true
-  },
+  { "email": "tin@localizedirect.com", "names": ["Tin"], "isAdmin": true },
+  { "email": "tp@localizedirect.com", "names": ["Thanh Phan", "Thanh"] },
   { "email": "tn@localizedirect.com", "names": ["Truong"] },
   { "email": "tnn@localizedirect.com", "names": ["Thy"] },
   { "email": "vtl@localizedirect.com", "names": ["Trong"] },
