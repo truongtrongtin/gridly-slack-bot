@@ -150,7 +150,7 @@ export default function messages(app: App) {
                 text: `>${message.text}\n<@${
                   message.user
                 }>, are you going to be absent on *${timeText}*?${
-                  index === 0 && '\n<@U026KACHTM4> <@UL85VPR89>'
+                  index === 0 ? '\n<@U026KACHTM4> <@UL85VPR89>' : ''
                 }`,
               },
             },
