@@ -1,8 +1,8 @@
 import { App } from '@slack/bolt';
-import axios from 'axios';
 import * as chrono from 'chrono-node';
 import { addMonths, format, startOfDay } from 'date-fns';
 import jwt from 'jsonwebtoken';
+import fetch from 'node-fetch';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
 import { addMessage, deleteMessages } from '../../services/message-history';
 import { serviceAccountKey } from '../../services/service-account-key';
@@ -62,32 +62,38 @@ export default function messages(app: App) {
           expiresIn: '1h',
         },
       );
-      const accessTokenResponse = await axios.post(
+      const accessTokenResponse = await fetch(
         'https://oauth2.googleapis.com/token',
         {
-          grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-          assertion: jwtToken,
+          method: 'POST',
+          body: JSON.stringify({
+            grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
+            assertion: jwtToken,
+          }),
         },
       );
-      const accessToken = accessTokenResponse.data.access_token;
+      const accessTokenObject = await accessTokenResponse.json();
+      const accessToken = accessTokenObject.access_token;
 
-      const result = await axios.post(
+      const translationResponse = await fetch(
         `https://translation.googleapis.com/v3/projects/${serviceAccountKey.project_id}:translateText`,
         {
-          sourceLanguageCode: 'vi',
-          targetLanguageCode: 'en',
-          contents: message.text
-            ?.replaceAll(/t(?=[2-6])/gi, 'thứ ')
-            ?.replaceAll(/nghỉ/gi, 'off')
-            ?.replaceAll(/\//gi, ' tháng ')
-            ?.replaceAll(/-/gi, ' đến '),
-          mimeType: 'text/plain',
-        },
-        {
+          method: 'POST',
           headers: { Authorization: `Bearer ${accessToken}` },
+          body: JSON.stringify({
+            sourceLanguageCode: 'vi',
+            targetLanguageCode: 'en',
+            contents: message.text
+              ?.replaceAll(/t(?=[2-6])/gi, 'thứ ')
+              ?.replaceAll(/nghỉ/gi, 'off')
+              ?.replaceAll(/\//gi, ' tháng ')
+              ?.replaceAll(/-/gi, ' đến '),
+            mimeType: 'text/plain',
+          }),
         },
       );
-      const translatedText = result.data.translations[0].translatedText;
+      const translationObject = await translationResponse.json();
+      const translatedText = translationObject.translations[0].translatedText;
       console.log('translatedText', translatedText);
 
       const ranges = chrono.parse(translatedText);
@@ -190,7 +196,9 @@ export default function messages(app: App) {
         });
       });
     } catch (error) {
-      logger.error(error);
+      if (error instanceof Error) {
+        logger.error(error.message);
+      }
     }
   });
 }

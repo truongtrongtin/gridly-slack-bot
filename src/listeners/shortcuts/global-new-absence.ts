@@ -32,7 +32,9 @@ export default function globalNewAbsence(app: App) {
           });
         }
       } catch (error) {
-        logger.error(error);
+        if (error instanceof Error) {
+          logger.error(error.message);
+        }
       }
     },
   );
