@@ -1,6 +1,6 @@
 import { App } from '@slack/bolt';
-import axios from 'axios';
 import { addDays, addMonths, format, startOfDay } from 'date-fns';
+import fetch from 'node-fetch';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
 import members from '../../member-list.json';
 import { DayPart } from '../../types';
@@ -145,16 +145,20 @@ export default function adminNewAbsenceSubmit(app: App) {
         const summary = `${memberName} ${dayPartText}`;
 
         // Get new google access token from refresh token
-        const tokenResponse = await axios.post(
+        const tokenResponse = await fetch(
           'https://oauth2.googleapis.com/token',
           {
-            client_id: process.env.GOOGLE_CLIENT_ID,
-            client_secret: process.env.GOOGLE_CLIENT_SECRET,
-            grant_type: 'refresh_token',
-            refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+            method: 'POST',
+            body: JSON.stringify({
+              client_id: process.env.GOOGLE_CLIENT_ID,
+              client_secret: process.env.GOOGLE_CLIENT_SECRET,
+              grant_type: 'refresh_token',
+              refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
+            }),
           },
         );
-        const accessToken: string = tokenResponse.data.access_token;
+        const tokenObject = await tokenResponse.json();
+        const accessToken: string = tokenObject.access_token;
 
         // Get events from google calendar
         const queryParams = new URLSearchParams({
@@ -162,11 +166,12 @@ export default function adminNewAbsenceSubmit(app: App) {
           timeMax: addDays(endDate, 1).toISOString(),
           q: summary,
         });
-        const eventListResponse = await axios.get(
+        const eventListResponse = await fetch(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
           { headers: { Authorization: `Bearer ${accessToken}` } },
         );
-        const absenceEvents = eventListResponse.data?.items;
+        const eventListObject = await eventListResponse.json();
+        const absenceEvents = eventListObject.items || [];
 
         const timeText = generateTimeText(startDate, endDate, dayPart);
         // If has absence, send ephemeral error message to user
@@ -187,40 +192,44 @@ export default function adminNewAbsenceSubmit(app: App) {
         });
 
         // Create new event on google calendar
-        await axios.post(
+        await fetch(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events`,
           {
-            start: {
-              date: startDateString,
-            },
-            end: {
-              date: format(addDays(endDate, 1), 'yyyy-MM-dd'),
-            },
-            summary,
-            description: JSON.stringify({
-              message_ts: newMessage.message?.ts,
-              reason,
-            }),
-            attendees: [
-              {
-                email: memberEmail,
-                responseStatus: 'accepted',
+            method: 'POST',
+            headers: { Authorization: `Bearer ${accessToken}` },
+            body: JSON.stringify({
+              start: {
+                date: startDateString,
               },
-            ],
-            sendUpdates: 'all',
+              end: {
+                date: format(addDays(endDate, 1), 'yyyy-MM-dd'),
+              },
+              summary,
+              description: JSON.stringify({
+                message_ts: newMessage.message?.ts,
+                reason,
+              }),
+              attendees: [
+                {
+                  email: memberEmail,
+                  responseStatus: 'accepted',
+                },
+              ],
+              sendUpdates: 'all',
+            }),
           },
-          { headers: { Authorization: `Bearer ${accessToken}` } },
         );
 
         const newQueryParams = new URLSearchParams({
           timeMin: today.toISOString(),
           timeMax: addMonths(new Date(), 3).toISOString(),
         });
-        const newEventListResponse = await axios.get(
+        const newEventListResponse = await fetch(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${newQueryParams}`,
           { headers: { Authorization: `Bearer ${accessToken}` } },
         );
-        const newAbsenceEvents = newEventListResponse.data?.items;
+        const newEventListObject = await newEventListResponse.json();
+        const newAbsenceEvents = newEventListObject.items || [];
 
         // Update app home
         await client.views.publish({
@@ -228,7 +237,9 @@ export default function adminNewAbsenceSubmit(app: App) {
           view: appHomeView(newAbsenceEvents, user!),
         });
       } catch (error) {
-        logger.error(error);
+        if (error instanceof Error) {
+          logger.error(error.message);
+        }
       }
     },
   );
