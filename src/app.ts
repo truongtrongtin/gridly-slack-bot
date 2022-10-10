@@ -1,5 +1,4 @@
 import { App, ExpressReceiver, LogLevel } from '@slack/bolt';
-import 'dotenv/config';
 import { Request, Response } from 'express';
 import absenceSuggestionNo from './listeners/actions/absence-suggestion-no';
 import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes';
