@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "build": "tsc",
-    "dev": "env-cmd nodemon src/app.ts",
+    "dev": "env-cmd nodemon --exec \"node --require ts-node/register --inspect src/app.ts\"",
     "prepare": "husky install",
     "lint": "eslint \"**/*.ts\""
   },
@@ -22,10 +22,10 @@
     "@commitlint/config-conventional": "17.1.0",
     "@types/express": "4.17.14",
     "@types/jsonwebtoken": "8.5.9",
-    "@types/node": "18.8.3",
+    "@types/node": "18.11.2",
     "@types/node-fetch": "2.6.2",
-    "@typescript-eslint/eslint-plugin": "5.39.0",
-    "@typescript-eslint/parser": "5.39.0",
+    "@typescript-eslint/eslint-plugin": "5.40.1",
+    "@typescript-eslint/parser": "5.40.1",
     "commitlint": "17.1.2",
     "env-cmd": "^10.1.0",
     "eslint": "8.25.0",
