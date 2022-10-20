@@ -186,10 +186,6 @@ export default function newAbsenceSubmit(app: App) {
                 date: format(addDays(endDate, 1), 'yyyy-MM-dd'),
               },
               summary,
-              description: JSON.stringify({
-                message_ts: newMessage.message?.ts,
-                reason,
-              }),
               attendees: [
                 {
                   email,
@@ -197,6 +193,13 @@ export default function newAbsenceSubmit(app: App) {
                 },
               ],
               sendUpdates: 'all',
+              extendedProperties: {
+                private: {
+                  message_ts: newMessage.message?.ts,
+                  ...(reason ? { reason } : {}),
+                },
+              },
+              transparency: 'transparent',
             }),
           },
         );
