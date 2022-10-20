@@ -36,7 +36,9 @@ export default function appHomeAbsenceDelete(app: App) {
         );
         const eventObject = await eventResponse.json();
         const startDate = eventObject.start.date;
-        const message_ts = JSON.parse(eventObject.description).message_ts;
+        const message_ts: string =
+          eventObject?.extendedProperties?.private?.message_ts || '';
+        if (!message_ts) return;
         if (
           new Date(startDate).setHours(0, 0, 0, 0) <
           new Date().setHours(0, 0, 0, 0)
