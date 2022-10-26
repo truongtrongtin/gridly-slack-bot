@@ -3,7 +3,7 @@ import { addDays, addMonths, format, startOfDay } from 'date-fns';
 import fetch from 'node-fetch';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
 import members from '../../member-list.json';
-import { DayPart } from '../../types';
+import { CalendarEvent, DayPart } from '../../types';
 import appHomeView from '../../user-interface/app-home';
 
 export default function adminNewAbsenceSubmit(app: App) {
@@ -164,19 +164,26 @@ export default function adminNewAbsenceSubmit(app: App) {
         const queryParams = new URLSearchParams({
           timeMin: startDate.toISOString(),
           timeMax: addDays(endDate, 1).toISOString(),
-          q: summary,
+          q: memberName,
         });
         const eventListResponse = await fetch(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
           { headers: { Authorization: `Bearer ${accessToken}` } },
         );
         const eventListObject = await eventListResponse.json();
-        const absenceEvents = eventListObject.items || [];
+        const absenceEvents: CalendarEvent[] = eventListObject.items || [];
 
         const timeText = generateTimeText(startDate, endDate, dayPart);
-        // If has absence, send ephemeral error message to user
-        if (absenceEvents.length) {
-          const failureText = `:x: Failed to create. You already have absence on`;
+        const dayPartExisted = absenceEvents.some((event) =>
+          event.summary.includes(dayPart),
+        );
+        if (
+          (isSingleMode && dayPartExisted) ||
+          ((!isSingleMode || dayPart === DayPart.ALL) &&
+            absenceEvents.length > 0)
+        ) {
+          const failureText =
+            ':x: Failed to create. You already have absence on';
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
             user: userId,
@@ -226,6 +233,10 @@ export default function adminNewAbsenceSubmit(app: App) {
         const newQueryParams = new URLSearchParams({
           timeMin: today.toISOString(),
           timeMax: addMonths(new Date(), 3).toISOString(),
+          q: 'off',
+          orderBy: 'startTime',
+          singleEvents: 'true',
+          maxResults: '2500',
         });
         const newEventListResponse = await fetch(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${newQueryParams}`,
