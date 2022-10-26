@@ -1,6 +1,7 @@
 import { App } from '@slack/bolt';
 import { addMonths, startOfDay } from 'date-fns';
 import fetch from 'node-fetch';
+import { CalendarEvent } from '../../types';
 import appHomeView from '../../user-interface/app-home';
 
 export default function appHomeAbsenceDelete(app: App) {
@@ -59,23 +60,27 @@ export default function appHomeAbsenceDelete(app: App) {
         const realName = userInfo.user?.profile?.real_name;
         logger.info(`${realName} is deleting absence`);
 
+        // Delete announced message
+        await client.chat.delete({
+          channel: process.env.SLACK_CHANNEL!,
+          ts: message_ts,
+        });
+
         // Get events from google calendar
         const queryParams = new URLSearchParams({
           timeMin: startOfDay(new Date()).toISOString(),
           timeMax: addMonths(new Date(), 3).toISOString(),
+          q: 'off',
+          orderBy: 'startTime',
+          singleEvents: 'true',
+          maxResults: '2500',
         });
         const eventListResponse = await fetch(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
           { headers: { Authorization: `Bearer ${accessToken}` } },
         );
         const eventListObject = await eventListResponse.json();
-        const absenceEvents = eventListObject.items;
-
-        // Delete announced message
-        await client.chat.delete({
-          channel: process.env.SLACK_CHANNEL!,
-          ts: message_ts,
-        });
+        const absenceEvents: CalendarEvent[] = eventListObject.items || [];
 
         // Update app home
         await client.views.update({

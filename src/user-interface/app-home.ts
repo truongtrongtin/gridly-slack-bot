@@ -6,9 +6,10 @@ import {
   getDayPartFromEventSummary,
   hasAdminRole,
 } from '../helpers';
+import { CalendarEvent } from '../types';
 
 export default function appHomeView(
-  absenceEvents: any[],
+  absenceEvents: CalendarEvent[],
   user: User | undefined,
 ): View {
   if (!user) {
@@ -60,7 +61,9 @@ export default function appHomeView(
         text: {
           type: 'plain_text',
           text: `:date: ${
-            absenceEvents.length ? 'Upcoming absences' : 'No upcoming absences'
+            absenceEvents.length > 0
+              ? 'Upcoming absences'
+              : 'No upcoming absences'
           }`,
           emoji: true,
         },
@@ -68,61 +71,64 @@ export default function appHomeView(
       {
         type: 'divider',
       },
-      ...absenceEvents.reduce((results: (KnownBlock | Block)[], event: any) => {
-        const dayPart = getDayPartFromEventSummary(event.summary);
-        const absenceEmail = event.attendees?.[0]?.email;
-        const memberName = event.summary.split('(off')[0];
-        const userEmail = user.profile?.email;
-        const isBelongToMe = absenceEmail === userEmail;
-        const isAdmin = hasAdminRole(userEmail);
-        const timeText = generateTimeText(
-          new Date(event.start.date),
-          subDays(new Date(event.end.date), 1),
-          dayPart,
-        );
+      ...absenceEvents.reduce(
+        (results: (KnownBlock | Block)[], event: CalendarEvent) => {
+          const dayPart = getDayPartFromEventSummary(event.summary);
+          const absenceEmail = event.attendees?.[0]?.email;
+          const memberName = event.summary.split('(off')[0];
+          const userEmail = user.profile?.email;
+          const isBelongToMe = absenceEmail === userEmail;
+          const isAdmin = hasAdminRole(userEmail);
+          const timeText = generateTimeText(
+            new Date(event.start.date),
+            subDays(new Date(event.end.date), 1),
+            dayPart,
+          );
 
-        results.push({
-          type: 'section',
-          block_id: event.id,
-          text: {
-            type: 'mrkdwn',
-            text: `*${memberName}*\n${timeText}`,
-            verbatim: true,
-          },
-          ...((isAdmin || isBelongToMe) && {
-            accessory: {
-              type: 'button',
-              action_id: 'app-home-absence-delete',
-              text: {
-                type: 'plain_text',
-                text: 'Delete',
-                emoji: true,
-              },
-              style: 'danger',
-              confirm: {
-                title: {
+          results.push({
+            type: 'section',
+            block_id: event.id,
+            text: {
+              type: 'mrkdwn',
+              text: `*${memberName}*\n${timeText}`,
+              verbatim: true,
+            },
+            ...((isAdmin || isBelongToMe) && {
+              accessory: {
+                type: 'button',
+                action_id: 'app-home-absence-delete',
+                text: {
                   type: 'plain_text',
-                  text: 'Delete absence',
+                  text: 'Delete',
                   emoji: true,
                 },
-                text: {
-                  type: 'mrkdwn',
-                  text: `Are you sure you want to delete this absence? This cannot be undone.`,
-                  verbatim: true,
-                },
-                confirm: { type: 'plain_text', text: 'Delete', emoji: true },
                 style: 'danger',
+                confirm: {
+                  title: {
+                    type: 'plain_text',
+                    text: 'Delete absence',
+                    emoji: true,
+                  },
+                  text: {
+                    type: 'mrkdwn',
+                    text: `Are you sure you want to delete this absence? This cannot be undone.`,
+                    verbatim: true,
+                  },
+                  confirm: { type: 'plain_text', text: 'Delete', emoji: true },
+                  style: 'danger',
+                },
               },
-            },
-          }),
-        });
+            }),
+          });
 
-        results.push({
-          type: 'divider',
-        });
+          results.push({
+            type: 'divider',
+          });
 
-        return results;
-      }, []),
+          return results;
+        },
+        [],
+      ),
     ],
   };
 }

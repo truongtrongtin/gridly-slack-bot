@@ -3,7 +3,7 @@ import { addDays, format } from 'date-fns';
 import fetch from 'node-fetch';
 import { generateTimeText, hasAdminRole } from '../../helpers';
 import members from '../../member-list.json';
-import { DayPart } from '../../types';
+import { CalendarEvent, DayPart } from '../../types';
 
 export default function absenceSuggestionYes(app: App) {
   app.action(
@@ -13,6 +13,7 @@ export default function absenceSuggestionYes(app: App) {
       // console.log('body', JSON.stringify(body, null, 2));
       const { startDateString, endDateString, dayPart, reason, authorId } =
         JSON.parse((<ButtonAction>payload).value);
+      const isSingleMode = startDateString === endDateString;
       const startDate = new Date(startDateString);
       const endDate = new Date(endDateString);
 
@@ -66,19 +67,26 @@ export default function absenceSuggestionYes(app: App) {
         const queryParams = new URLSearchParams({
           timeMin: startDate.toISOString(),
           timeMax: addDays(endDate, 1).toISOString(),
-          q: summary,
+          q: memberName,
         });
         const eventListResponse = await fetch(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
           { headers: { Authorization: `Bearer ${accessToken}` } },
         );
         const eventListObject = await eventListResponse.json();
-        const absenceEvents = eventListObject.items || [];
+        const absenceEvents: CalendarEvent[] = eventListObject.items || [];
 
         const timeText = generateTimeText(startDate, endDate, dayPart);
-        // If has absence, send ephemeral error message to user
-        if (absenceEvents.length) {
-          const failureText = `:x: Failed to create. You already have absence on`;
+        const dayPartExisted = absenceEvents.some((event) =>
+          event.summary.includes(dayPart),
+        );
+        if (
+          (isSingleMode && dayPartExisted) ||
+          ((!isSingleMode || dayPart === DayPart.ALL) &&
+            absenceEvents.length > 0)
+        ) {
+          const failureText =
+            ':x: Failed to create. You already have absence on';
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
             user: actionUserId,
