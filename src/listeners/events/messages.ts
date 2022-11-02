@@ -155,7 +155,7 @@ export default function messages(app: App) {
                 type: 'mrkdwn',
                 text: `>${message.text}\n<@${
                   message.user
-                }>, are you going to be absent on *${timeText}*?${
+                }>, are you going to be absent *${timeText}*?${
                   index === 0 ? '\n<@U026KACHTM4> <@UL85VPR89>' : ''
                 }`,
               },
@@ -192,7 +192,7 @@ export default function messages(app: App) {
               ],
             },
           ],
-          text: `Are you going to be absent on ${timeText}?`,
+          text: `Are you going to be absent ${timeText}?`,
         });
       });
     } catch (error) {

@@ -44,12 +44,12 @@ export function generateTimeText(
   let timeText = '';
 
   if (isSameDay(startDate, endDate)) {
-    timeText = `${niceStartDate} (${startWeekday})`;
+    timeText = `on ${niceStartDate} (${startWeekday})`;
     if (dayPart !== DayPart.ALL) {
       timeText += ` ${dayPart}`;
     }
   } else {
-    timeText = `${niceStartDate} (${startWeekday}) to ${niceEndDate} (${endWeekday})`;
+    timeText = `from ${niceStartDate} (${startWeekday}) to ${niceEndDate} (${endWeekday})`;
   }
 
   return timeText;

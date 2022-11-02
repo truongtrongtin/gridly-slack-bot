@@ -182,8 +182,7 @@ export default function adminNewAbsenceSubmit(app: App) {
           ((!isSingleMode || dayPart === DayPart.ALL) &&
             absenceEvents.length > 0)
         ) {
-          const failureText =
-            ':x: Failed to create. You already have absence on';
+          const failureText = ':x: Failed to create. You already have absence';
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
             user: userId,
@@ -195,7 +194,7 @@ export default function adminNewAbsenceSubmit(app: App) {
 
         const newMessage = await client.chat.postMessage({
           channel: process.env.SLACK_CHANNEL!,
-          text: `<@${memberId}> will be absent on *${timeText}*.${reasonText}`,
+          text: `<@${memberId}> will be absent *${timeText}*.${reasonText}`,
         });
 
         // Create new event on google calendar
