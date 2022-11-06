@@ -1,5 +1,5 @@
 import { App } from '@slack/bolt';
-import { addDays, addMonths, format, startOfDay } from 'date-fns';
+import { addDays, addMonths, endOfDay, format, startOfDay } from 'date-fns';
 import fetch from 'node-fetch';
 import {
   findMemberById,
@@ -144,7 +144,7 @@ export default function adminNewAbsenceSubmit(app: App) {
         // Get events from google calendar
         const queryParams = new URLSearchParams({
           timeMin: startDate.toISOString(),
-          timeMax: addDays(endDate, 1).toISOString(),
+          timeMax: endOfDay(endDate).toISOString(),
           q: memberName,
         });
         const eventListResponse = await fetch(
