@@ -1,13 +1,14 @@
 import { App } from '@slack/bolt';
 import * as chrono from 'chrono-node';
 import { addMonths, format, startOfDay } from 'date-fns';
-import jwt from 'jsonwebtoken';
 import fetch from 'node-fetch';
 import {
   generateTimeText,
   isGenericMessageEvent,
   isWeekendInRange,
 } from '../../helpers';
+import getAccessTokenFromServiceAccount from '../../services/get-access-token-from-service-account';
+import { serviceAccountKey } from '../../services/service-account-key';
 import { DayPart } from '../../types';
 
 export default function suggestAbsence(app: App) {
@@ -20,34 +21,7 @@ export default function suggestAbsence(app: App) {
       if (message.channel !== process.env.SLACK_CHANNEL) return;
       if (!message.blocks) return;
 
-      const serviceAccountKey = JSON.parse(
-        Buffer.from(
-          process.env.SERVICE_ACCOUNT_KEY_BASE64!,
-          'base64',
-        ).toString(),
-      );
-      const jwtToken = jwt.sign(
-        { scope: 'https://www.googleapis.com/auth/cloud-translation' },
-        serviceAccountKey.private_key.replace(/\\n/gm, '\n'),
-        {
-          algorithm: 'RS256',
-          issuer: serviceAccountKey.client_email,
-          audience: serviceAccountKey.token_uri,
-          expiresIn: '1h',
-        },
-      );
-      const accessTokenResponse = await fetch(
-        'https://oauth2.googleapis.com/token',
-        {
-          method: 'POST',
-          body: JSON.stringify({
-            grant_type: 'urn:ietf:params:oauth:grant-type:jwt-bearer',
-            assertion: jwtToken,
-          }),
-        },
-      );
-      const accessTokenObject = await accessTokenResponse.json();
-      const accessToken = accessTokenObject.access_token;
+      const accessToken = await getAccessTokenFromServiceAccount();
 
       const translationResponse = await fetch(
         `https://translation.googleapis.com/v3/projects/${serviceAccountKey.project_id}:translateText`,
@@ -152,7 +126,7 @@ export default function suggestAbsence(app: App) {
                 },
                 {
                   type: 'button',
-                  action_id: 'absence-suggestion-no',
+                  action_id: 'absence-new',
                   text: {
                     type: 'plain_text',
                     emoji: true,

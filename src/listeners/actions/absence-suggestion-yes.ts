@@ -1,8 +1,8 @@
 import { App, ButtonAction } from '@slack/bolt';
 import { addDays, format } from 'date-fns';
 import fetch from 'node-fetch';
-import { generateTimeText, hasAdminRole } from '../../helpers';
-import members from '../../member-list.json';
+import { findMemberById, generateTimeText } from '../../helpers';
+import getAccessTokenFromRefresh from '../../services/get-access-token-from-refresh-token';
 import { CalendarEvent, DayPart } from '../../types';
 
 export default function absenceSuggestionYes(app: App) {
@@ -21,14 +21,9 @@ export default function absenceSuggestionYes(app: App) {
 
       try {
         const actionUserId = body.user.id;
-        const [authorEmail, actionUserEmail] = await Promise.all(
-          [authorId, actionUserId].map(async (userId) => {
-            const userInfo = await client.users.info({ user: userId });
-            return userInfo?.user?.profile?.email;
-          }),
-        );
-
-        if (authorId !== actionUserId && !hasAdminRole(actionUserEmail)) {
+        const actionUser = findMemberById(actionUserId);
+        if (!actionUser) throw Error('action user not found');
+        if (authorId !== actionUserId && actionUser.isAdmin) {
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
             user: body.user.id,
@@ -37,31 +32,15 @@ export default function absenceSuggestionYes(app: App) {
           return;
         }
 
-        const foundMember = members.find(
-          (member) => member.email === authorEmail,
-        );
-        if (!foundMember) throw Error('member not found');
-        const memberName = foundMember.names[0];
+        const author = findMemberById(authorId);
+        if (!author) throw Error('author not found');
+        const memberName = author.names[0];
 
         const dayPartText =
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;
         const summary = `${memberName} ${dayPartText}`;
 
-        // Get new google access token from refresh token
-        const tokenResponse = await fetch(
-          'https://oauth2.googleapis.com/token',
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              client_id: process.env.GOOGLE_CLIENT_ID,
-              client_secret: process.env.GOOGLE_CLIENT_SECRET,
-              grant_type: 'refresh_token',
-              refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
-            }),
-          },
-        );
-        const tokenObject = await tokenResponse.json();
-        const accessToken: string = tokenObject.access_token;
+        const accessToken = await getAccessTokenFromRefresh();
 
         // Get events from google calendar
         const queryParams = new URLSearchParams({
@@ -115,7 +94,7 @@ export default function absenceSuggestionYes(app: App) {
               summary,
               attendees: [
                 {
-                  email: authorEmail,
+                  email: author.email,
                   responseStatus: 'accepted',
                 },
               ],

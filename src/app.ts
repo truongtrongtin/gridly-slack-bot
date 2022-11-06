@@ -1,9 +1,8 @@
 import { App, ExpressReceiver, LogLevel } from '@slack/bolt';
 import { Request, Response } from 'express';
-import absenceSuggestionNo from './listeners/actions/absence-suggestion-no';
 import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes';
 import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete';
-import appHomeNewAbsence from './listeners/actions/app-home-new-absence';
+import absenceNew from './listeners/actions/absence-new';
 import appHomeOpened from './listeners/events/app-home-opened';
 import messages from './listeners/events/messages';
 // import suggestAbsence from './listeners/messages/absence-suggest';
@@ -28,10 +27,9 @@ const expressApp = expressReceiver.app;
 appHomeOpened(app);
 appHomeAbsenceDelete(app);
 absenceSuggestionYes(app);
-absenceSuggestionNo(app);
 
 // events
-appHomeNewAbsence(app);
+absenceNew(app);
 messages(app);
 
 // shortcuts

@@ -1,8 +1,12 @@
 import { App } from '@slack/bolt';
 import { addDays, addMonths, format, startOfDay } from 'date-fns';
 import fetch from 'node-fetch';
-import { generateTimeText, isWeekendInRange } from '../../helpers';
-import members from '../../member-list.json';
+import {
+  findMemberById,
+  generateTimeText,
+  isWeekendInRange,
+} from '../../helpers';
+import getAccessTokenFromRefresh from '../../services/get-access-token-from-refresh-token';
 import { CalendarEvent, DayPart } from '../../types';
 
 export default function newAbsenceSubmit(app: App) {
@@ -112,34 +116,16 @@ export default function newAbsenceSubmit(app: App) {
 
       try {
         // Get slack message 's author info
-        const userInfo = await client.users.info({ user: userId });
-        const email = userInfo?.user?.profile?.email;
-        const realName = userInfo?.user?.profile?.real_name;
-        logger.info(`${realName} is submiting absence`);
-
-        const foundMember = members.find((member) => member.email === email);
+        const foundMember = findMemberById(userId);
         if (!foundMember) throw Error('member not found');
         const memberName = foundMember.names[0];
+        logger.info(`${memberName} is submiting absence`);
 
         const dayPartText =
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;
         const summary = `${memberName} ${dayPartText}`;
 
-        // Get new google access token from refresh token
-        const tokenResponse = await fetch(
-          'https://oauth2.googleapis.com/token',
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              client_id: process.env.GOOGLE_CLIENT_ID,
-              client_secret: process.env.GOOGLE_CLIENT_SECRET,
-              grant_type: 'refresh_token',
-              refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
-            }),
-          },
-        );
-        const tokenObject = await tokenResponse.json();
-        const accessToken: string = tokenObject.access_token;
+        const accessToken = await getAccessTokenFromRefresh();
 
         // Get events from google calendar
         const queryParams = new URLSearchParams({
@@ -194,7 +180,7 @@ export default function newAbsenceSubmit(app: App) {
               summary,
               attendees: [
                 {
-                  email,
+                  email: foundMember.email,
                   responseStatus: 'accepted',
                 },
               ],

@@ -1,24 +1,16 @@
 import { Block, KnownBlock, View } from '@slack/bolt';
-import { User } from '@slack/web-api/dist/response/UsersInfoResponse';
 import { subDays } from 'date-fns';
 import {
+  findMemberById,
   generateTimeText,
   getDayPartFromEventSummary,
-  hasAdminRole,
 } from '../helpers';
 import { CalendarEvent } from '../types';
 
 export default function appHomeView(
   absenceEvents: CalendarEvent[],
-  user: User | undefined,
+  userId: string,
 ): View {
-  if (!user) {
-    return {
-      type: 'home',
-      blocks: [],
-    };
-  }
-
   return {
     type: 'home',
     blocks: [
@@ -35,7 +27,7 @@ export default function appHomeView(
         elements: [
           {
             type: 'button',
-            action_id: 'app-home-new-absence',
+            action_id: 'absence-new',
             text: {
               type: 'plain_text',
               text: 'Register New Absence',
@@ -76,9 +68,10 @@ export default function appHomeView(
           const dayPart = getDayPartFromEventSummary(event.summary);
           const absenceEmail = event.attendees?.[0]?.email;
           const memberName = event.summary.split('(off')[0];
-          const userEmail = user.profile?.email;
-          const isBelongToMe = absenceEmail === userEmail;
-          const isAdmin = hasAdminRole(userEmail);
+          const foundMember = findMemberById(userId);
+          if (!foundMember) throw Error('member not found');
+          const isBelongToMe = absenceEmail === foundMember.email;
+          const isAdmin = foundMember?.isAdmin;
           const timeText = generateTimeText(
             new Date(event.start.date),
             subDays(new Date(event.end.date), 1),
