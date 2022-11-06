@@ -1,8 +1,12 @@
 import { App } from '@slack/bolt';
 import { addDays, addMonths, format, startOfDay } from 'date-fns';
 import fetch from 'node-fetch';
-import { generateTimeText, isWeekendInRange } from '../../helpers';
-import members from '../../member-list.json';
+import {
+  findMemberById,
+  generateTimeText,
+  isWeekendInRange,
+} from '../../helpers';
+import getAccessTokenFromRefresh from '../../services/get-access-token-from-refresh-token';
 import { CalendarEvent, DayPart } from '../../types';
 import appHomeView from '../../user-interface/app-home';
 
@@ -115,50 +119,27 @@ export default function adminNewAbsenceSubmit(app: App) {
       await ack();
 
       try {
-        // Get slack user and member info
-        const [user, member] = await Promise.all(
-          [userId, memberId].map(async (id: string) => {
-            const useInfoResponse = await client.users.info({ user: id });
-            return useInfoResponse.user;
-          }),
-        );
-        const userRealName = user?.profile?.real_name;
-        const memberRealName = member?.profile?.real_name;
-        const memberEmail = member?.profile?.email;
+        const actionUser = findMemberById(userId);
+        if (!actionUser) throw Error('action user not found');
+        const foundMember = findMemberById(memberId);
+        if (!foundMember) throw Error('member not found');
+
+        const actionUserName = actionUser.names[0];
+        const memberName = foundMember.names[0];
 
         if (userId === memberId) {
-          logger.info(`${userRealName} is submiting absence`);
+          logger.info(`${actionUserName} is submiting absence`);
         } else {
           logger.info(
-            `admin ${userRealName} is submiting absence for ${memberRealName}`,
+            `admin ${actionUserName} is submiting absence for ${memberName}`,
           );
         }
-
-        const foundMember = members.find(
-          (member) => member.email === memberEmail,
-        );
-        if (!foundMember) throw Error('member not found');
-        const memberName = foundMember.names[0];
 
         const dayPartText =
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;
         const summary = `${memberName} ${dayPartText}`;
 
-        // Get new google access token from refresh token
-        const tokenResponse = await fetch(
-          'https://oauth2.googleapis.com/token',
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              client_id: process.env.GOOGLE_CLIENT_ID,
-              client_secret: process.env.GOOGLE_CLIENT_SECRET,
-              grant_type: 'refresh_token',
-              refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
-            }),
-          },
-        );
-        const tokenObject = await tokenResponse.json();
-        const accessToken: string = tokenObject.access_token;
+        const accessToken = await getAccessTokenFromRefresh();
 
         // Get events from google calendar
         const queryParams = new URLSearchParams({
@@ -213,7 +194,7 @@ export default function adminNewAbsenceSubmit(app: App) {
               summary,
               attendees: [
                 {
-                  email: memberEmail,
+                  email: foundMember.email,
                   responseStatus: 'accepted',
                 },
               ],
@@ -247,7 +228,7 @@ export default function adminNewAbsenceSubmit(app: App) {
         // Update app home
         await client.views.publish({
           user_id: userId,
-          view: appHomeView(newAbsenceEvents, user!),
+          view: appHomeView(newAbsenceEvents, userId),
         });
       } catch (error) {
         if (error instanceof Error) {

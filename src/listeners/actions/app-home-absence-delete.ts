@@ -1,6 +1,8 @@
 import { App } from '@slack/bolt';
 import { addMonths, startOfDay } from 'date-fns';
 import fetch from 'node-fetch';
+import { findMemberById } from '../../helpers';
+import getAccessTokenFromRefresh from '../../services/get-access-token-from-refresh-token';
 import { CalendarEvent } from '../../types';
 import appHomeView from '../../user-interface/app-home';
 
@@ -14,21 +16,11 @@ export default function appHomeAbsenceDelete(app: App) {
       const eventId = body.actions[0].block_id;
 
       try {
-        // Get new google access token from refresh token
-        const tokenResponse = await fetch(
-          'https://oauth2.googleapis.com/token',
-          {
-            method: 'POST',
-            body: JSON.stringify({
-              client_id: process.env.GOOGLE_CLIENT_ID,
-              client_secret: process.env.GOOGLE_CLIENT_SECRET,
-              grant_type: 'refresh_token',
-              refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
-            }),
-          },
-        );
-        const tokenObject = await tokenResponse.json();
-        const accessToken: string = tokenObject.access_token;
+        const foundMember = findMemberById(body.user.id);
+        if (!foundMember) throw Error('member not found');
+        logger.info(`${foundMember.names[0]} is deleting absence`);
+
+        const accessToken = await getAccessTokenFromRefresh();
 
         // Get absence event from google calendar
         const eventResponse = await fetch(
@@ -56,10 +48,6 @@ export default function appHomeAbsenceDelete(app: App) {
           },
         );
 
-        const userInfo = await client.users.info({ user: body.user.id });
-        const realName = userInfo.user?.profile?.real_name;
-        logger.info(`${realName} is deleting absence`);
-
         // Delete announced message
         await client.chat.delete({
           channel: process.env.SLACK_CHANNEL!,
@@ -85,7 +73,7 @@ export default function appHomeAbsenceDelete(app: App) {
         // Update app home
         await client.views.update({
           view_id: body.view?.id,
-          view: appHomeView(absenceEvents, userInfo.user),
+          view: appHomeView(absenceEvents, body.user.id),
         });
       } catch (error) {
         if (error instanceof Error) {
