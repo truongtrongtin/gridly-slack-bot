@@ -173,10 +173,14 @@ export default function adminNewAbsenceSubmit(app: App) {
         }
         const reasonText = reason ? ` Reason: ${reason}` : '';
 
-        const newMessage = await client.chat.postMessage({
-          channel: process.env.SLACK_CHANNEL!,
-          text: `<@${memberId}> will be absent *${timeText}*.${reasonText}`,
-        });
+        let message_ts = '';
+        if (startDate > today) {
+          const newMessage = await client.chat.postMessage({
+            channel: process.env.SLACK_CHANNEL!,
+            text: `<@${memberId}> will be absent *${timeText}*.${reasonText}`,
+          });
+          message_ts = newMessage.message?.ts || '';
+        }
 
         // Create new event on google calendar
         await fetch(
@@ -201,7 +205,7 @@ export default function adminNewAbsenceSubmit(app: App) {
               sendUpdates: 'all',
               extendedProperties: {
                 private: {
-                  message_ts: newMessage.message?.ts,
+                  ...(message_ts ? { message_ts } : {}),
                   ...(reason ? { reason } : {}),
                 },
               },
