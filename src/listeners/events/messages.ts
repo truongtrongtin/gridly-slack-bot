@@ -64,10 +64,14 @@ export default function messages(app: App) {
             sourceLanguageCode: 'vi',
             targetLanguageCode: 'en',
             contents: message.text
-              ?.replaceAll(/t(?=[2-6])/gi, 'thứ ')
+              ?.replaceAll(/t2|thứ 2/gi, 'monday')
+              ?.replaceAll(/t3|thứ 3/gi, 'tuesday')
+              ?.replaceAll(/t4|thứ 4/gi, 'wednesdays')
+              ?.replaceAll(/t5|thứ 5/gi, 'thursday')
+              ?.replaceAll(/t6|thứ 6/gi, 'friday')
               ?.replaceAll(/nghỉ/gi, 'off')
-              ?.replaceAll(/\//gi, ' tháng ')
-              ?.replaceAll(/-/gi, ' đến '),
+              ?.replaceAll(/\//g, ' tháng ')
+              ?.replaceAll(/-/g, ' đến '),
             mimeType: 'text/plain',
           }),
         },
