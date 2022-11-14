@@ -142,5 +142,10 @@
     "email": "truongtrongtin0305@gmail.com",
     "names": ["Tin"],
     "isAdmin": true
+  },
+  {
+    "id": "U04AR0TV5M1",
+    "email": "qt@localizedirect.com",
+    "names": ["Quoc Truong", "Quoc"]
   }
 ]
