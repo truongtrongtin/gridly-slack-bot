@@ -23,7 +23,7 @@ export default function absenceSuggestionYes(app: App) {
         const actionUserId = body.user.id;
         const actionUser = findMemberById(actionUserId);
         if (!actionUser) throw Error('action user not found');
-        if (authorId !== actionUserId && actionUser.isAdmin) {
+        if (authorId !== actionUserId && !actionUser.isAdmin) {
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
             user: body.user.id,
