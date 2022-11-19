@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken';
-import fetch from 'node-fetch';
 import { serviceAccountKey } from './service-account-key';
 
 export default async function getAccessTokenFromServiceAccount(): Promise<string> {

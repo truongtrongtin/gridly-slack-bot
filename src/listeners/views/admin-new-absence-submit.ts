@@ -1,6 +1,5 @@
 import { App } from '@slack/bolt';
 import { addDays, addMonths, endOfDay, format, startOfDay } from 'date-fns';
-import fetch from 'node-fetch';
 import {
   findMemberById,
   generateTimeText,

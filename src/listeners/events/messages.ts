@@ -1,7 +1,6 @@
 import { App } from '@slack/bolt';
 import * as chrono from 'chrono-node';
 import { addMonths, format, startOfDay } from 'date-fns';
-import fetch from 'node-fetch';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
 import getAccessTokenFromServiceAccount from '../../services/get-access-token-from-service-account';
 import { addMessage, deleteMessages } from '../../services/message-history';

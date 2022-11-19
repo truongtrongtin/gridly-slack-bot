@@ -1,6 +1,5 @@
 import { App, ButtonAction } from '@slack/bolt';
 import { addDays, endOfDay, format } from 'date-fns';
-import fetch from 'node-fetch';
 import { findMemberById, generateTimeText } from '../../helpers';
 import getAccessTokenFromRefresh from '../../services/get-access-token-from-refresh-token';
 import { CalendarEvent, DayPart } from '../../types';
