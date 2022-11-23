@@ -41,7 +41,7 @@ jobs:
         run: cp package.json dist/
 
       - id: auth
-        uses: google-github-actions/auth@v0
+        uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: projects/96573011708/locations/global/workloadIdentityPools/gh-pool/providers/gh-provider
           service_account: github-actions-service-account@my-project-1540367072726.iam.gserviceaccount.com
