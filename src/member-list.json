@@ -105,7 +105,7 @@
   {
     "id": "UGMCN8NAV",
     "email": "cm@localizedirect.com",
-    "names": ["Chau"]
+    "names": ["Chau Nguyen"]
   },
   {
     "id": "U03HSG0S599",
@@ -147,5 +147,10 @@
     "id": "U04AR0TV5M1",
     "email": "qt@localizedirect.com",
     "names": ["Quoc Truong", "Quoc"]
+  },
+  {
+    "id": "U04C8GMTRMJ",
+    "email": "cdm@localizedirect.com",
+    "names": ["Chau Dang"]
   }
 ]
