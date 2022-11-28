@@ -47,7 +47,7 @@ jobs:
           service_account: github-actions-service-account@my-project-1540367072726.iam.gserviceaccount.com
 
       - id: deploy
-        uses: google-github-actions/deploy-cloud-functions@v0
+        uses: google-github-actions/deploy-cloud-functions@v1
         with:
           name: gridly-slack-bot
           runtime: nodejs18
