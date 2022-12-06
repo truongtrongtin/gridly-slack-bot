@@ -7,12 +7,12 @@ import appHomeOpened from './listeners/events/app-home-opened';
 import messages from './listeners/events/messages';
 // import suggestAbsence from './listeners/messages/absence-suggest';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
-import viewMessageHistory from './listeners/shortcuts/view-message-history.ts';
 import adminNewAbsenceSubmit from './listeners/views/admin-new-absence-submit';
 import newAbsenceSubmit from './listeners/views/new-absence-submit';
 
 const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET!,
+  processBeforeResponse: true,
 });
 
 const app = new App({
@@ -34,7 +34,6 @@ messages(app);
 
 // shortcuts
 globalNewAbsence(app);
-viewMessageHistory(app);
 
 // messages
 // suggestAbsence(app);

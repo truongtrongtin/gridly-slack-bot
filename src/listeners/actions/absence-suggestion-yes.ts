@@ -9,14 +9,13 @@ export default function absenceSuggestionYes(app: App) {
     { type: 'block_actions', action_id: 'absence-suggestion-yes' },
 
     async ({ ack, say, payload, body, client, logger }) => {
+      await ack();
       // console.log('body', JSON.stringify(body, null, 2));
       const { startDateString, endDateString, dayPart, reason, authorId } =
         JSON.parse((<ButtonAction>payload).value);
       const isSingleMode = startDateString === endDateString;
       const startDate = new Date(startDateString);
       const endDate = new Date(endDateString);
-
-      await ack();
 
       try {
         const actionUserId = body.user.id;

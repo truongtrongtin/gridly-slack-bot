@@ -3,14 +3,12 @@ import * as chrono from 'chrono-node';
 import { addMonths, format, startOfDay } from 'date-fns';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
 import getAccessTokenFromServiceAccount from '../../services/get-access-token-from-service-account';
-import { addMessage, deleteMessages } from '../../services/message-history';
 import { serviceAccountKey } from '../../services/service-account-key';
 import { DayPart } from '../../types';
 
 export default function messages(app: App) {
   app.event('message', async ({ event, client, logger, say }) => {
     try {
-      // console.log(event);
       let message: any;
       switch (event.subtype) {
         case 'file_share':
@@ -23,27 +21,7 @@ export default function messages(app: App) {
           const previousMessage: any = event.previous_message;
           // ignore when delete a message of a thread, which is also fire a message_changed event
           if (message.text === previousMessage.text) return;
-          addMessage({
-            text: previousMessage.text,
-            originalTs: message.ts,
-            ts: previousMessage.edited
-              ? previousMessage.edited.ts
-              : previousMessage.ts,
-            channel: event.channel,
-            team: previousMessage.team,
-          });
           break;
-        }
-        case 'message_deleted': {
-          const previousMessage: any = event.previous_message;
-          if (previousMessage.edited) {
-            deleteMessages(
-              previousMessage.team,
-              event.channel,
-              previousMessage.ts,
-            );
-          }
-          return;
         }
         default:
           return;
@@ -80,7 +58,7 @@ export default function messages(app: App) {
       console.log('translatedText', translatedText);
 
       const ranges = chrono.parse(translatedText);
-      ranges.map(async (range, index) => {
+      ranges.map(async (range) => {
         const startDate = range.start.date();
         const endDate = range.end?.date() || startDate;
         const today = startOfDay(new Date());
@@ -136,11 +114,7 @@ export default function messages(app: App) {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `>${message.text}\n<@${
-                  message.user
-                }>, are you going to be absent *${timeText}*?${
-                  index === 0 ? '\n<@U026KACHTM4> <@UL85VPR89>' : ''
-                }`,
+                text: `>${message.text}\n<@${message.user}>, are you going to be absent *${timeText}*?`,
               },
             },
             {
