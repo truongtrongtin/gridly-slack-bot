@@ -1,18 +1,18 @@
 import { App, ExpressReceiver, LogLevel } from '@slack/bolt';
 import { Request, Response } from 'express';
+import absenceNew from './listeners/actions/absence-new';
 import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes';
 import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete';
-import absenceNew from './listeners/actions/absence-new';
 import appHomeOpened from './listeners/events/app-home-opened';
 import messages from './listeners/events/messages';
 // import suggestAbsence from './listeners/messages/absence-suggest';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
 import adminNewAbsenceSubmit from './listeners/views/admin-new-absence-submit';
 import newAbsenceSubmit from './listeners/views/new-absence-submit';
+import retryIgnore from './middlewares/retry-ignore';
 
 const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET!,
-  processBeforeResponse: true,
 });
 
 const app = new App({
@@ -20,6 +20,8 @@ const app = new App({
   receiver: expressReceiver,
   logLevel: LogLevel.INFO,
 });
+
+app.use(retryIgnore);
 
 const expressApp = expressReceiver.app;
 
