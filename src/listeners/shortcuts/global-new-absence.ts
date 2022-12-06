@@ -6,9 +6,9 @@ export default function globalNewAbsence(app: App) {
   app.shortcut(
     'register_absences',
     async ({ shortcut, ack, client, logger }) => {
-      try {
-        await ack();
+      await ack();
 
+      try {
         await client.views.open({
           trigger_id: shortcut.trigger_id,
           view: newAbsenceModal(shortcut.user.id),
