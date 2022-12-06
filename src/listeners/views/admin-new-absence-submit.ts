@@ -13,6 +13,7 @@ export default function adminNewAbsenceSubmit(app: App) {
   app.view(
     'admin-new-absence-submit',
     async ({ ack, body, view, client, logger }) => {
+      await ack();
       const startDateString =
         view['state']['values']['start-date-block']['start-date-action']
           .selected_date;
@@ -114,8 +115,6 @@ export default function adminNewAbsenceSubmit(app: App) {
         });
         return;
       }
-
-      await ack();
 
       try {
         const actionUser = findMemberById(userId);
