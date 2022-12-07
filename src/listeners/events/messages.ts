@@ -58,9 +58,22 @@ export default function messages(app: App) {
       console.log('translatedText', translatedText);
 
       const ranges = chrono.parse(translatedText);
-      ranges.map(async (range) => {
+
+      const uniqRanges = [];
+      const map = new Map();
+      for (const range of ranges) {
+        const startDate = range.start.date().toISOString();
+        const endDate = range.end ? range.end.date().toISOString() : '';
+        const key = startDate + endDate;
+        if (!map.has(key)) {
+          map.set(key, true);
+          uniqRanges.push(range);
+        }
+      }
+
+      uniqRanges.map(async (range) => {
         const startDate = range.start.date();
-        const endDate = range.end?.date() || startDate;
+        const endDate = range.end ? range.end.date() : startDate;
         const today = startOfDay(new Date());
 
         const startDateString = format(startDate, 'yyyy-MM-dd');
