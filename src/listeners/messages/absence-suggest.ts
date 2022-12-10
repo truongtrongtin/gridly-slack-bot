@@ -105,6 +105,7 @@ export default function suggestAbsence(app: App) {
               text: {
                 type: 'mrkdwn',
                 text: `>${message.text}\n<@${message.user}>, are you going to be absent *${timeText}*?`,
+                verbatim: true,
               },
             },
             {

@@ -54,6 +54,7 @@ export default function remindToUseMe(app: App) {
           text: {
             type: 'mrkdwn',
             text: `<@${message.user}> Please stop tagging HRs for absence, use \`Off\` shortcut instead!`,
+            verbatim: true,
           },
         },
       ],
