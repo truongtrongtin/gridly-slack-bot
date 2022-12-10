@@ -7,7 +7,7 @@ import { serviceAccountKey } from '../../services/service-account-key';
 import { DayPart } from '../../types';
 
 export default function messages(app: App) {
-  app.event('message', async ({ event, client, logger, say }) => {
+  app.event('message', async ({ event, logger, say }) => {
     try {
       let message: any;
       switch (event.subtype) {
@@ -99,17 +99,42 @@ export default function messages(app: App) {
           return;
         }
         if (isWeekendInRange(startDate, endDate)) {
-          const failureText = `:x: Failed to create. Not allow weekend in range`;
-          await client.chat.postEphemeral({
-            channel: process.env.SLACK_CHANNEL!,
-            user: message.user,
+          const failureText = `>${message.text}\nNot allow weekend! :sweat_smile:`;
+          await say({
+            thread_ts: message.ts,
+            blocks: [
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: failureText,
+                  verbatim: true,
+                },
+              },
+            ],
             text: failureText,
           });
           return;
         }
         if (endDate < startDate) return;
-        if (startDate > addMonths(today, 3)) return;
-        if (endDate > addMonths(today, 3)) return;
+        if (startDate > addMonths(today, 3)) {
+          const failureText = `>${message.text}\nNo more than 3 months from now! :sweat_smile:`;
+          await say({
+            thread_ts: message.ts,
+            blocks: [
+              {
+                type: 'section',
+                text: {
+                  type: 'mrkdwn',
+                  text: failureText,
+                  verbatim: true,
+                },
+              },
+            ],
+            text: failureText,
+          });
+          return;
+        }
         if (!isSingleMode && dayPart !== DayPart.ALL) return;
 
         const timeText = generateTimeText(startDate, endDate, dayPart);
@@ -152,7 +177,7 @@ export default function messages(app: App) {
                     },
                     text: {
                       type: 'mrkdwn',
-                      text: `Are you sure to be absent ${timeText}?\n The submission will take some time, please be patient.`,
+                      text: `Do you confirm to be absent ${timeText}?\n The submission will take some time, please be patient.`,
                       verbatim: true,
                     },
                     confirm: {
