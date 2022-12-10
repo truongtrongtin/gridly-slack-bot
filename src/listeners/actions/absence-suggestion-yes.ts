@@ -10,7 +10,6 @@ export default function absenceSuggestionYes(app: App) {
 
     async ({ ack, say, payload, body, client, logger }) => {
       await ack();
-      // console.log('body', JSON.stringify(body, null, 2));
       const { startDateString, endDateString, dayPart, reason, authorId } =
         JSON.parse((<ButtonAction>payload).value);
       const isSingleMode = startDateString === endDateString;

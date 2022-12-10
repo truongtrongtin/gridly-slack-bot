@@ -13,7 +13,7 @@ import { DayPart } from '../../types';
 export default function suggestAbsence(app: App) {
   app.message(
     /(^|\s)(off|nghỉ)([?!.,]|$|\s(?!sớm))/gi,
-    async ({ message, say, client }) => {
+    async ({ message, say, client, logger }) => {
       // Filter out message events with subtypes (see https://api.slack.com/events/message)
       // Is there a way to do this in listener middleware with current type system?
       if (!isGenericMessageEvent(message)) return;
@@ -45,7 +45,7 @@ export default function suggestAbsence(app: App) {
       );
       const translationObject = await translationResponse.json();
       const translatedText = translationObject.translations[0].translatedText;
-      console.log('translatedText', translatedText);
+      logger.info('translatedText', translatedText);
 
       const ranges = chrono.parse(translatedText);
       ranges.map(async (range) => {
@@ -57,10 +57,10 @@ export default function suggestAbsence(app: App) {
         const endDateString = format(endDate, 'yyyy-MM-dd');
         const isSingleMode = startDateString === endDateString;
 
-        console.log('startDate', startDate);
-        console.log('endDate', endDate);
-        console.log('startDate.getHours()', startDate.getHours());
-        console.log('endDate.getHours()', endDate.getHours());
+        logger.info('startDate', startDate);
+        logger.info('endDate', endDate);
+        logger.info('startDate.getHours()', startDate.getHours());
+        logger.info('endDate.getHours()', endDate.getHours());
 
         if (!startDate) return;
         let dayPart = DayPart.ALL;

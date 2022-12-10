@@ -55,7 +55,7 @@ export default function messages(app: App) {
       );
       const translationObject = await translationResponse.json();
       const translatedText = translationObject.translations[0].translatedText;
-      console.log('translatedText', translatedText);
+      logger.info('translatedText', translatedText);
 
       const ranges = chrono.parse(translatedText);
 
@@ -74,10 +74,10 @@ export default function messages(app: App) {
         const endDateString = format(endDate, 'yyyy-MM-dd');
         const isSingleMode = startDateString === endDateString;
 
-        console.log('startDate', startDate);
-        console.log('endDate', endDate);
-        console.log('startDate.getHours()', startDate.getHours());
-        console.log('endDate.getHours()', endDate.getHours());
+        logger.info('startDate', startDate);
+        logger.info('endDate', endDate);
+        logger.info('startDate.getHours()', startDate.getHours());
+        logger.info('endDate.getHours()', endDate.getHours());
 
         if (!startDate) return;
         let dayPart = DayPart.ALL;
