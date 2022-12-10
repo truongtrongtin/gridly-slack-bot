@@ -127,7 +127,8 @@ export default function messages(app: App) {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `>${message.text}\n<@${message.user}>, are you going to be absent *${timeText}*?`,
+                text: `>${message.text}\n<@${message.user}>, are you sure to be absent *${timeText}*?`,
+                verbatim: true,
               },
             },
             {
@@ -149,6 +150,23 @@ export default function messages(app: App) {
                     reason: message.text,
                     authorId: message.user,
                   }),
+                  confirm: {
+                    title: {
+                      type: 'plain_text',
+                      text: 'Absence confirm',
+                      emoji: true,
+                    },
+                    text: {
+                      type: 'mrkdwn',
+                      text: `Are you sure to be absent ${timeText}?\n The submission will take some time, please be patient.`,
+                      verbatim: true,
+                    },
+                    confirm: {
+                      type: 'plain_text',
+                      text: 'Confirm',
+                      emoji: true,
+                    },
+                  },
                 },
                 {
                   type: 'button',
@@ -162,7 +180,7 @@ export default function messages(app: App) {
               ],
             },
           ],
-          text: `Are you going to be absent ${timeText}?`,
+          text: `Are you sure to be absent ${timeText}?`,
         });
       });
     } catch (error) {
