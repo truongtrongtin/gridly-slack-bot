@@ -59,23 +59,17 @@ export default function messages(app: App) {
 
       const ranges = chrono.parse(translatedText);
 
-      const uniqRanges = [];
       const map = new Map();
-      for (const range of ranges) {
-        const startDate = range.start.date().toISOString();
-        const endDate = range.end ? range.end.date().toISOString() : '';
-        const key = startDate + endDate;
-        if (!map.has(key)) {
-          map.set(key, true);
-          uniqRanges.push(range);
-        }
-      }
-
-      uniqRanges.map(async (range) => {
+      ranges.map(async (range) => {
         const startDate = range.start.date();
         const endDate = range.end ? range.end.date() : startDate;
-        const today = startOfDay(new Date());
 
+        // ignore duplicated range
+        const key = startDate.toISOString() + endDate.toISOString();
+        if (map.has(key)) return;
+        map.set(key, true);
+
+        const today = startOfDay(new Date());
         const startDateString = format(startDate, 'yyyy-MM-dd');
         const endDateString = format(endDate, 'yyyy-MM-dd');
         const isSingleMode = startDateString === endDateString;
