@@ -146,7 +146,7 @@ export default function messages(app: App) {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `>${message.text}\n<@${message.user}>, are you sure to be absent *${timeText}*?`,
+                text: `>${message.text}\n<@${message.user}>, are you going to be absent *${timeText}*?`,
                 verbatim: true,
               },
             },
@@ -199,7 +199,7 @@ export default function messages(app: App) {
               ],
             },
           ],
-          text: `Are you sure to be absent ${timeText}?`,
+          text: `Are you going to be absent ${timeText}?`,
         });
       });
     } catch (error) {

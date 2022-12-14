@@ -127,6 +127,23 @@ export default function suggestAbsence(app: App) {
                     reason: message.text,
                     authorId: message.user,
                   }),
+                  confirm: {
+                    title: {
+                      type: 'plain_text',
+                      text: 'Absence confirm',
+                      emoji: true,
+                    },
+                    text: {
+                      type: 'mrkdwn',
+                      text: `Do you confirm to be absent ${timeText}?\n The submission will take some time, please be patient.`,
+                      verbatim: true,
+                    },
+                    confirm: {
+                      type: 'plain_text',
+                      text: 'Confirm',
+                      emoji: true,
+                    },
+                  },
                 },
                 {
                   type: 'button',
