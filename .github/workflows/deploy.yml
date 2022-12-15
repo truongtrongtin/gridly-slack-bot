@@ -19,26 +19,19 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: 18
+          cache: npm
 
       - name: Skip husky
-        run: npm set-script prepare ""
-
-      - name: Cache node modules
-        uses: actions/cache@v3
-        id: npm-cache
-        with:
-          path: '**/node_modules'
-          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+        run: npm pkg delete scripts.prepare
 
       - name: Install
-        if: steps.npm-cache.outputs.cache-hit != 'true'
-        run: npm i
+        run: npm ci
 
       - name: Build
         run: npm run build
 
-      - name: Copy package.json to built folder
-        run: cp package.json dist/
+      - name: Copy package*.json to built folder
+        run: cp package*.json dist/
 
       - id: auth
         uses: google-github-actions/auth@v1
@@ -53,9 +46,10 @@ jobs:
           runtime: nodejs18
           memory_mb: 128
           region: europe-west3
-          source_dir: dist
+          source_dir: dist/
           entry_point: app
-          env_vars: |-
+          https_trigger_security_level: secure_always
+          env_vars: |
             TZ=${{ secrets.TZ }}
             SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }}
             SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }}
@@ -65,4 +59,3 @@ jobs:
             GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
             GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }}
             SERVICE_ACCOUNT_KEY_BASE64=${{ secrets.SERVICE_ACCOUNT_KEY_BASE64 }}
-          https_trigger_security_level: secure_always
