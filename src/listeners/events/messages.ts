@@ -58,16 +58,19 @@ export default function messages(app: App) {
       logger.info('translatedText', translatedText);
 
       const ranges = chrono.parse(translatedText);
-
       const map = new Map();
       ranges.map(async (range) => {
         const startDate = range.start.date();
         const endDate = range.end ? range.end.date() : startDate;
 
         // ignore duplicated range
-        const key = startDate.toISOString() + endDate.toISOString();
-        if (map.has(key)) return;
-        map.set(key, true);
+        const hash =
+          startDate.toDateString() +
+          startDate.getHours() +
+          endDate.toDateString() +
+          endDate.getHours();
+        if (map.has(hash)) return;
+        map.set(hash, true);
 
         const today = startOfDay(new Date());
         const startDateString = format(startDate, 'yyyy-MM-dd');
@@ -138,6 +141,10 @@ export default function messages(app: App) {
         if (!isSingleMode && dayPart !== DayPart.ALL) return;
 
         const timeText = generateTimeText(startDate, endDate, dayPart);
+        const quote = message.text
+          .split('\n')
+          .map((text: string) => `>${text}`)
+          .join('\n');
 
         await say({
           thread_ts: message.ts,
@@ -146,7 +153,7 @@ export default function messages(app: App) {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `>${message.text}\n<@${message.user}>, are you going to be absent *${timeText}*?`,
+                text: `${quote}\n<@${message.user}>, are you going to be absent *${timeText}*?`,
                 verbatim: true,
               },
             },
