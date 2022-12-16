@@ -1,6 +1,6 @@
 import { App } from '@slack/bolt';
 import * as chrono from 'chrono-node';
-import { addMonths, format, startOfDay } from 'date-fns';
+import { addMonths, format } from 'date-fns';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
 import getAccessTokenFromServiceAccount from '../../services/get-access-token-from-service-account';
 import { serviceAccountKey } from '../../services/service-account-key';
@@ -58,10 +58,14 @@ export default function messages(app: App) {
       logger.info('translatedText', translatedText);
 
       const ranges = chrono.parse(translatedText);
+      const today = new Date();
       const map = new Map();
       ranges.map(async (range) => {
         const startDate = range.start.date();
         const endDate = range.end ? range.end.date() : startDate;
+
+        logger.info('startDate', startDate.toLocaleString());
+        logger.info('endDate', endDate.toLocaleString());
 
         // ignore duplicated range
         const hash =
@@ -72,35 +76,11 @@ export default function messages(app: App) {
         if (map.has(hash)) return;
         map.set(hash, true);
 
-        const today = startOfDay(new Date());
-        const startDateString = format(startDate, 'yyyy-MM-dd');
-        const endDateString = format(endDate, 'yyyy-MM-dd');
-        const isSingleMode = startDateString === endDateString;
-
-        logger.info('startDate', startDate);
-        logger.info('endDate', endDate);
-        logger.info('startDate.getHours()', startDate.getHours());
-        logger.info('endDate.getHours()', endDate.getHours());
-
         if (!startDate) return;
-        let dayPart = DayPart.ALL;
-        if (
-          startDate.getTime() ===
-          new Date(new Date(startDate).setHours(6, 0, 0, 0)).getTime()
-        ) {
-          dayPart = DayPart.MORNING;
-        }
-
-        if (
-          startDate.getTime() ===
-          new Date(new Date(startDate).setHours(15, 0, 0, 0)).getTime()
-        ) {
-          dayPart = DayPart.AFTERNOON;
-        }
-
-        if (new Date(new Date(startDate).setHours(15, 0, 0, 0)) < new Date()) {
+        if (new Date(new Date(startDate).setHours(15, 0, 0, 0)) < today) {
           return;
         }
+        if (endDate < startDate) return;
         if (isWeekendInRange(startDate, endDate)) {
           const failureText = `>${message.text}\nNot allow weekend! :sweat_smile:`;
           await say({
@@ -119,9 +99,12 @@ export default function messages(app: App) {
           });
           return;
         }
-        if (endDate < startDate) return;
+        const quote = message.text
+          .split('\n')
+          .map((text: string) => `>${text}`)
+          .join('\n');
         if (startDate > addMonths(today, 3)) {
-          const failureText = `>${message.text}\nNo more than 3 months from now! :sweat_smile:`;
+          const failureText = 'No more than 3 months from now! :sweat_smile:';
           await say({
             thread_ts: message.ts,
             blocks: [
@@ -129,7 +112,7 @@ export default function messages(app: App) {
                 type: 'section',
                 text: {
                   type: 'mrkdwn',
-                  text: failureText,
+                  text: `${quote}\n${failureText}`,
                   verbatim: true,
                 },
               },
@@ -138,14 +121,28 @@ export default function messages(app: App) {
           });
           return;
         }
+
+        let dayPart = DayPart.ALL;
+        if (
+          startDate.getTime() ===
+          new Date(new Date(startDate).setHours(6, 0, 0, 0)).getTime()
+        ) {
+          dayPart = DayPart.MORNING;
+        }
+        if (
+          startDate.getTime() ===
+          new Date(new Date(startDate).setHours(15, 0, 0, 0)).getTime()
+        ) {
+          dayPart = DayPart.AFTERNOON;
+        }
+
+        const startDateString = format(startDate, 'yyyy-MM-dd');
+        const endDateString = format(endDate, 'yyyy-MM-dd');
+        const isSingleMode = startDateString === endDateString;
         if (!isSingleMode && dayPart !== DayPart.ALL) return;
 
         const timeText = generateTimeText(startDate, endDate, dayPart);
-        const quote = message.text
-          .split('\n')
-          .map((text: string) => `>${text}`)
-          .join('\n');
-
+        const text = `<@${message.user}>, are you going to be absent *${timeText}*?`;
         await say({
           thread_ts: message.ts,
           blocks: [
@@ -153,7 +150,7 @@ export default function messages(app: App) {
               type: 'section',
               text: {
                 type: 'mrkdwn',
-                text: `${quote}\n<@${message.user}>, are you going to be absent *${timeText}*?`,
+                text: `${quote}\n${text}`,
                 verbatim: true,
               },
             },
@@ -206,7 +203,7 @@ export default function messages(app: App) {
               ],
             },
           ],
-          text: `Are you going to be absent ${timeText}?`,
+          text,
         });
       });
     } catch (error) {
