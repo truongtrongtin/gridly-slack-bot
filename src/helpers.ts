@@ -6,7 +6,7 @@ import {
 } from '@slack/bolt';
 import { format, isSameDay } from 'date-fns';
 import { DayPart } from './types';
-import members from './member-list.json';
+import members from './members';
 
 export const isGenericMessageEvent = (
   msg: MessageEvent,

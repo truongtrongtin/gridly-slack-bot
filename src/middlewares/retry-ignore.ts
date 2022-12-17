@@ -1,10 +1,10 @@
-import { AllMiddlewareArgs } from '@slack/bolt';
+import { AllMiddlewareArgs, AnyMiddlewareArgs } from '@slack/bolt';
 
 export default async function retryIgnore({
   context,
   logger,
   next,
-}: AllMiddlewareArgs) {
+}: AllMiddlewareArgs & AnyMiddlewareArgs) {
   const { retryNum, retryReason } = context;
   if (retryNum) {
     logger.info('retryNum', retryNum);
