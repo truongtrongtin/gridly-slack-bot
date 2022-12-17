@@ -36,7 +36,7 @@ export default function newAbsenceModal(userId: string): View {
 
   return {
     type: 'modal',
-    callback_id: isAdmin ? 'admin-new-absence-submit' : 'new-absence-submit',
+    callback_id: 'new-absence-submit',
     // notify_on_close: true,
     // private_metadata: privateMetadata,
     title: {
@@ -58,7 +58,7 @@ export default function newAbsenceModal(userId: string): View {
         ? [
             {
               type: 'input',
-              block_id: 'member_block',
+              block_id: 'member-block',
               element: {
                 type: 'users_select',
                 placeholder: {
