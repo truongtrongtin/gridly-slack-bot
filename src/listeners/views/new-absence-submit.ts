@@ -6,7 +6,7 @@ import {
   isWeekendInRange,
 } from '../../helpers';
 import getAccessTokenFromRefresh from '../../services/get-access-token-from-refresh-token';
-import { CalendarEvent, DayPart } from '../../types';
+import { CalendarEvent, DayPart, Role } from '../../types';
 
 export default function newAbsenceSubmit(app: App) {
   app.view(
@@ -39,9 +39,31 @@ export default function newAbsenceSubmit(app: App) {
       const startDate = new Date(startDateString);
       const endDate = new Date(endDateString);
       const today = startOfDay(new Date());
-      const userId = body['user']['id'];
 
-      if (startDate < today) {
+      const actionUserId = body.user.id;
+      const actionUser = findMemberById(actionUserId);
+      if (!actionUser) throw Error('action user not found');
+      const isAdmin = actionUser.role === Role.ADMIN;
+
+      const targetUserId =
+        view.state.values?.['member-block']?.['member-action']?.selected_user;
+      let targetUser = actionUser;
+      if (isAdmin) {
+        if (!targetUserId) {
+          await ack({
+            response_action: 'errors',
+            errors: {
+              member_block: 'Member is required',
+            },
+          });
+          return;
+        }
+        const foundUser = findMemberById(targetUserId);
+        if (!foundUser) throw Error('member not found');
+        targetUser = foundUser;
+      }
+
+      if (!isAdmin && startDate < today) {
         await ack({
           response_action: 'errors',
           errors: {
@@ -114,15 +136,20 @@ export default function newAbsenceSubmit(app: App) {
       await ack();
 
       try {
-        // Get slack message 's author info
-        const foundMember = findMemberById(userId);
-        if (!foundMember) throw Error('member not found');
-        const memberName = foundMember.names[0];
-        logger.info(`${memberName} is submiting absence`);
+        const actionUserName = actionUser.names[0];
+        const targetUserName = targetUser.names[0];
+
+        if (actionUser.id === targetUser.id) {
+          logger.info(`${actionUserName} is submiting absence`);
+        } else {
+          logger.info(
+            `admin ${actionUserName} is submiting absence for ${targetUserName}`,
+          );
+        }
 
         const dayPartText =
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;
-        const summary = `${memberName} ${dayPartText}`;
+        const summary = `${targetUserName} ${dayPartText}`;
 
         const accessToken = await getAccessTokenFromRefresh();
 
@@ -130,7 +157,7 @@ export default function newAbsenceSubmit(app: App) {
         const queryParams = new URLSearchParams({
           timeMin: startDate.toISOString(),
           timeMax: endOfDay(endDate).toISOString(),
-          q: memberName,
+          q: targetUserName,
         });
         const eventListResponse = await fetch(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
@@ -151,7 +178,7 @@ export default function newAbsenceSubmit(app: App) {
           const failureText = ':x: Failed to create. You already have absence';
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
-            user: userId,
+            user: targetUser.id,
             text: `${failureText} *${timeText}*.`,
           });
           return;
@@ -160,7 +187,7 @@ export default function newAbsenceSubmit(app: App) {
 
         const newMessage = await client.chat.postMessage({
           channel: process.env.SLACK_CHANNEL!,
-          text: `<@${userId}> will be absent *${timeText}*.${reasonText}`,
+          text: `<@${targetUser.id}> will be absent *${timeText}*.${reasonText}`,
         });
 
         // Create new event on google calendar
@@ -179,7 +206,7 @@ export default function newAbsenceSubmit(app: App) {
               summary,
               attendees: [
                 {
-                  email: foundMember.email,
+                  email: targetUser.email,
                   responseStatus: 'accepted',
                 },
               ],

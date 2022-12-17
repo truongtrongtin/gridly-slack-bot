@@ -7,7 +7,6 @@ import appHomeOpened from './listeners/events/app-home-opened';
 import messages from './listeners/events/messages';
 // import suggestAbsence from './listeners/messages/absence-suggest';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
-import adminNewAbsenceSubmit from './listeners/views/admin-new-absence-submit';
 import newAbsenceSubmit from './listeners/views/new-absence-submit';
 import retryIgnore from './middlewares/retry-ignore';
 
@@ -42,7 +41,6 @@ globalNewAbsence(app);
 
 // views
 newAbsenceSubmit(app);
-adminNewAbsenceSubmit(app);
 
 // Check the details of the error to handle cases where you should retry sending a message or stop the app
 app.error(async (error) => {
