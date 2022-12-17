@@ -2,7 +2,7 @@ import { App, ButtonAction } from '@slack/bolt';
 import { addDays, endOfDay, format } from 'date-fns';
 import { findMemberById, generateTimeText } from '../../helpers';
 import getAccessTokenFromRefresh from '../../services/get-access-token-from-refresh-token';
-import { CalendarEvent, DayPart } from '../../types';
+import { CalendarEvent, DayPart, Role } from '../../types';
 
 export default function absenceSuggestionYes(app: App) {
   app.action(
@@ -20,7 +20,7 @@ export default function absenceSuggestionYes(app: App) {
         const actionUserId = body.user.id;
         const actionUser = findMemberById(actionUserId);
         if (!actionUser) throw Error('action user not found');
-        if (authorId !== actionUserId && !actionUser.isAdmin) {
+        if (authorId !== actionUserId && actionUser.role !== Role.ADMIN) {
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
             user: body.user.id,

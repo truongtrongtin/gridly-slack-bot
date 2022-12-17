@@ -1,11 +1,11 @@
 import { KnownBlock, Option, View } from '@slack/bolt';
 import { format } from 'date-fns';
 import { findMemberById } from '../../helpers';
-import { DayPart } from '../../types';
+import { DayPart, Role } from '../../types';
 
 export default function newAbsenceModal(userId: string): View {
   const foundMember = findMemberById(userId)!;
-  const isAdmin = foundMember.isAdmin;
+  const isAdmin = foundMember.role === Role.ADMIN;
 
   const dayPartOptions: Option[] = [
     {
