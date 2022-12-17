@@ -4,7 +4,7 @@ import newAbsenceModal from '../../user-interface/modals/new-absence';
 
 export default function globalNewAbsence(app: App) {
   app.shortcut(
-    'register_absences',
+    { callback_id: 'global_new_absence', type: 'shortcut' },
     async ({ shortcut, ack, client, logger }) => {
       await ack();
 
