@@ -140,7 +140,7 @@ export default function suggestAbsence(app: App) {
                     endDateString,
                     dayPart,
                     reason: message.text,
-                    authorId: message.user,
+                    targetUserId: message.user,
                   }),
                   confirm: {
                     title: {

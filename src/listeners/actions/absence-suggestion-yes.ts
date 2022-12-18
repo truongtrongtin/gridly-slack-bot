@@ -10,8 +10,13 @@ export default function absenceSuggestionYes(app: App) {
 
     async ({ ack, say, payload, body, client, logger }) => {
       await ack();
-      const { startDateString, endDateString, dayPart, reason, authorId } =
-        JSON.parse((<ButtonAction>payload).value);
+      const {
+        startDateString,
+        endDateString,
+        dayPart,
+        messageText,
+        targetUserId,
+      } = JSON.parse((<ButtonAction>payload).value);
       const isSingleMode = startDateString === endDateString;
       const startDate = new Date(startDateString);
       const endDate = new Date(endDateString);
@@ -20,7 +25,10 @@ export default function absenceSuggestionYes(app: App) {
         const actionUserId = body.user.id;
         const actionUser = findMemberById(actionUserId);
         if (!actionUser) throw Error('action user not found');
-        if (authorId !== actionUserId && actionUser.role !== Role.ADMIN) {
+        const actionUserName = actionUser.names[0];
+        const isAdmin = actionUser.role === Role.ADMIN;
+
+        if (targetUserId !== actionUserId && !isAdmin) {
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
             user: body.user.id,
@@ -29,13 +37,21 @@ export default function absenceSuggestionYes(app: App) {
           return;
         }
 
-        const author = findMemberById(authorId);
-        if (!author) throw Error('author not found');
-        const memberName = author.names[0];
+        const targetUser = findMemberById(targetUserId);
+        if (!targetUser) throw Error('target user not found');
+        const targetUserName = targetUser.names[0];
+
+        if (!isAdmin && actionUser.id === targetUser.id) {
+          logger.info(`${actionUserName} is submiting absence`);
+        } else {
+          logger.info(
+            `admin ${actionUserName} is submiting absence for ${targetUserName}`,
+          );
+        }
 
         const dayPartText =
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;
-        const summary = `${memberName} ${dayPartText}`;
+        const summary = `${targetUserName} ${dayPartText}`;
 
         const accessToken = await getAccessTokenFromRefresh();
 
@@ -43,7 +59,7 @@ export default function absenceSuggestionYes(app: App) {
         const queryParams = new URLSearchParams({
           timeMin: startDate.toISOString(),
           timeMax: endOfDay(endDate).toISOString(),
-          q: memberName,
+          q: targetUserName,
         });
         const eventListResponse = await fetch(
           `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
@@ -72,7 +88,7 @@ export default function absenceSuggestionYes(app: App) {
 
         const newMessage = await say({
           channel: process.env.SLACK_CHANNEL!,
-          text: `<@${authorId}> will be absent *${timeText}*.`,
+          text: `<@${targetUserId}> will be absent *${timeText}*.`,
         });
 
         // Create new event on google calendar
@@ -91,7 +107,7 @@ export default function absenceSuggestionYes(app: App) {
               summary,
               attendees: [
                 {
-                  email: author.email,
+                  email: targetUser.email,
                   responseStatus: 'accepted',
                 },
               ],
@@ -99,7 +115,7 @@ export default function absenceSuggestionYes(app: App) {
               extendedProperties: {
                 private: {
                   message_ts: newMessage.message?.ts,
-                  ...(reason ? { reason } : {}),
+                  ...(messageText ? { reason: messageText } : {}),
                 },
               },
               transparency: 'transparent',

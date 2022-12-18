@@ -13,7 +13,7 @@ export default function newAbsenceSubmit(app: App) {
     'new-absence-submit',
     async ({ ack, body, view, client, logger }) => {
       const startDateString =
-        view['state']['values']['start-date-block']['start-date-action']
+        view.state.values['start-date-block']['start-date-action']
           .selected_date;
 
       if (!startDateString) {
@@ -27,13 +27,12 @@ export default function newAbsenceSubmit(app: App) {
       }
 
       const endDateString =
-        view['state']['values']['end-date-block']['end-date-action']
-          .selected_date || startDateString;
-      const dayPart = view['state']['values']['day-part-block'][
-        'day-part-action'
-      ].selected_option?.value as DayPart;
+        view.state.values['end-date-block']['end-date-action'].selected_date ||
+        startDateString;
+      const dayPart = view.state.values['day-part-block']['day-part-action']
+        .selected_option?.value as DayPart;
       const reason =
-        view['state']['values']['reason-block']['reason-action'].value || '';
+        view.state.values['reason-block']['reason-action'].value || '';
 
       const isSingleMode = startDateString === endDateString;
       const startDate = new Date(startDateString);
@@ -43,10 +42,12 @@ export default function newAbsenceSubmit(app: App) {
       const actionUserId = body.user.id;
       const actionUser = findMemberById(actionUserId);
       if (!actionUser) throw Error('action user not found');
+      const actionUserName = actionUser.names[0];
       const isAdmin = actionUser.role === Role.ADMIN;
 
       const targetUserId =
         view.state.values?.['member-block']?.['member-action']?.selected_user;
+
       let targetUser = actionUser;
       if (isAdmin) {
         if (!targetUserId) {
@@ -59,8 +60,16 @@ export default function newAbsenceSubmit(app: App) {
           return;
         }
         const foundUser = findMemberById(targetUserId);
-        if (!foundUser) throw Error('member not found');
+        if (!foundUser) throw Error('target user not found');
         targetUser = foundUser;
+      }
+      const targetUserName = targetUser.names[0];
+      if (!isAdmin && actionUser.id === targetUser.id) {
+        logger.info(`${actionUserName} is submiting absence`);
+      } else {
+        logger.info(
+          `admin ${actionUserName} is submiting absence for ${targetUserName}`,
+        );
       }
 
       if (!isAdmin && startDate < today) {
@@ -136,17 +145,6 @@ export default function newAbsenceSubmit(app: App) {
       await ack();
 
       try {
-        const actionUserName = actionUser.names[0];
-        const targetUserName = targetUser.names[0];
-
-        if (actionUser.id === targetUser.id) {
-          logger.info(`${actionUserName} is submiting absence`);
-        } else {
-          logger.info(
-            `admin ${actionUserName} is submiting absence for ${targetUserName}`,
-          );
-        }
-
         const dayPartText =
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;
         const summary = `${targetUserName} ${dayPartText}`;
