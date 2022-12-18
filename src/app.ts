@@ -7,7 +7,9 @@ import appHomeOpened from './listeners/events/app-home-opened';
 import messages from './listeners/events/messages';
 // import suggestAbsence from './listeners/messages/absence-suggest';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
+import messageNewSuggestion from './listeners/shortcuts/message-new-suggestion';
 import newAbsenceSubmit from './listeners/views/new-absence-submit';
+import newSuggestionSubmit from './listeners/views/new-suggestion-submit';
 import retryIgnore from './middlewares/retry-ignore';
 
 const expressReceiver = new ExpressReceiver({
@@ -35,12 +37,14 @@ messages(app);
 
 // shortcuts
 globalNewAbsence(app);
+messageNewSuggestion(app);
 
 // messages
 // suggestAbsence(app);
 
 // views
 newAbsenceSubmit(app);
+newSuggestionSubmit(app);
 
 // Check the details of the error to handle cases where you should retry sending a message or stop the app
 app.error(async (error) => {

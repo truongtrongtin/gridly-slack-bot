@@ -170,8 +170,8 @@ export default function messages(app: App) {
                     startDateString,
                     endDateString,
                     dayPart,
-                    reason: message.text,
-                    authorId: message.user,
+                    messageText: message.text,
+                    targetUserId: message.user,
                   }),
                   confirm: {
                     title: {
