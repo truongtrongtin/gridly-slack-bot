@@ -7,7 +7,9 @@ import appHomeOpened from './listeners/events/app-home-opened';
 import messages from './listeners/events/messages';
 // import suggestAbsence from './listeners/messages/absence-suggest';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
+import messageDelete from './listeners/shortcuts/message-delete';
 import messageNewSuggestion from './listeners/shortcuts/message-new-suggestion';
+import deleteMessageSubmit from './listeners/views/delete-message-submit';
 import newAbsenceSubmit from './listeners/views/new-absence-submit';
 import newSuggestionSubmit from './listeners/views/new-suggestion-submit';
 import retryIgnore from './middlewares/retry-ignore';
@@ -38,6 +40,7 @@ messages(app);
 // shortcuts
 globalNewAbsence(app);
 messageNewSuggestion(app);
+messageDelete(app);
 
 // messages
 // suggestAbsence(app);
@@ -45,6 +48,7 @@ messageNewSuggestion(app);
 // views
 newAbsenceSubmit(app);
 newSuggestionSubmit(app);
+deleteMessageSubmit(app);
 
 // Check the details of the error to handle cases where you should retry sending a message or stop the app
 app.error(async (error) => {
