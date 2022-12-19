@@ -16,11 +16,13 @@ import retryIgnore from './middlewares/retry-ignore';
 
 const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET!,
+  processBeforeResponse: true,
 });
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   receiver: expressReceiver,
+  processBeforeResponse: true,
   logLevel: LogLevel.INFO,
 });
 
