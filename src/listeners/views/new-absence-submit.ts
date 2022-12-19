@@ -176,7 +176,7 @@ export default function newAbsenceSubmit(app: App) {
           const failureText = ':x: Failed to create. You already have absence';
           await client.chat.postEphemeral({
             channel: process.env.SLACK_CHANNEL!,
-            user: targetUser.id,
+            user: actionUserId,
             text: `${failureText} *${timeText}*.`,
           });
           return;
