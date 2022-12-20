@@ -57,7 +57,32 @@ export default function messages(app: App) {
       const translatedText = translationObject.translations[0].translatedText;
       logger.info('translatedText', translatedText);
 
+      const quote = message.text
+        .split('\n')
+        .map((text: string) => `>${text}`)
+        .join('\n');
+
       const ranges = chrono.parse(translatedText);
+
+      if (ranges.length === 0) {
+        const failureText = 'No date detected in the message!';
+        await say({
+          thread_ts: message.ts,
+          blocks: [
+            {
+              type: 'section',
+              text: {
+                type: 'mrkdwn',
+                text: `${quote}\n${failureText}`,
+                verbatim: true,
+              },
+            },
+          ],
+          text: 'No date detected in the message!',
+        });
+        return;
+      }
+
       const today = new Date();
       const map = new Map();
       ranges.map(async (range) => {
@@ -82,7 +107,7 @@ export default function messages(app: App) {
         }
         if (endDate < startDate) return;
         if (isWeekendInRange(startDate, endDate)) {
-          const failureText = `>${message.text}\nNot allow weekend! :sweat_smile:`;
+          const failureText = `${quote}\nNot allow weekend!`;
           await say({
             thread_ts: message.ts,
             blocks: [
@@ -99,12 +124,8 @@ export default function messages(app: App) {
           });
           return;
         }
-        const quote = message.text
-          .split('\n')
-          .map((text: string) => `>${text}`)
-          .join('\n');
         if (startDate > addMonths(today, 3)) {
-          const failureText = 'No more than 3 months from now! :sweat_smile:';
+          const failureText = 'No more than 3 months from now!';
           await say({
             thread_ts: message.ts,
             blocks: [
