@@ -181,4 +181,10 @@ export default [
     names: ['Chau Dang'],
     role: Role.MEMBER,
   },
+  {
+    id: 'U04F5ALEBN3',
+    email: 'mn@localizedirect.com',
+    names: ['Minh Nguyen'],
+    role: Role.MEMBER,
+  },
 ];
