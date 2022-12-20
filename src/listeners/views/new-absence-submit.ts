@@ -5,7 +5,7 @@ import {
   generateTimeText,
   isWeekendInRange,
 } from '../../helpers';
-import getAccessTokenFromRefresh from '../../services/get-access-token-from-refresh-token';
+import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token';
 import { CalendarEvent, DayPart, Role } from '../../types';
 
 export default function newAbsenceSubmit(app: App) {
@@ -149,7 +149,7 @@ export default function newAbsenceSubmit(app: App) {
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;
         const summary = `${targetUserName} ${dayPartText}`;
 
-        const accessToken = await getAccessTokenFromRefresh();
+        const accessToken = await getAccessTokenFromRefreshToken();
 
         // Get events from google calendar
         const queryParams = new URLSearchParams({

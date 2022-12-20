@@ -1,7 +1,7 @@
 import { App } from '@slack/bolt';
 import { addMonths, startOfDay } from 'date-fns';
 import { findMemberById } from '../../helpers';
-import getAccessTokenFromRefresh from '../../services/get-access-token-from-refresh-token';
+import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token';
 import { CalendarEvent } from '../../types';
 import appHomeView from '../../user-interface/app-home';
 
@@ -13,7 +13,7 @@ export default function appHomeOpened(app: App) {
       if (!foundMember) throw Error('member not found');
       logger.info(`${foundMember.names[0]} is opening app home`);
 
-      const accessToken = await getAccessTokenFromRefresh();
+      const accessToken = await getAccessTokenFromRefreshToken();
 
       // Get future absences from google calendar
       const queryParams = new URLSearchParams({

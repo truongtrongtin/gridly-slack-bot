@@ -1,4 +1,4 @@
-export default async function getAccessTokenFromRefresh(): Promise<string> {
+export default async function getAccessTokenFromRefreshToken(): Promise<string> {
   try {
     const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
