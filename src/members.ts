@@ -2,6 +2,12 @@ import { Role } from './types';
 
 export default [
   {
+    id: 'U03DKD4GFLM',
+    email: 'truongtrongtin0305@gmail.com',
+    names: ['Tin'],
+    role: Role.ADMIN,
+  },
+  {
     id: 'UBGP2J2PK',
     email: 'ld@localizedirect.com',
     names: ['Lynh'],
@@ -118,7 +124,7 @@ export default [
   {
     id: 'U037K4B22U8',
     email: 'nnc@localizedirect.com',
-    names: ['Jason', 'Cuong'],
+    names: ['Jason'],
     role: Role.MEMBER,
   },
   {
@@ -130,7 +136,7 @@ export default [
   {
     id: 'U03HSG0S599',
     email: 'sla@localizedirect.com',
-    names: ['Son Le'],
+    names: ['Son Le', 'Son'],
     role: Role.MEMBER,
   },
   {
@@ -160,14 +166,8 @@ export default [
   {
     id: 'U044W33PMRA',
     email: 'np@localizedirect.com',
-    names: ['Ngan Phan'],
+    names: ['Ngan Phan', 'Ngan'],
     role: Role.MEMBER,
-  },
-  {
-    id: 'U03DKD4GFLM',
-    email: 'truongtrongtin0305@gmail.com',
-    names: ['Tin'],
-    role: Role.ADMIN,
   },
   {
     id: 'U04AR0TV5M1',
@@ -184,7 +184,13 @@ export default [
   {
     id: 'U04F5ALEBN3',
     email: 'mn@localizedirect.com',
-    names: ['Minh Nguyen'],
+    names: ['Minh Nguyen', 'Minh'],
+    role: Role.MEMBER,
+  },
+  {
+    id: 'U04F5ALDRAT',
+    email: 'cnp@localizedirect.com',
+    names: ['Cuong Nguyen'],
     role: Role.MEMBER,
   },
 ];
