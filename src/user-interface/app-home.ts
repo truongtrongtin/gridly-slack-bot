@@ -54,8 +54,8 @@ export default function appHomeView(
           type: 'plain_text',
           text: `:date: ${
             absenceEvents.length > 0
-              ? 'Upcoming absences'
-              : 'No upcoming absences'
+              ? 'Current and upcoming absences'
+              : 'No absences'
           }`,
           emoji: true,
         },
