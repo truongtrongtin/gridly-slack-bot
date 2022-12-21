@@ -187,4 +187,10 @@ export default [
     names: ['Minh Nguyen'],
     role: Role.MEMBER,
   },
+  {
+    id: 'U04F5ALDRAT',
+    email: 'cnp@localizedirect.com',
+    names: ['Cuong Nguyen'],
+    role: Role.MEMBER,
+  },
 ];
