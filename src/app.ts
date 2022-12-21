@@ -4,6 +4,7 @@ import absenceNew from './listeners/actions/absence-new';
 import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes';
 import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete';
 import appHomeOpened from './listeners/events/app-home-opened';
+import memberJoinedChannel from './listeners/events/member-joined-channel';
 import messages from './listeners/events/messages';
 // import suggestAbsence from './listeners/messages/absence-suggest';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence';
@@ -31,12 +32,13 @@ app.use(retryIgnore);
 const expressApp = expressReceiver.app;
 
 // actions
-appHomeOpened(app);
+absenceNew(app);
 appHomeAbsenceDelete(app);
 absenceSuggestionYes(app);
 
 // events
-absenceNew(app);
+appHomeOpened(app);
+memberJoinedChannel(app);
 messages(app);
 
 // shortcuts
