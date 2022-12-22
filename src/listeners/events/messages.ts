@@ -64,25 +64,6 @@ export default function messages(app: App) {
 
       const ranges = chrono.parse(translatedText);
 
-      if (ranges.length === 0) {
-        const failureText = 'No date detected in the message!';
-        await say({
-          thread_ts: message.ts,
-          blocks: [
-            {
-              type: 'section',
-              text: {
-                type: 'mrkdwn',
-                text: `${quote}\n${failureText}`,
-                verbatim: true,
-              },
-            },
-          ],
-          text: 'No date detected in the message!',
-        });
-        return;
-      }
-
       const today = new Date();
       const map = new Map();
       ranges.map(async (range) => {
