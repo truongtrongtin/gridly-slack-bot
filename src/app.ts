@@ -15,15 +15,20 @@ import newAbsenceSubmit from './listeners/views/new-absence-submit';
 import newSuggestionSubmit from './listeners/views/new-suggestion-submit';
 import retryIgnore from './middlewares/retry-ignore';
 
+// https://cloud.google.com/functions/docs/configuring/env-var#newer_runtimes
+const isOnGoogleCloud = Boolean(
+  process.env.K_SERVICE && process.env.K_REVISION,
+);
+
 const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET!,
-  processBeforeResponse: true,
+  processBeforeResponse: isOnGoogleCloud,
 });
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   receiver: expressReceiver,
-  processBeforeResponse: true,
+  processBeforeResponse: isOnGoogleCloud,
   logLevel: LogLevel.INFO,
 });
 
@@ -59,12 +64,7 @@ app.error(async (error) => {
   console.error(error);
 });
 
-function isOnGoogleCloud() {
-  // https://cloud.google.com/functions/docs/configuring/env-var#newer_runtimes
-  return process.env.K_SERVICE && process.env.K_REVISION;
-}
-
-if (!isOnGoogleCloud()) {
+if (!isOnGoogleCloud) {
   // Running on your local machine
   (async () => {
     // Start your app
