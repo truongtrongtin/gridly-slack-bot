@@ -12,14 +12,14 @@
   "license": "MIT",
   "dependencies": {
     "@slack/bolt": "3.12.2",
-    "chrono-node": "2.4.2",
+    "chrono-node": "2.5.0",
     "date-fns": "2.29.3",
     "jsonwebtoken": "9.0.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "17.3.0",
     "@types/express": "4.17.15",
-    "@types/jsonwebtoken": "8.5.9",
+    "@types/jsonwebtoken": "9.0.0",
     "@types/node": "18.11.17",
     "@typescript-eslint/eslint-plugin": "5.47.0",
     "@typescript-eslint/parser": "5.47.0",
