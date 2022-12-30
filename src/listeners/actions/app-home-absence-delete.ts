@@ -71,7 +71,7 @@ export default function appHomeAbsenceDelete(app: App) {
 
         // Update app home
         await client.views.update({
-          view_id: body.view?.id,
+          view_id: body.view!.id,
           view: appHomeView(absenceEvents, body.user.id),
         });
       } catch (error) {

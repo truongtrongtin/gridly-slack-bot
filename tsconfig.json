@@ -2,12 +2,16 @@
   "compilerOptions": {
     "target": "ESNext",
     "module": "NodeNext",
-    "moduleResolution": "NodeNext",
+    "moduleResolution": "Node",
+    "skipLibCheck": true,
     "allowSyntheticDefaultImports": true,
+    "noFallthroughCasesInSwitch": true,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
     "esModuleInterop": true,
     "strict": true,
     "rootDir": "src",
     "outDir": "dist"
   },
-  "include": ["src/**/*"]
+  "include": ["src"]
 }
