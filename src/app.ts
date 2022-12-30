@@ -26,7 +26,7 @@ const expressReceiver = new ExpressReceiver({
 });
 
 const app = new App({
-  token: process.env.SLACK_BOT_TOKEN,
+  token: process.env.SLACK_BOT_TOKEN!,
   receiver: expressReceiver,
   processBeforeResponse: isOnGoogleCloud,
   logLevel: LogLevel.INFO,
