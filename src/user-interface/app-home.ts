@@ -66,11 +66,10 @@ export default function appHomeView(
       ...absenceEvents.reduce(
         (results: (KnownBlock | Block)[], event: CalendarEvent) => {
           const dayPart = getDayPartFromEventSummary(event.summary);
-          const absenceEmail = event.attendees?.[0]?.email;
           const memberName = event.summary.split('(off')[0];
           const foundMember = findMemberById(userId);
           if (!foundMember) throw Error('member not found');
-          const isBelongToMe = absenceEmail === foundMember.email;
+          const isBelongToMe = memberName === foundMember.names[0];
           const isAdmin = foundMember.role === Role.ADMIN;
           const timeText = generateTimeText(
             new Date(event.start.date),
