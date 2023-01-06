@@ -17,7 +17,7 @@ export default function appHomeAbsenceDelete(app: App) {
       try {
         const foundMember = findMemberById(body.user.id);
         if (!foundMember) throw Error('member not found');
-        logger.info(`${foundMember.names[0]} is deleting absence`);
+        logger.info(`${foundMember.name} is deleting absence`);
 
         const accessToken = await getAccessTokenFromRefreshToken();
 

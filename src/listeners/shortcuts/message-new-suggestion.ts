@@ -23,7 +23,7 @@ export default function messageNewSuggestion(app: App) {
         const actionUser = findMemberById(shortcut.user.id);
         if (!actionUser) throw Error('member not found');
         logger.info(
-          `${actionUser.names[0]} is opening new suggestion modal from message shortcut`,
+          `${actionUser.name} is opening new suggestion modal from message shortcut`,
         );
       } catch (error) {
         if (error instanceof Error) {
