@@ -17,7 +17,7 @@ export default function globalNewAbsence(app: App) {
         const foundMember = findMemberById(shortcut.user.id);
         if (!foundMember) throw Error('member not found');
         logger.info(
-          `${foundMember.names[0]} is opening new absence modal from global shortcut`,
+          `${foundMember.name} is opening new absence modal from global shortcut`,
         );
       } catch (error) {
         if (error instanceof Error) {

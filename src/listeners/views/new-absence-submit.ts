@@ -42,7 +42,7 @@ export default function newAbsenceSubmit(app: App) {
       const actionUserId = body.user.id;
       const actionUser = findMemberById(actionUserId);
       if (!actionUser) throw Error('action user not found');
-      const actionUserName = actionUser.names[0];
+      const actionUserName = actionUser.name;
       const isAdmin = actionUser.role === Role.ADMIN;
 
       const targetUserId =
@@ -63,7 +63,7 @@ export default function newAbsenceSubmit(app: App) {
         if (!foundUser) throw Error('target user not found');
         targetUser = foundUser;
       }
-      const targetUserName = targetUser.names[0];
+      const targetUserName = targetUser.name;
       if (!isAdmin && actionUser.id === targetUser.id) {
         logger.info(`${actionUserName} is submiting absence`);
       } else {

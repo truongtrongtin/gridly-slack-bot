@@ -80,14 +80,9 @@ export function findMemberByEmail(email: string) {
 }
 
 export function findMemberByName(name: string) {
-  for (const member of members) {
-    for (const possibleName of member.names) {
-      if (possibleName.toLowerCase() === name.toLowerCase()) {
-        return member;
-      }
-    }
-  }
-  return null;
+  return members.find((member) => {
+    return member.name.toLowerCase() === name.toLowerCase();
+  });
 }
 
 export function getMembersFromEventSummary(summary: string) {

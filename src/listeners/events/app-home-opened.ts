@@ -11,7 +11,7 @@ export default function appHomeOpened(app: App) {
     try {
       const foundMember = findMemberById(event.user);
       if (!foundMember) throw Error('member not found');
-      logger.info(`${foundMember.names[0]} is opening app home`);
+      logger.info(`${foundMember.name} is opening app home`);
 
       const accessToken = await getAccessTokenFromRefreshToken();
 

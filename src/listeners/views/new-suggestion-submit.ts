@@ -42,11 +42,11 @@ export default function newSuggestionSubmit(app: App) {
       const actionUserId = body.user.id;
       const actionUser = findMemberById(actionUserId);
       if (!actionUser) throw Error('action user not found');
-      const actionUserName = actionUser.names[0];
+      const actionUserName = actionUser.name;
 
       const targetUser = findMemberById(targetUserId);
       if (!targetUser) throw Error('member not found');
-      const targetUserName = targetUser.names[0];
+      const targetUserName = targetUser.name;
 
       logger.info(
         `admin ${actionUserName} is submiting suggestion for ${targetUserName}`,

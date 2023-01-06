@@ -19,7 +19,7 @@ export default function messageDelete(app: App) {
         const foundMember = findMemberById(shortcut.user.id);
         if (!foundMember) throw Error('member not found');
         logger.info(
-          `${foundMember.names[0]} is opening delete message modal from message shortcut`,
+          `${foundMember.name} is opening delete message modal from message shortcut`,
         );
       } catch (error) {
         if (error instanceof Error) {

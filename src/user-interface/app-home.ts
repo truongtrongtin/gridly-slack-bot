@@ -69,7 +69,7 @@ export default function appHomeView(
           const memberName = event.summary.split('(off')[0];
           const foundMember = findMemberById(userId);
           if (!foundMember) throw Error('member not found');
-          const isBelongToMe = memberName === foundMember.names[0];
+          const isBelongToMe = memberName === foundMember.name;
           const isAdmin = foundMember.role === Role.ADMIN;
           const timeText = generateTimeText(
             new Date(event.start.date),
