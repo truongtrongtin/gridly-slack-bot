@@ -66,7 +66,7 @@ export default function appHomeView(
       ...absenceEvents.reduce(
         (results: (KnownBlock | Block)[], event: CalendarEvent) => {
           const dayPart = getDayPartFromEventSummary(event.summary);
-          const memberName = event.summary.split('(off')[0];
+          const memberName = event.summary.split('(off')[0].trim();
           const foundMember = findMemberById(userId);
           if (!foundMember) throw Error('member not found');
           const isBelongToMe = memberName === foundMember.name;
