@@ -89,7 +89,7 @@ export function getMembersFromEventSummary(summary: string) {
   const memberNames = summary.split('(off')[0].split(',');
   const members = [];
   for (const memberName of memberNames) {
-    const foundMember = findMemberByName(memberName);
+    const foundMember = findMemberByName(memberName.trim());
     if (foundMember) members.push(foundMember);
   }
   return members;
