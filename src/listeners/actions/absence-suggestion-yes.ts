@@ -2,7 +2,7 @@ import { App, ButtonAction } from '@slack/bolt';
 import { addDays, endOfDay, format } from 'date-fns';
 import { findMemberById, generateTimeText } from '../../helpers';
 import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token';
-import { CalendarEvent, DayPart, Role } from '../../types';
+import { AbsencePayload, CalendarEvent, DayPart, Role } from '../../types';
 
 export default function absenceSuggestionYes(app: App) {
   app.action(
@@ -11,12 +11,13 @@ export default function absenceSuggestionYes(app: App) {
     async ({ ack, say, payload, body, client, logger }) => {
       await ack();
       const {
+        targetUserId,
         startDateString,
         endDateString,
         dayPart,
         messageText,
-        targetUserId,
-      } = JSON.parse((<ButtonAction>payload).value);
+      }: AbsencePayload = JSON.parse((<ButtonAction>payload).value);
+
       const isSingleMode = startDateString === endDateString;
       const startDate = new Date(startDateString);
       const endDate = new Date(endDateString);

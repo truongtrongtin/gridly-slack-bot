@@ -1,11 +1,16 @@
 import { KnownBlock, Option, View } from '@slack/bolt';
 import { format } from 'date-fns';
 import { findMemberById } from '../../helpers';
-import { DayPart, Role } from '../../types';
+import { AbsencePayload, DayPart, Role } from '../../types';
 
-export default function newAbsenceModal(userId: string): View {
-  const foundMember = findMemberById(userId)!;
+export default function newAbsenceModal(
+  actionUserId: string,
+  absencePayload?: AbsencePayload,
+): View {
+  const foundMember = findMemberById(actionUserId)!;
   const isAdmin = foundMember.role === Role.ADMIN;
+  const isSingleMode =
+    absencePayload?.startDateString === absencePayload?.endDateString;
 
   const dayPartOptions: Option[] = [
     {
@@ -61,13 +66,13 @@ export default function newAbsenceModal(userId: string): View {
               block_id: 'member-block',
               element: {
                 type: 'users_select',
+                action_id: 'member-action',
+                initial_user: absencePayload?.targetUserId || actionUserId,
                 placeholder: {
                   type: 'plain_text',
                   text: 'Select a member',
                   emoji: true,
                 },
-                initial_user: userId,
-                action_id: 'member-action',
               },
               label: {
                 type: 'plain_text',
@@ -82,9 +87,10 @@ export default function newAbsenceModal(userId: string): View {
         block_id: 'start-date-block',
         element: {
           type: 'datepicker',
-          initial_date: format(new Date(), 'yyyy-MM-dd'),
           action_id: 'start-date-action',
           focus_on_load: true,
+          initial_date:
+            absencePayload?.startDateString || format(new Date(), 'yyyy-MM-dd'),
         },
         label: {
           type: 'plain_text',
@@ -99,6 +105,9 @@ export default function newAbsenceModal(userId: string): View {
         element: {
           type: 'datepicker',
           action_id: 'end-date-action',
+          ...(absencePayload?.endDateString && !isSingleMode
+            ? { initial_date: absencePayload.endDateString }
+            : {}),
         },
         label: {
           type: 'plain_text',
@@ -111,7 +120,9 @@ export default function newAbsenceModal(userId: string): View {
         block_id: 'day-part-block',
         element: {
           type: 'radio_buttons',
-          initial_option: dayPartOptions[0],
+          initial_option:
+            dayPartOptions.find((o) => o.value === absencePayload?.dayPart) ||
+            dayPartOptions[0],
           options: dayPartOptions,
           action_id: 'day-part-action',
         },
@@ -127,6 +138,7 @@ export default function newAbsenceModal(userId: string): View {
         optional: true,
 
         element: {
+          initial_value: absencePayload?.messageText || '',
           type: 'plain_text_input',
           action_id: 'reason-action',
           placeholder: {

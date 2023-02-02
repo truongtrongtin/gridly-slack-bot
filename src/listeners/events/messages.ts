@@ -4,7 +4,7 @@ import { addMonths, format } from 'date-fns';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
 import getAccessTokenFromServiceAccount from '../../services/get-access-token-from-service-account';
 import { serviceAccountKey } from '../../services/service-account-key';
-import { DayPart } from '../../types';
+import { AbsencePayload, DayPart } from '../../types';
 
 export default function messages(app: App) {
   app.event('message', async ({ event, logger, say }) => {
@@ -145,6 +145,14 @@ export default function messages(app: App) {
 
         const timeText = generateTimeText(startDate, endDate, dayPart);
         const text = `<@${message.user}>, are you going to be absent *${timeText}*?`;
+        const absencePayload: AbsencePayload = {
+          targetUserId: message.user,
+          startDateString,
+          endDateString,
+          dayPart,
+          messageText: message.text,
+        };
+
         await say({
           thread_ts: message.ts,
           blocks: [
@@ -168,13 +176,7 @@ export default function messages(app: App) {
                     text: 'Yes',
                   },
                   style: 'primary',
-                  value: JSON.stringify({
-                    startDateString,
-                    endDateString,
-                    dayPart,
-                    messageText: message.text,
-                    targetUserId: message.user,
-                  }),
+                  value: JSON.stringify(absencePayload),
                   confirm: {
                     title: {
                       type: 'plain_text',
@@ -201,6 +203,7 @@ export default function messages(app: App) {
                     emoji: true,
                     text: 'No, submit myself',
                   },
+                  value: JSON.stringify(absencePayload),
                 },
               ],
             },

@@ -154,3 +154,11 @@ export type CalendarEvent = {
   ];
   eventType: string;
 };
+
+export type AbsencePayload = {
+  targetUserId: string;
+  startDateString: string;
+  endDateString: string;
+  dayPart: DayPart;
+  messageText: string;
+};
