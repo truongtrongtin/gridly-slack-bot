@@ -68,8 +68,9 @@ if (!isOnGoogleCloud) {
   // Running on your local machine
   (async () => {
     // Start your app
-    expressApp.listen(Number(process.env.PORT) || 3001);
-    console.log('⚡️ Bolt app is running!');
+    const port = Number(process.env.PORT) || 3001;
+    expressApp.listen(port);
+    console.log(`⚡️ Bolt app is running on port ${port}!`);
   })();
 }
 
