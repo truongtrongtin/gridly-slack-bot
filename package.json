@@ -2,64 +2,14 @@
   "name": "gridly-slack-bot",
   "version": "1.0.0",
   "description": "Bolt getting started app in TypeScript",
+  "license": "MIT",
   "main": "app.js",
   "scripts": {
     "build": "tsc",
     "dev": "nodemon -r dotenv/config src/app.ts",
-    "prepare": "husky install",
     "lint": "eslint \"**/*.ts\"",
+    "prepare": "husky install",
     "prettier": "prettier --write ."
-  },
-  "license": "MIT",
-  "dependencies": {
-    "@slack/bolt": "3.12.2",
-    "chrono-node": "2.5.0",
-    "date-fns": "2.29.3",
-    "jsonwebtoken": "9.0.0"
-  },
-  "devDependencies": {
-    "@commitlint/config-conventional": "17.4.4",
-    "@types/express": "4.17.17",
-    "@types/jsonwebtoken": "9.0.1",
-    "@types/node": "18.14.1",
-    "@typescript-eslint/eslint-plugin": "5.53.0",
-    "@typescript-eslint/parser": "5.53.0",
-    "commitlint": "17.4.4",
-    "dotenv": "16.0.3",
-    "eslint": "8.34.0",
-    "eslint-config-prettier": "8.6.0",
-    "eslint-plugin-prettier": "4.2.1",
-    "husky": "8.0.3",
-    "lint-staged": "13.1.2",
-    "nodemon": "2.0.20",
-    "prettier": "2.8.4",
-    "ts-node": "10.9.1",
-    "typescript": "4.9.5"
-  },
-  "eslintConfig": {
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "project": "tsconfig.json",
-      "sourceType": "module"
-    },
-    "extends": [
-      "plugin:@typescript-eslint/recommended",
-      "plugin:prettier/recommended"
-    ],
-    "root": true,
-    "env": {
-      "node": true,
-      "jest": true
-    },
-    "rules": {
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-non-null-assertion": "off",
-      "@typescript-eslint/ban-ts-comment": "off"
-    }
-  },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "all"
   },
   "commitlint": {
     "extends": [
@@ -71,12 +21,65 @@
     "*.js": "eslint --cache --fix"
   },
   "nodemonConfig": {
-    "watch": [
-      "src"
-    ],
     "ignore": [
       "src/**/*.spec.ts"
+    ],
+    "watch": [
+      "src"
     ]
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "all"
+  },
+  "eslintConfig": {
+    "env": {
+      "jest": true,
+      "node": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": "tsconfig.json",
+      "sourceType": "module"
+    },
+    "extends": [
+      "plugin:@typescript-eslint/recommended",
+      "plugin:prettier/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/ban-ts-comment": "off",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-non-null-assertion": "off"
+    },
+    "root": true
+  },
+  "dependencies": {
+    "@slack/bolt": "3.12.2",
+    "chrono-node": "2.6.0",
+    "date-fns": "2.29.3",
+    "jsonwebtoken": "9.0.0"
+  },
+  "devDependencies": {
+    "@commitlint/config-conventional": "17.4.4",
+    "@types/express": "4.17.17",
+    "@types/jsonwebtoken": "9.0.1",
+    "@types/node": "18.15.0",
+    "@typescript-eslint/eslint-plugin": "5.54.1",
+    "@typescript-eslint/parser": "5.54.1",
+    "commitlint": "17.4.4",
+    "dotenv": "16.0.3",
+    "eslint": "8.36.0",
+    "eslint-config-prettier": "8.7.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "husky": "8.0.3",
+    "lint-staged": "13.2.0",
+    "nodemon": "2.0.21",
+    "prettier": "2.8.4",
+    "ts-node": "10.9.1",
+    "typescript": "4.9.5"
+  },
+  "engines": {
+    "node": ">= 18.0.0"
   },
   "renovate": {
     "extends": [
@@ -101,8 +104,5 @@
     "schedule": [
       "every weekend"
     ]
-  },
-  "engines": {
-    "node": ">= 18.0.0"
   }
 }
