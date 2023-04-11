@@ -83,26 +83,11 @@
   },
   "renovate": {
     "extends": [
-      "config:base"
-    ],
-    "dependencyDashboard": false,
-    "separateMajorMinor": false,
-    "packageRules": [
-      {
-        "matchPackagePatterns": [
-          "*"
-        ],
-        "groupName": "all dependencies",
-        "groupSlug": "all",
-        "automerge": true,
-        "automergeType": "branch",
-        "automergeSchedule": [
-          "every weekend"
-        ]
-      }
-    ],
-    "schedule": [
-      "every weekend"
+      "config:base",
+      ":automergeBranch",
+      ":automergeMinor",
+      "schedule:automergeWeekends",
+      "schedule:weekends"
     ]
   }
 }
