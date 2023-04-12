@@ -199,4 +199,10 @@ export default [
     name: 'Vu',
     role: Role.MEMBER,
   },
+  {
+    id: 'U052VQYT88L',
+    email: 'ttp@localizedirect.com',
+    name: 'Thuy',
+    role: Role.MEMBER,
+  },
 ];
