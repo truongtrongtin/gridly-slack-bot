@@ -84,10 +84,9 @@
   "renovate": {
     "extends": [
       "config:base",
+      ":disableDependencyDashboard",
       ":automergeBranch",
-      ":automergeMinor",
-      "schedule:automergeWeekends",
-      "schedule:weekends"
+      "group:all"
     ]
   }
 }
