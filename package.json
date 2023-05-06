@@ -54,7 +54,7 @@
     "root": true
   },
   "dependencies": {
-    "@slack/bolt": "3.13.0",
+    "@slack/bolt": "3.13.1",
     "chrono-node": "2.6.3",
     "date-fns": "2.29.3",
     "jsonwebtoken": "9.0.0"
