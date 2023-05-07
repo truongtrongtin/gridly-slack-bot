@@ -1,12 +1,12 @@
 import { App } from '@slack/bolt';
-import { addDays, addMonths, endOfDay, format, startOfDay } from 'date-fns';
+import { addDays, addMonths, format, startOfDay } from 'date-fns';
 import {
   findMemberById,
   generateTimeText,
   isWeekendInRange,
 } from '../../helpers';
 import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token';
-import { CalendarEvent, DayPart, Role } from '../../types';
+import { DayPart, Role } from '../../types';
 
 export default function newAbsenceSubmit(app: App) {
   app.view(
@@ -145,42 +145,11 @@ export default function newAbsenceSubmit(app: App) {
       await ack();
 
       try {
+        const accessToken = await getAccessTokenFromRefreshToken();
         const dayPartText =
           dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;
         const summary = `${targetUserName} ${dayPartText}`;
-
-        const accessToken = await getAccessTokenFromRefreshToken();
-
-        // Get events from google calendar
-        const queryParams = new URLSearchParams({
-          timeMin: startDate.toISOString(),
-          timeMax: endOfDay(endDate).toISOString(),
-          q: targetUserName,
-        });
-        const eventListResponse = await fetch(
-          `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
-          { headers: { Authorization: `Bearer ${accessToken}` } },
-        );
-        const eventListObject = await eventListResponse.json();
-        const absenceEvents: CalendarEvent[] = eventListObject.items || [];
-
         const timeText = generateTimeText(startDate, endDate, dayPart);
-        const dayPartExisted = absenceEvents.some((event) =>
-          event.summary.includes(dayPart),
-        );
-        if (
-          (isSingleMode && dayPartExisted) ||
-          ((!isSingleMode || dayPart === DayPart.ALL) &&
-            absenceEvents.length > 0)
-        ) {
-          const failureText = ':x: Failed to create. You already have absence';
-          await client.chat.postEphemeral({
-            channel: process.env.SLACK_CHANNEL!,
-            user: actionUserId,
-            text: `${failureText} *${timeText}*.`,
-          });
-          return;
-        }
         const reasonText = reason ? ` Reason: ${reason}` : '';
 
         const newMessage = await client.chat.postMessage({
