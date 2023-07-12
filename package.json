@@ -5,9 +5,9 @@
   "license": "MIT",
   "main": "app.js",
   "scripts": {
-    "gcp-build": "",
     "build": "tsc",
     "dev": "nodemon -r dotenv/config src/app.ts",
+    "gcp-build": "",
     "lint": "eslint \"**/*.ts\"",
     "prepare": "husky install",
     "prettier": "prettier --write ."
@@ -18,8 +18,7 @@
     ]
   },
   "lint-staged": {
-    "*.ts": "eslint --fix",
-    "*.js": "eslint --cache --fix"
+    "*.ts": "eslint --fix"
   },
   "nodemonConfig": {
     "ignore": [
@@ -58,36 +57,51 @@
     "@slack/bolt": "3.13.1",
     "chrono-node": "2.6.3",
     "date-fns": "2.30.0",
-    "jsonwebtoken": "9.0.0"
+    "jsonwebtoken": "9.0.1"
   },
   "devDependencies": {
-    "@commitlint/config-conventional": "17.6.3",
+    "@commitlint/config-conventional": "17.6.6",
     "@types/express": "4.17.17",
     "@types/jsonwebtoken": "9.0.2",
-    "@types/node": "18.16.5",
-    "@typescript-eslint/eslint-plugin": "5.59.2",
-    "@typescript-eslint/parser": "5.59.2",
-    "commitlint": "17.6.3",
-    "dotenv": "16.0.3",
-    "eslint": "8.40.0",
+    "@types/node": "20.4.1",
+    "@typescript-eslint/eslint-plugin": "6.0.0",
+    "@typescript-eslint/parser": "6.0.0",
+    "commitlint": "17.6.6",
+    "dotenv": "16.3.1",
+    "eslint": "8.44.0",
     "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-prettier": "5.0.0",
     "husky": "8.0.3",
-    "lint-staged": "13.2.2",
-    "nodemon": "2.0.22",
-    "prettier": "2.8.8",
+    "lint-staged": "13.2.3",
+    "nodemon": "3.0.1",
+    "prettier": "3.0.0",
     "ts-node": "10.9.1",
-    "typescript": "5.0.4"
+    "typescript": "5.1.6"
   },
   "engines": {
-    "node": ">= 18.0.0"
+    "node": ">= 20.0.0"
   },
   "renovate": {
     "extends": [
       "config:base",
-      ":disableDependencyDashboard",
-      ":automergeBranch",
-      "group:all"
+      ":disableDependencyDashboard"
+    ],
+    "semanticCommits": "enabled",
+    "separateMajorMinor": false,
+    "packageRules": [
+      {
+        "matchUpdateTypes": [
+          "major",
+          "minor",
+          "patch"
+        ],
+        "automerge": true,
+        "automergeType": "branch"
+      }
+    ],
+    "platformAutomerge": true,
+    "schedule": [
+      "every weekend"
     ]
   }
 }

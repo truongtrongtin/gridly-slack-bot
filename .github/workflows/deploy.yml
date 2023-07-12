@@ -18,7 +18,7 @@ jobs:
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: 18
+          node-version: 20
           cache: npm
 
       - name: Skip husky
@@ -43,7 +43,7 @@ jobs:
         uses: google-github-actions/deploy-cloud-functions@v1
         with:
           name: gridly-slack-bot
-          runtime: nodejs18
+          runtime: nodejs20
           memory_mb: 128
           region: europe-west3
           source_dir: dist/
