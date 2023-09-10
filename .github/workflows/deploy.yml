@@ -13,30 +13,36 @@ jobs:
       id-token: write
     steps:
       - name: Checkout source code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - id: auth
+        name: Authenticate to Google Cloud
         uses: google-github-actions/auth@v1
         with:
           workload_identity_provider: projects/96573011708/locations/global/workloadIdentityPools/gh-pool/providers/gh-provider
           service_account: github-actions-service-account@my-project-1540367072726.iam.gserviceaccount.com
 
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v1
+
       - id: deploy
-        uses: google-github-actions/deploy-cloud-functions@v1
-        with:
-          name: gridly-slack-bot
-          runtime: nodejs20
-          memory_mb: 128
-          region: europe-west3
-          entry_point: app
-          https_trigger_security_level: secure_always
-          env_vars: |
-            TZ=${{ secrets.TZ }}
-            SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }}
-            SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }}
-            SLACK_CHANNEL=${{ secrets.SLACK_CHANNEL }}
-            GOOGLE_CALENDAR_ID=${{ secrets.GOOGLE_CALENDAR_ID }}
-            GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-            GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-            GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }}
-            SERVICE_ACCOUNT_KEY_BASE64=${{ secrets.SERVICE_ACCOUNT_KEY_BASE64 }}
+        name: Use gcloud CLI
+        run: >
+          gcloud functions deploy gridly-slack-bot-v2
+          --gen2
+          --trigger-http
+          --entry-point=app
+          --runtime=nodejs20
+          --memory=128MiB
+          --region=europe-west3
+          --source=.
+          --allow-unauthenticated
+          --set-env-vars TZ=${{ secrets.TZ }}
+          --set-env-vars SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }}
+          --set-env-vars SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }}
+          --set-env-vars SLACK_CHANNEL=${{ secrets.SLACK_CHANNEL }}
+          --set-env-vars GOOGLE_CALENDAR_ID=${{ secrets.GOOGLE_CALENDAR_ID }}
+          --set-env-vars GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          --set-env-vars GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
+          --set-env-vars GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }}
+          --set-env-vars SERVICE_ACCOUNT_KEY_BASE64=${{ secrets.SERVICE_ACCOUNT_KEY_BASE64 }}
