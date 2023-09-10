@@ -15,24 +15,6 @@ jobs:
       - name: Checkout source code
         uses: actions/checkout@v3
 
-      - name: Use Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-          cache: npm
-
-      - name: Skip husky
-        run: npm pkg delete scripts.prepare
-
-      - name: Install
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      - name: Copy package*.json to built folder
-        run: cp package*.json dist/
-
       - id: auth
         uses: google-github-actions/auth@v1
         with:
@@ -46,7 +28,6 @@ jobs:
           runtime: nodejs20
           memory_mb: 128
           region: europe-west3
-          source_dir: dist/
           entry_point: app
           https_trigger_security_level: secure_always
           env_vars: |

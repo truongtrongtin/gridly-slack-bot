@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "description": "Bolt getting started app in TypeScript",
   "license": "MIT",
-  "main": "app.js",
+  "main": "dist/app.js",
   "scripts": {
     "build": "tsc",
     "dev": "nodemon -r dotenv/config src/app.ts",
-    "gcp-build": "",
+    "gcp-build": "tsc",
     "lint": "eslint \"**/*.ts\"",
     "prepare": "husky install",
     "prettier": "prettier --write ."
