@@ -1,5 +1,5 @@
 import { App } from '@slack/bolt';
-import { addMonths, startOfDay } from 'date-fns';
+import { addYears, startOfDay } from 'date-fns';
 import {
   findMemberById,
   generateTimeText,
@@ -82,21 +82,21 @@ export default function newSuggestionSubmit(app: App) {
         return;
       }
 
-      if (startDate > addMonths(today, 3)) {
+      if (startDate > addYears(today, 1)) {
         await ack({
           response_action: 'errors',
           errors: {
-            'start-date-block': 'Must not be later than 3 months from now',
+            'start-date-block': 'Must not be later than 1 year from now',
           },
         });
         return;
       }
 
-      if (endDate > addMonths(today, 3)) {
+      if (endDate > addYears(today, 1)) {
         await ack({
           response_action: 'errors',
           errors: {
-            'end-date-block': 'Must not be later than 3 months from now',
+            'end-date-block': 'Must not be later than 1 year from now',
           },
         });
         return;

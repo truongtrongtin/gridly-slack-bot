@@ -1,6 +1,6 @@
 import { App } from '@slack/bolt';
 import * as chrono from 'chrono-node';
-import { addMonths, format } from 'date-fns';
+import { addYears, format } from 'date-fns';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
 import getAccessTokenFromServiceAccount from '../../services/get-access-token-from-service-account';
 import { serviceAccountKey } from '../../services/service-account-key';
@@ -105,8 +105,8 @@ export default function messages(app: App) {
           });
           return;
         }
-        if (startDate > addMonths(today, 3)) {
-          const failureText = 'No more than 3 months from now!';
+        if (startDate > addYears(today, 1)) {
+          const failureText = 'No more than 1 year from now!';
           await say({
             thread_ts: message.ts,
             blocks: [

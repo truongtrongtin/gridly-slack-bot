@@ -1,5 +1,5 @@
 import { App } from '@slack/bolt';
-import { addMonths, startOfDay } from 'date-fns';
+import { startOfDay } from 'date-fns';
 import { findMemberById } from '../../helpers';
 import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token';
 import { CalendarEvent } from '../../types';
@@ -18,7 +18,6 @@ export default function appHomeOpened(app: App) {
       // Get future absences from google calendar
       const queryParams = new URLSearchParams({
         timeMin: startOfDay(new Date()).toISOString(),
-        timeMax: addMonths(new Date(), 3).toISOString(),
         q: 'off',
         orderBy: 'startTime',
         singleEvents: 'true',
