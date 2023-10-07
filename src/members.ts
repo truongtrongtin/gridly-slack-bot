@@ -80,18 +80,6 @@ export default [
     role: Role.MEMBER,
   },
   {
-    id: 'U021JSYHUG5',
-    email: 'pv@localizedirect.com',
-    name: 'Phu',
-    role: Role.MEMBER,
-  },
-  {
-    id: 'U026KACHTM4',
-    email: 'pia@localizedirect.com',
-    name: 'Pia',
-    role: Role.ADMIN,
-  },
-  {
     id: 'U02ARBPCHSQ',
     email: 'ldv@localizedirect.com',
     name: 'Long',
@@ -164,21 +152,9 @@ export default [
     role: Role.MEMBER,
   },
   {
-    id: 'U044W33PMRA',
-    email: 'np@localizedirect.com',
-    name: 'Ngan',
-    role: Role.MEMBER,
-  },
-  {
     id: 'U04AR0TV5M1',
     email: 'qt@localizedirect.com',
     name: 'Quoc',
-    role: Role.MEMBER,
-  },
-  {
-    id: 'U04C8GMTRMJ',
-    email: 'cdm@localizedirect.com',
-    name: 'Chau Dang',
     role: Role.MEMBER,
   },
   {
@@ -197,12 +173,6 @@ export default [
     id: 'U04SL792FU5',
     email: 'pvn@localizedirect.com',
     name: 'Vu',
-    role: Role.MEMBER,
-  },
-  {
-    id: 'U052VQYT88L',
-    email: 'ttp@localizedirect.com',
-    name: 'Thuy',
     role: Role.MEMBER,
   },
 ];
