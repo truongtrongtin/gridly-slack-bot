@@ -2,8 +2,6 @@ import { App } from '@slack/bolt';
 import * as chrono from 'chrono-node';
 import { addYears, format } from 'date-fns';
 import { generateTimeText, isWeekendInRange } from '../../helpers';
-import getAccessTokenFromServiceAccount from '../../services/get-access-token-from-service-account';
-import { serviceAccountKey } from '../../services/service-account-key';
 import { AbsencePayload, DayPart } from '../../types';
 
 export default function messages(app: App) {
@@ -30,17 +28,14 @@ export default function messages(app: App) {
       const regexp = /(^|\s)(off|nghỉ)([?!.,]|$|\s(?!sớm))/gi;
       if (!regexp.test(message.text)) return;
 
-      const accessToken = await getAccessTokenFromServiceAccount();
-
       const translationResponse = await fetch(
-        `https://translation.googleapis.com/v3/projects/${serviceAccountKey.project_id}:translateText`,
+        `https://translation.googleapis.com/language/translate/v2?key=${process.env.GOOGLE_API_KEY}`,
         {
           method: 'POST',
-          headers: { Authorization: `Bearer ${accessToken}` },
           body: JSON.stringify({
-            sourceLanguageCode: 'vi',
-            targetLanguageCode: 'en',
-            contents: message.text
+            source: 'vi',
+            target: 'en',
+            q: message.text
               ?.replaceAll(/t2|thứ 2/gi, 'monday')
               ?.replaceAll(/t3|thứ 3/gi, 'tuesday')
               ?.replaceAll(/t4|thứ 4/gi, 'wednesdays')
@@ -49,12 +44,13 @@ export default function messages(app: App) {
               ?.replaceAll(/nghỉ/gi, 'off')
               ?.replaceAll(/\//g, ' tháng ')
               ?.replaceAll(/-/g, ' đến '),
-            mimeType: 'text/plain',
+            format: 'text',
           }),
         },
       );
       const translationObject = await translationResponse.json();
-      const translatedText = translationObject.translations[0].translatedText;
+      const translatedText =
+        translationObject.data.translations[0].translatedText;
       logger.info('translatedText', translatedText);
 
       const quote = message.text
