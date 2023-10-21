@@ -1,5 +1,4 @@
 import { App, ExpressReceiver, LogLevel } from '@slack/bolt';
-import { Request, Response } from 'express';
 import absenceNew from './listeners/actions/absence-new';
 import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes';
 import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete';
@@ -34,8 +33,6 @@ const app = new App({
 
 app.use(retryIgnore);
 
-const expressApp = expressReceiver.app;
-
 // actions
 absenceNew(app);
 appHomeAbsenceDelete(app);
@@ -64,6 +61,8 @@ app.error(async (error) => {
   console.error(error);
 });
 
+export const expressApp = expressReceiver.app;
+
 if (!isOnGoogleCloud) {
   // Running on your local machine
   (async () => {
@@ -73,11 +72,3 @@ if (!isOnGoogleCloud) {
     console.log(`⚡️ Bolt app is running on port ${port}!`);
   })();
 }
-
-exports.app = function (req: Request, res: Response) {
-  // console.log(`Request header: ${JSON.stringify(req.headers)}`);
-  // if (req.rawBody) {
-  //   console.log(`Request body: ${req.rawBody}`);
-  // }
-  expressApp(req, res);
-};
