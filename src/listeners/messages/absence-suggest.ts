@@ -5,10 +5,10 @@ import {
   generateTimeText,
   isGenericMessageEvent,
   isWeekendInRange,
-} from '../../helpers';
-import getAccessTokenFromServiceAccount from '../../services/get-access-token-from-service-account';
-import { serviceAccountKey } from '../../services/service-account-key';
-import { DayPart } from '../../types';
+} from '../../helpers.js';
+import getAccessTokenFromServiceAccount from '../../services/get-access-token-from-service-account.js';
+import { serviceAccountKey } from '../../services/service-account-key.js';
+import { DayPart } from '../../types.js';
 
 export default function suggestAbsence(app: App) {
   app.message(
@@ -95,7 +95,7 @@ export default function suggestAbsence(app: App) {
         if (isWeekendInRange(startDate, endDate)) {
           const failureText = `:x: Failed to create. Not allow weekend in range`;
           await client.chat.postEphemeral({
-            channel: process.env.SLACK_CHANNEL!,
+            channel: process.env.SLACK_CHANNEL,
             user: message.user,
             text: failureText,
           });

@@ -1,18 +1,19 @@
-import { App, ExpressReceiver, LogLevel } from '@slack/bolt';
-import absenceNew from './listeners/actions/absence-new';
-import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes';
-import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete';
-import appHomeOpened from './listeners/events/app-home-opened';
-import memberJoinedChannel from './listeners/events/member-joined-channel';
-import messages from './listeners/events/messages';
-// import suggestAbsence from './listeners/messages/absence-suggest';
-import globalNewAbsence from './listeners/shortcuts/global-new-absence';
-import messageDelete from './listeners/shortcuts/message-delete';
-import messageNewSuggestion from './listeners/shortcuts/message-new-suggestion';
-import deleteMessageSubmit from './listeners/views/delete-message-submit';
-import newAbsenceSubmit from './listeners/views/new-absence-submit';
-import newSuggestionSubmit from './listeners/views/new-suggestion-submit';
-import retryIgnore from './middlewares/retry-ignore';
+import slackBolt from '@slack/bolt';
+const { App, ExpressReceiver, LogLevel } = slackBolt;
+import absenceNew from './listeners/actions/absence-new.js';
+import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes.js';
+import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete.js';
+import appHomeOpened from './listeners/events/app-home-opened.js';
+import memberJoinedChannel from './listeners/events/member-joined-channel.js';
+import messages from './listeners/events/messages.js';
+// import suggestAbsence from './listeners/messages/absence-suggest.js';
+import globalNewAbsence from './listeners/shortcuts/global-new-absence.js';
+import messageDelete from './listeners/shortcuts/message-delete.js';
+import messageNewSuggestion from './listeners/shortcuts/message-new-suggestion.js';
+import deleteMessageSubmit from './listeners/views/delete-message-submit.js';
+import newAbsenceSubmit from './listeners/views/new-absence-submit.js';
+import newSuggestionSubmit from './listeners/views/new-suggestion-submit.js';
+import retryIgnore from './middlewares/retry-ignore.js';
 
 // https://cloud.google.com/functions/docs/configuring/env-var#newer_runtimes
 const isOnGoogleCloud = Boolean(
@@ -20,12 +21,12 @@ const isOnGoogleCloud = Boolean(
 );
 
 const expressReceiver = new ExpressReceiver({
-  signingSecret: process.env.SLACK_SIGNING_SECRET!,
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
   processBeforeResponse: isOnGoogleCloud,
 });
 
 const app = new App({
-  token: process.env.SLACK_BOT_TOKEN!,
+  token: process.env.SLACK_BOT_TOKEN,
   receiver: expressReceiver,
   processBeforeResponse: isOnGoogleCloud,
   logLevel: LogLevel.INFO,
@@ -65,10 +66,8 @@ export const expressApp = expressReceiver.app;
 
 if (!isOnGoogleCloud) {
   // Running on your local machine
-  (async () => {
-    // Start your app
-    const port = Number(process.env.PORT) || 3001;
-    expressApp.listen(port);
-    console.log(`⚡️ Bolt app is running on port ${port}!`);
-  })();
+  const port = Number(process.env.PORT) || 3001;
+  expressApp.listen(port, () => {
+    console.log(`Listening on port ${port}!`);
+  });
 }

@@ -5,8 +5,8 @@ import {
   ReactionMessageItem,
 } from '@slack/bolt';
 import { format, isSameDay } from 'date-fns';
-import { DayPart } from './types';
-import members from './members';
+import { DayPart } from './types.js';
+import members from './members.js';
 
 export const isGenericMessageEvent = (
   msg: MessageEvent,

@@ -4,8 +4,8 @@ import {
   findMemberById,
   generateTimeText,
   getDayPartFromEventSummary,
-} from '../helpers';
-import { CalendarEvent, Role } from '../types';
+} from '../helpers.js';
+import { CalendarEvent, Role } from '../types.js';
 
 export default function appHomeView(
   absenceEvents: CalendarEvent[],

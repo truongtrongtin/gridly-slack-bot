@@ -1,6 +1,6 @@
 import { App } from '@slack/bolt';
-import { findMemberById } from '../../helpers';
-import newSuggestionModal from '../../user-interface/modals/new-suggestion';
+import { findMemberById } from '../../helpers.js';
+import newSuggestionModal from '../../user-interface/modals/new-suggestion.js';
 
 export default function messageNewSuggestion(app: App) {
   app.shortcut(

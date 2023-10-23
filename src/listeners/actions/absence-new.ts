@@ -1,6 +1,6 @@
 import { App, ButtonAction } from '@slack/bolt';
-import { AbsencePayload } from '../../types';
-import newAbsenceModal from '../../user-interface/modals/new-absence';
+import { AbsencePayload } from '../../types.js';
+import newAbsenceModal from '../../user-interface/modals/new-absence.js';
 
 export default function absenceNew(app: App) {
   app.action(

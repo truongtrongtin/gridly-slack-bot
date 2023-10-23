@@ -1,9 +1,9 @@
 import { App } from '@slack/bolt';
 import { addMonths, startOfDay } from 'date-fns';
-import { findMemberById } from '../../helpers';
-import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token';
-import { CalendarEvent } from '../../types';
-import appHomeView from '../../user-interface/app-home';
+import { findMemberById } from '../../helpers.js';
+import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token.js';
+import { CalendarEvent } from '../../types.js';
+import appHomeView from '../../user-interface/app-home.js';
 
 export default function appHomeAbsenceDelete(app: App) {
   app.action(
@@ -49,7 +49,7 @@ export default function appHomeAbsenceDelete(app: App) {
 
         // Delete announced message
         await client.chat.delete({
-          channel: process.env.SLACK_CHANNEL!,
+          channel: process.env.SLACK_CHANNEL,
           ts: message_ts,
         });
 

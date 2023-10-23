@@ -4,8 +4,8 @@ import {
   findMemberById,
   generateTimeText,
   isWeekendInRange,
-} from '../../helpers';
-import { DayPart } from '../../types';
+} from '../../helpers.js';
+import { DayPart } from '../../types.js';
 
 export default function newSuggestionSubmit(app: App) {
   app.view(
@@ -122,7 +122,7 @@ export default function newSuggestionSubmit(app: App) {
           .map((text: string) => `>${text}`)
           .join('\n');
         await client.chat.postMessage({
-          channel: process.env.SLACK_CHANNEL!,
+          channel: process.env.SLACK_CHANNEL,
           thread_ts: messageTs,
           blocks: [
             {

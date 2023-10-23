@@ -1,8 +1,8 @@
 import { App, ButtonAction } from '@slack/bolt';
 import { addDays, format } from 'date-fns';
-import { findMemberById, generateTimeText } from '../../helpers';
-import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token';
-import { AbsencePayload, DayPart, Role } from '../../types';
+import { findMemberById, generateTimeText } from '../../helpers.js';
+import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token.js';
+import { AbsencePayload, DayPart, Role } from '../../types.js';
 
 export default function absenceSuggestionYes(app: App) {
   app.action(
@@ -30,7 +30,7 @@ export default function absenceSuggestionYes(app: App) {
 
         if (targetUserId !== actionUserId && !isAdmin) {
           await client.chat.postEphemeral({
-            channel: process.env.SLACK_CHANNEL!,
+            channel: process.env.SLACK_CHANNEL,
             user: body.user.id,
             text: ':x: You are not authorized to perform this action!',
           });
@@ -56,7 +56,7 @@ export default function absenceSuggestionYes(app: App) {
         const timeText = generateTimeText(startDate, endDate, dayPart);
 
         const newMessage = await say({
-          channel: process.env.SLACK_CHANNEL!,
+          channel: process.env.SLACK_CHANNEL,
           text: `<@${targetUserId}> will be absent *${timeText}*.`,
         });
 

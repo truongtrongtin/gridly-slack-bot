@@ -1,8 +1,8 @@
 import { App } from '@slack/bolt';
 import * as chrono from 'chrono-node';
 import { addYears, format } from 'date-fns';
-import { generateTimeText, isWeekendInRange } from '../../helpers';
-import { AbsencePayload, DayPart } from '../../types';
+import { generateTimeText, isWeekendInRange } from '../../helpers.js';
+import { AbsencePayload, DayPart } from '../../types.js';
 
 export default function messages(app: App) {
   app.event('message', async ({ event, logger, say }) => {

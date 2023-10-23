@@ -1,6 +1,6 @@
 import { Option, View } from '@slack/bolt';
 import { format } from 'date-fns';
-import { DayPart } from '../../types';
+import { DayPart } from '../../types.js';
 
 export default function newSuggestionModal(
   targetUserId: string,

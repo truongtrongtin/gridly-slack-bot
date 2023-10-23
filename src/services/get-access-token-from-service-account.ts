@@ -1,5 +1,5 @@
 import jwt from 'jsonwebtoken';
-import { serviceAccountKey } from './service-account-key';
+import { serviceAccountKey } from './service-account-key.js';
 
 export default async function getAccessTokenFromServiceAccount(): Promise<string> {
   try {

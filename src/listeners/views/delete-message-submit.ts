@@ -6,7 +6,7 @@ export default function deleteMessageSubmit(app: App) {
     try {
       const { messageTs } = JSON.parse(view.private_metadata);
       await client.chat.delete({
-        channel: process.env.SLACK_CHANNEL!,
+        channel: process.env.SLACK_CHANNEL,
         ts: messageTs,
       });
     } catch (error) {

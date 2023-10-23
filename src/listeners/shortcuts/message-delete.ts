@@ -1,6 +1,6 @@
 import { App } from '@slack/bolt';
-import { findMemberById } from '../../helpers';
-import deleleteMessageConfirm from '../../user-interface/modals/delete-message-confirm';
+import { findMemberById } from '../../helpers.js';
+import deleleteMessageConfirm from '../../user-interface/modals/delete-message-confirm.js';
 
 export default function messageDelete(app: App) {
   app.shortcut(

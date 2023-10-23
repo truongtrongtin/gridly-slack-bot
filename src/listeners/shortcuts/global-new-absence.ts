@@ -1,6 +1,6 @@
 import { App } from '@slack/bolt';
-import { findMemberById } from '../../helpers';
-import newAbsenceModal from '../../user-interface/modals/new-absence';
+import { findMemberById } from '../../helpers.js';
+import newAbsenceModal from '../../user-interface/modals/new-absence.js';
 
 export default function globalNewAbsence(app: App) {
   app.shortcut(

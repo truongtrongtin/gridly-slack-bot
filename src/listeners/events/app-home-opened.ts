@@ -1,9 +1,9 @@
 import { App } from '@slack/bolt';
 import { startOfDay } from 'date-fns';
-import { findMemberById } from '../../helpers';
-import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token';
-import { CalendarEvent } from '../../types';
-import appHomeView from '../../user-interface/app-home';
+import { findMemberById } from '../../helpers.js';
+import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token.js';
+import { CalendarEvent } from '../../types.js';
+import appHomeView from '../../user-interface/app-home.js';
 
 export default function appHomeOpened(app: App) {
   // Listen for users opening your App Home

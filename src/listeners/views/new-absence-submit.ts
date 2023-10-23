@@ -4,9 +4,9 @@ import {
   findMemberById,
   generateTimeText,
   isWeekendInRange,
-} from '../../helpers';
-import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token';
-import { DayPart, Role } from '../../types';
+} from '../../helpers.js';
+import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token.js';
+import { DayPart, Role } from '../../types.js';
 
 export default function newAbsenceSubmit(app: App) {
   app.view(
@@ -153,7 +153,7 @@ export default function newAbsenceSubmit(app: App) {
         const reasonText = reason ? ` Reason: ${reason}` : '';
 
         const newMessage = await client.chat.postMessage({
-          channel: process.env.SLACK_CHANNEL!,
+          channel: process.env.SLACK_CHANNEL,
           text: `<@${targetUser.id}> will be absent *${timeText}*.${reasonText}`,
         });
 
