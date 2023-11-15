@@ -1,11 +1,11 @@
 import slackBolt from '@slack/bolt';
-const { App, ExpressReceiver, LogLevel } = slackBolt;
 import absenceNew from './listeners/actions/absence-new.js';
 import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes.js';
 import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete.js';
 import appHomeOpened from './listeners/events/app-home-opened.js';
 import memberJoinedChannel from './listeners/events/member-joined-channel.js';
 import messages from './listeners/events/messages.js';
+const { App, ExpressReceiver, LogLevel } = slackBolt;
 // import suggestAbsence from './listeners/messages/absence-suggest.js';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence.js';
 import messageDelete from './listeners/shortcuts/message-delete.js';
@@ -63,11 +63,3 @@ app.error(async (error) => {
 });
 
 export const expressApp = expressReceiver.app;
-
-if (!isOnGoogleCloud) {
-  // Running on your local machine
-  const port = Number(process.env.PORT) || 3001;
-  expressApp.listen(port, () => {
-    console.log(`Listening on port ${port}!`);
-  });
-}
