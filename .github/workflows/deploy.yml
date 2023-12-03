@@ -29,15 +29,14 @@ jobs:
         name: Use gcloud CLI
         run: >
           gcloud functions deploy gridly-slack-bot
-          --docker-registry=artifact-registry
+          --gen2
           --trigger-http
           --entry-point=expressApp
           --runtime=nodejs20
-          --memory=128MB
+          --memory=128MiB
           --region=europe-west3
           --source=.
           --allow-unauthenticated
-          --security-level=secure-always
           --set-env-vars TZ=${{ secrets.TZ }}
           --set-env-vars SLACK_BOT_TOKEN=${{ secrets.SLACK_BOT_TOKEN }}
           --set-env-vars SLACK_SIGNING_SECRET=${{ secrets.SLACK_SIGNING_SECRET }}
