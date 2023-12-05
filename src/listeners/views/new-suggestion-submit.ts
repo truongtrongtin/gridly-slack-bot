@@ -5,7 +5,7 @@ import {
   generateTimeText,
   isWeekendInRange,
 } from '../../helpers.js';
-import { DayPart } from '../../types.js';
+import { AbsencePayload, DayPart } from '../../types.js';
 
 export default function newSuggestionSubmit(app: App) {
   app.view(
@@ -113,7 +113,13 @@ export default function newSuggestionSubmit(app: App) {
       }
 
       await ack();
-
+      const absencePayload: AbsencePayload = {
+        startDateString,
+        endDateString,
+        dayPart,
+        messageText,
+        targetUserId,
+      };
       try {
         const timeText = generateTimeText(startDate, endDate, dayPart);
         const text = `<@${targetUser.id}>, are you going to be absent *${timeText}*?`;
@@ -145,13 +151,7 @@ export default function newSuggestionSubmit(app: App) {
                     text: 'Yes',
                   },
                   style: 'primary',
-                  value: JSON.stringify({
-                    startDateString,
-                    endDateString,
-                    dayPart,
-                    messageText,
-                    targetUserId,
-                  }),
+                  value: JSON.stringify(absencePayload),
                   confirm: {
                     title: {
                       type: 'plain_text',

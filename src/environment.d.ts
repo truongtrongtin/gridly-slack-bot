@@ -11,6 +11,7 @@ declare global {
       GOOGLE_CLIENT_SECRET: string;
       GOOGLE_REFRESH_TOKEN: string;
       GOOGLE_API_KEY: string;
+      API_ENDPOINT: string;
     }
   }
 }

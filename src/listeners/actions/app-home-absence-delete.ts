@@ -1,5 +1,5 @@
 import { App } from '@slack/bolt';
-import { addMonths, startOfDay } from 'date-fns';
+import { startOfDay } from 'date-fns';
 import { findMemberById } from '../../helpers.js';
 import getAccessTokenFromRefreshToken from '../../services/get-access-token-from-refresh-token.js';
 import { CalendarEvent } from '../../types.js';
@@ -27,10 +27,8 @@ export default function appHomeAbsenceDelete(app: App) {
           { headers: { Authorization: `Bearer ${accessToken}` } },
         );
         const eventObject = await eventResponse.json();
+
         const startDate = eventObject.start.date;
-        const message_ts: string =
-          eventObject?.extendedProperties?.private?.message_ts || '';
-        if (!message_ts) return;
         if (
           new Date(startDate).setHours(0, 0, 0, 0) <
           new Date().setHours(0, 0, 0, 0)
@@ -47,16 +45,19 @@ export default function appHomeAbsenceDelete(app: App) {
           },
         );
 
-        // Delete announced message
-        await client.chat.delete({
-          channel: process.env.SLACK_CHANNEL,
-          ts: message_ts,
-        });
+        const message_ts: string =
+          eventObject?.extendedProperties?.private?.message_ts || '';
+        if (message_ts) {
+          // Delete announced message
+          await client.chat.delete({
+            channel: process.env.SLACK_CHANNEL,
+            ts: message_ts,
+          });
+        }
 
         // Get events from google calendar
         const queryParams = new URLSearchParams({
           timeMin: startOfDay(new Date()).toISOString(),
-          timeMax: addMonths(new Date(), 3).toISOString(),
           q: 'off',
           orderBy: 'startTime',
           singleEvents: 'true',

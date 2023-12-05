@@ -5,8 +5,8 @@ import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete.js
 import appHomeOpened from './listeners/events/app-home-opened.js';
 import memberJoinedChannel from './listeners/events/member-joined-channel.js';
 import messages from './listeners/events/messages.js';
-const { App, ExpressReceiver, LogLevel } = slackBolt;
 // import suggestAbsence from './listeners/messages/absence-suggest.js';
+import { createAbsence } from './controllers/create-absence.js';
 import globalNewAbsence from './listeners/shortcuts/global-new-absence.js';
 import messageDelete from './listeners/shortcuts/message-delete.js';
 import messageNewSuggestion from './listeners/shortcuts/message-new-suggestion.js';
@@ -14,16 +14,15 @@ import deleteMessageSubmit from './listeners/views/delete-message-submit.js';
 import newAbsenceSubmit from './listeners/views/new-absence-submit.js';
 import newSuggestionSubmit from './listeners/views/new-suggestion-submit.js';
 import retryIgnore from './middlewares/retry-ignore.js';
-
-// https://cloud.google.com/functions/docs/configuring/env-var#newer_runtimes
-const isOnGoogleCloud = Boolean(
-  process.env.K_SERVICE && process.env.K_REVISION,
-);
+const { App, ExpressReceiver, LogLevel } = slackBolt;
 
 const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-  processBeforeResponse: isOnGoogleCloud,
+  processBeforeResponse: true,
 });
+
+expressReceiver.router.get('/', (req, res) => res.send('Hello world!'));
+expressReceiver.router.post('/absences', createAbsence);
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
