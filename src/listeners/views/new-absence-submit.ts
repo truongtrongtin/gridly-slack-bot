@@ -39,7 +39,7 @@ export default function newAbsenceSubmit(app: App) {
 
     const targetUserId =
       view.state.values?.['member-block']?.['member-action']?.selected_user ||
-      actionUserId;
+      '';
 
     let targetUser = actionUser;
     if (isAdmin) {
@@ -143,7 +143,7 @@ export default function newAbsenceSubmit(app: App) {
       method: 'POST',
       body: new URLSearchParams({
         actionUserId,
-        targetUserId,
+        targetUserId: targetUser.id,
         startDateString,
         endDateString,
         dayPart,
