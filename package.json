@@ -13,49 +13,14 @@
     "prepare": "node -e \"try { require('husky').install() } catch (e) {if (e.code !== 'MODULE_NOT_FOUND') throw e}\"",
     "prettier": "prettier --write ."
   },
-  "commitlint": {
-    "extends": [
-      "@commitlint/config-conventional"
-    ]
-  },
-  "lint-staged": {
-    "*.ts": "eslint --fix"
-  },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "all"
-  },
-  "eslintConfig": {
-    "env": {
-      "jest": true,
-      "node": true
-    },
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-      "project": "tsconfig.json",
-      "sourceType": "module"
-    },
-    "extends": [
-      "plugin:@typescript-eslint/recommended",
-      "plugin:prettier/recommended"
-    ],
-    "rules": {
-      "@typescript-eslint/ban-ts-comment": "off",
-      "@typescript-eslint/no-explicit-any": "off",
-      "@typescript-eslint/no-non-null-assertion": "off"
-    },
-    "root": true
-  },
   "dependencies": {
     "@google-cloud/functions-framework": "^3.3.0",
     "@slack/bolt": "3.16.0",
     "chrono-node": "2.7.3",
-    "date-fns": "2.30.0",
-    "jsonwebtoken": "9.0.2"
+    "date-fns": "2.30.0"
   },
   "devDependencies": {
     "@commitlint/config-conventional": "18.4.3",
-    "@types/jsonwebtoken": "9.0.5",
     "@types/node": "20.10.4",
     "@typescript-eslint/eslint-plugin": "6.13.2",
     "@typescript-eslint/parser": "6.13.2",
@@ -72,30 +37,5 @@
   },
   "engines": {
     "node": ">= 20.0.0"
-  },
-  "renovate": {
-    "extends": [
-      "config:base",
-      ":preserveSemverRanges",
-      ":semanticCommitTypeAll(chore)"
-    ],
-    "semanticCommits": "enabled",
-    "separateMajorMinor": false,
-    "dependencyDashboard": false,
-    "packageRules": [
-      {
-        "matchUpdateTypes": [
-          "patch",
-          "minor"
-        ],
-        "groupName": "patch/minor dependencies",
-        "groupSlug": "all-non-major",
-        "automerge": true,
-        "automergeType": "branch"
-      }
-    ],
-    "schedule": [
-      "every weekend"
-    ]
   }
 }

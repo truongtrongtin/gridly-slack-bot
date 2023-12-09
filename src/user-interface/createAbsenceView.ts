@@ -1,9 +1,9 @@
 import { KnownBlock, Option, View } from '@slack/bolt';
 import { format } from 'date-fns';
-import { findMemberById } from '../../helpers.js';
-import { AbsencePayload, DayPart, Role } from '../../types.js';
+import { findMemberById } from '../helpers.js';
+import { AbsencePayload, DayPart, Role } from '../types.js';
 
-export default function newAbsenceModal(
+export function createAbsenceView(
   actionUserId: string,
   absencePayload?: AbsencePayload,
 ): View {

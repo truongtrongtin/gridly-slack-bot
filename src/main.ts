@@ -1,19 +1,18 @@
 import slackBolt from '@slack/bolt';
-import absenceNew from './listeners/actions/absence-new.js';
-import absenceSuggestionYes from './listeners/actions/absence-suggestion-yes.js';
-import appHomeAbsenceDelete from './listeners/actions/app-home-absence-delete.js';
-import appHomeOpened from './listeners/events/app-home-opened.js';
-import memberJoinedChannel from './listeners/events/member-joined-channel.js';
-import messages from './listeners/events/messages.js';
-// import suggestAbsence from './listeners/messages/absence-suggest.js';
-import { createAbsence } from './controllers/create-absence.js';
-import globalNewAbsence from './listeners/shortcuts/global-new-absence.js';
-import messageDelete from './listeners/shortcuts/message-delete.js';
-import messageNewSuggestion from './listeners/shortcuts/message-new-suggestion.js';
-import deleteMessageSubmit from './listeners/views/delete-message-submit.js';
-import newAbsenceSubmit from './listeners/views/new-absence-submit.js';
-import newSuggestionSubmit from './listeners/views/new-suggestion-submit.js';
-import retryIgnore from './middlewares/retry-ignore.js';
+import { createAbsence } from './handlers/createAbsence.js';
+import { createAbsenceFromSuggestion } from './listeners/actions/createAbsenceFromSuggestion.js';
+import { deleteAbsenceFromAppHome } from './listeners/actions/deleteAbsenceFromAppHome.js';
+import { showCreateAbsenceModalFromSuggestion } from './listeners/actions/showCreateAbsenceModalFromSuggestion.js';
+import { appHomeOpened } from './listeners/events/appHomeOpened.js';
+import { memberJoinedChannel } from './listeners/events/memberJoinedChannel.js';
+import { postSuggestionFromMessage } from './listeners/messages/postSuggestionFromMessage.js';
+import { showCreateAbsenceModalFromGlobalShortcut } from './listeners/shortcuts/showCreateAbsenceModalFromGlobalShortcut.js';
+import { showDeleteMessageModalFromMessageShortcut } from './listeners/shortcuts/showDeleteMessageModalFromMessageShortcut.js';
+import { showPostSuggestionModalFromMessageShortcut } from './listeners/shortcuts/showPostSuggestionModalFromMessageShortcut.js';
+import { createAbsenceFromModal } from './listeners/views/createAbsenceFromModal.js';
+import { deleteMessageFromModal } from './listeners/views/deleteMessageFromModal.js';
+import { postSuggestionFromModal } from './listeners/views/postSuggestionFromModal.js';
+import { ignoreRetry } from './middlewares/ignoreRetry.js';
 const { App, ExpressReceiver, LogLevel } = slackBolt;
 
 const expressReceiver = new ExpressReceiver({
@@ -30,32 +29,43 @@ const app = new App({
   logLevel: LogLevel.INFO,
 });
 
-app.use(retryIgnore);
+app.use(ignoreRetry);
 
-// actions
-absenceNew(app);
-appHomeAbsenceDelete(app);
-absenceSuggestionYes(app);
+app.action(
+  { type: 'block_actions', action_id: 'absence-new' },
+  showCreateAbsenceModalFromSuggestion,
+);
+app.action(
+  { type: 'block_actions', action_id: 'app-home-absence-delete' },
+  deleteAbsenceFromAppHome,
+);
+app.action(
+  { type: 'block_actions', action_id: 'absence-suggestion-yes' },
+  createAbsenceFromSuggestion,
+);
 
-// events
-appHomeOpened(app);
-memberJoinedChannel(app);
-messages(app);
+app.event('app_home_opened', appHomeOpened);
+app.event('member_joined_channel', memberJoinedChannel);
 
-// shortcuts
-globalNewAbsence(app);
-messageNewSuggestion(app);
-messageDelete(app);
+app.shortcut(
+  { callback_id: 'global_new_absence', type: 'shortcut' },
+  showCreateAbsenceModalFromGlobalShortcut,
+);
+app.shortcut(
+  { callback_id: 'message_new_suggestion', type: 'message_action' },
+  showPostSuggestionModalFromMessageShortcut,
+);
+app.shortcut(
+  { callback_id: 'message_delete', type: 'message_action' },
+  showDeleteMessageModalFromMessageShortcut,
+);
 
-// messages
-// suggestAbsence(app);
+app.message(postSuggestionFromMessage);
 
-// views
-newAbsenceSubmit(app);
-newSuggestionSubmit(app);
-deleteMessageSubmit(app);
+app.view('new-absence-submit', createAbsenceFromModal);
+app.view('new-suggestion-submit', postSuggestionFromModal);
+app.view('delete-message-submit', deleteMessageFromModal);
 
-// Check the details of the error to handle cases where you should retry sending a message or stop the app
 app.error(async (error) => {
   console.error(error);
 });

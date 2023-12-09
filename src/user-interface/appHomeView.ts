@@ -7,7 +7,7 @@ import {
 } from '../helpers.js';
 import { CalendarEvent, Role } from '../types.js';
 
-export default function appHomeView(
+export function appHomeView(
   absenceEvents: CalendarEvent[],
   userId: string,
 ): View {
