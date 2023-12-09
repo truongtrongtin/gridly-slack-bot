@@ -1,6 +1,6 @@
 import { AllMiddlewareArgs, AnyMiddlewareArgs } from '@slack/bolt';
 
-export default async function retryIgnore({
+export async function ignoreRetry({
   context,
   logger,
   next,

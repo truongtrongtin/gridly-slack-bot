@@ -1,6 +1,6 @@
 import { Role } from './types.js';
 
-export default [
+export const members = [
   {
     id: 'U03DKD4GFLM',
     email: 'truongtrongtin0305@gmail.com',

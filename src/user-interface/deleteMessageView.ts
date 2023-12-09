@@ -1,6 +1,6 @@
 import { View } from '@slack/bolt';
 
-export default function deleleteMessageConfirm(
+export function deleteMessageView(
   messageText: string,
   messageTs: string,
 ): View {

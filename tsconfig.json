@@ -3,10 +3,8 @@
     "target": "ESNext",
     "module": "NodeNext",
     "strict": true,
-    "rootDir": "src",
     "outDir": "dist",
     "skipLibCheck": true
   },
-  "include": ["src/**/*"],
-  "exclude": ["node_modules"]
+  "include": ["src"]
 }
