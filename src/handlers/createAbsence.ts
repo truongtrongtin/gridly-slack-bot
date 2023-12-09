@@ -1,7 +1,7 @@
 import { Request, Response } from '@google-cloud/functions-framework';
 import { addDays, format } from 'date-fns';
 import { findMemberById, generateTimeText } from '../helpers.js';
-import getAccessTokenFromRefreshToken from '../services/get-access-token-from-refresh-token.js';
+import { getAccessTokenFromRefreshToken } from '../services/getAccessTokenFromRefreshToken.js';
 import { AbsencePayload, DayPart, Role } from '../types.js';
 
 export async function createAbsence(req: Request, res: Response) {
