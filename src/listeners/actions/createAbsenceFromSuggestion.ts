@@ -16,6 +16,7 @@ export async function createAbsenceFromSuggestion({
     body: new URLSearchParams({
       ...JSON.parse((<ButtonAction>payload).value),
       actionUserId: body.user.id,
+      messageText: '', // no need to log reason
     }),
   });
 }

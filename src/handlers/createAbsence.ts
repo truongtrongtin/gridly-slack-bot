@@ -60,7 +60,7 @@ export async function createAbsence(req: Request, res: Response) {
         body: new URLSearchParams({
           token: process.env.SLACK_BOT_TOKEN,
           channel: process.env.SLACK_CHANNEL,
-          text: `<@${targetUserId}> will be absent *${timeText}*.`,
+          text: `<@${targetUserId}> will be absent *${timeText}*.${messageText}`,
         }),
       },
     );
