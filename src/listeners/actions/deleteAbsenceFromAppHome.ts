@@ -3,7 +3,7 @@ import {
   BlockAction,
   SlackActionMiddlewareArgs,
 } from '@slack/bolt';
-import { startOfDay } from 'date-fns';
+import { startOfToday } from 'date-fns';
 import { findMemberById } from '../../helpers.js';
 import { getAccessTokenFromRefreshToken } from '../../services/getAccessTokenFromRefreshToken.js';
 import { CalendarEvent } from '../../types.js';
@@ -61,7 +61,7 @@ export async function deleteAbsenceFromAppHome({
 
     // Get events from google calendar
     const queryParams = new URLSearchParams({
-      timeMin: startOfDay(new Date()).toISOString(),
+      timeMin: startOfToday().toISOString(),
       q: 'off',
       orderBy: 'startTime',
       singleEvents: 'true',

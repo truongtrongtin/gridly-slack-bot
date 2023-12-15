@@ -21,9 +21,9 @@ const expressReceiver = new ExpressReceiver({
 });
 
 expressReceiver.router.get('/', (req, res) => res.send('Hello world!'));
-expressReceiver.router.post('/absences', createAbsence);
+expressReceiver.router.post('/create-absence', createAbsence);
 
-const app = new App({
+export const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   receiver: expressReceiver,
   logLevel: LogLevel.INFO,

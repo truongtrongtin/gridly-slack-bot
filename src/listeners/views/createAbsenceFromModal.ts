@@ -145,7 +145,7 @@ export async function createAbsenceFromModal({
 
   const messageText = reason ? ` Reason: ${reason}` : '';
 
-  fetch(`${process.env.API_ENDPOINT}/absences`, {
+  fetch(`${process.env.API_ENDPOINT}/create-absence`, {
     method: 'POST',
     body: new URLSearchParams({
       actionUserId,

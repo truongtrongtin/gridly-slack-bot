@@ -11,7 +11,7 @@ export async function createAbsenceFromSuggestion({
   body,
 }: AllMiddlewareArgs & SlackActionMiddlewareArgs<BlockAction>) {
   await ack();
-  fetch(`${process.env.API_ENDPOINT}/absences`, {
+  fetch(`${process.env.API_ENDPOINT}/create-absence`, {
     method: 'POST',
     body: new URLSearchParams({
       ...JSON.parse((<ButtonAction>payload).value),
