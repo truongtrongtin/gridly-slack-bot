@@ -50,7 +50,7 @@ export async function createAbsence(req: Request, res: Response) {
     }
 
     const accessToken = await getAccessTokenFromRefreshToken();
-    const dayPartText = dayPart === DayPart.ALL ? '(off)' : `(off ${dayPart})`;
+    const dayPartText = dayPart === DayPart.FULL ? '(off)' : `(off ${dayPart})`;
     const summary = `${targetUserName} ${dayPartText}`;
     const timeText = generateTimeText(startDate, endDate, dayPart);
 
@@ -93,6 +93,5 @@ export async function createAbsence(req: Request, res: Response) {
     res.end();
   } catch (error) {
     console.log(error);
-    return;
   }
 }

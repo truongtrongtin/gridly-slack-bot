@@ -4,6 +4,7 @@ import {
   findMemberById,
   generateTimeText,
   getDayPartFromEventSummary,
+  getMemberNameFromEventSummary,
 } from '../helpers.js';
 import { CalendarEvent, Role } from '../types.js';
 
@@ -66,7 +67,7 @@ export function appHomeView(
       ...absenceEvents.reduce(
         (results: (KnownBlock | Block)[], event: CalendarEvent) => {
           const dayPart = getDayPartFromEventSummary(event.summary);
-          const memberName = event.summary.split('(off')[0].trim();
+          const memberName = getMemberNameFromEventSummary(event.summary);
           const foundMember = findMemberById(userId);
           if (!foundMember) throw Error('member not found');
           const isBelongToMe = memberName === foundMember.name;

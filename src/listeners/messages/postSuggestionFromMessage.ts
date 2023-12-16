@@ -123,7 +123,7 @@ export async function postSuggestionFromMessage({
         return;
       }
 
-      let dayPart = DayPart.ALL;
+      let dayPart = DayPart.FULL;
       if (
         startDate.getTime() ===
         new Date(new Date(startDate).setHours(6, 0, 0, 0)).getTime()
@@ -140,7 +140,7 @@ export async function postSuggestionFromMessage({
       const startDateString = format(startDate, 'yyyy-MM-dd');
       const endDateString = format(endDate, 'yyyy-MM-dd');
       const isSingleMode = startDateString === endDateString;
-      if (!isSingleMode && dayPart !== DayPart.ALL) return;
+      if (!isSingleMode && dayPart !== DayPart.FULL) return;
 
       const timeText = generateTimeText(startDate, endDate, dayPart);
       const text = `<@${message.user}>, are you going to be absent *${timeText}*?`;

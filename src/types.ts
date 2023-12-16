@@ -1,5 +1,5 @@
 export enum DayPart {
-  ALL = 'all',
+  FULL = 'full',
   MORNING = 'morning',
   AFTERNOON = 'afternoon',
 }

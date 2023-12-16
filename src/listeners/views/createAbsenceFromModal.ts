@@ -131,7 +131,7 @@ export async function createAbsenceFromModal({
     return;
   }
 
-  if (!isSingleMode && dayPart !== DayPart.ALL) {
+  if (!isSingleMode && dayPart !== DayPart.FULL) {
     await ack({
       response_action: 'errors',
       errors: {

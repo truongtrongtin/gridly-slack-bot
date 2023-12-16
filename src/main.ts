@@ -1,5 +1,6 @@
 import slackBolt from '@slack/bolt';
 import { createAbsence } from './handlers/createAbsence.js';
+import { reportTodayAbsences } from './handlers/reportTodayAbsences.js';
 import { createAbsenceFromSuggestion } from './listeners/actions/createAbsenceFromSuggestion.js';
 import { deleteAbsenceFromAppHome } from './listeners/actions/deleteAbsenceFromAppHome.js';
 import { showCreateAbsenceModalFromSuggestion } from './listeners/actions/showCreateAbsenceModalFromSuggestion.js';
@@ -21,6 +22,7 @@ const expressReceiver = new ExpressReceiver({
 });
 
 expressReceiver.router.get('/', (req, res) => res.send('Hello world!'));
+expressReceiver.router.post('/report-today-absences', reportTodayAbsences);
 expressReceiver.router.post('/create-absence', createAbsence);
 
 export const app = new App({

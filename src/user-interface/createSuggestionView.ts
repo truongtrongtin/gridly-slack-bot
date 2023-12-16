@@ -14,7 +14,7 @@ export function createSuggestionView(
         text: ':beach_with_umbrella: All day',
         emoji: true,
       },
-      value: DayPart.ALL,
+      value: DayPart.FULL,
     },
     {
       text: {

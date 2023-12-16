@@ -9,7 +9,11 @@ export function getDayPartFromEventSummary(summary: string) {
   if (summary.includes(DayPart.AFTERNOON)) {
     return DayPart.AFTERNOON;
   }
-  return DayPart.ALL;
+  return DayPart.FULL;
+}
+
+export function getMemberNameFromEventSummary(summary: string) {
+  return summary.split(' (off')[0];
 }
 
 export function generateTimeText(
@@ -25,7 +29,7 @@ export function generateTimeText(
 
   if (isSameDay(startDate, endDate)) {
     timeText = `on ${niceStartDate} (${startWeekday})`;
-    if (dayPart !== DayPart.ALL) {
+    if (dayPart !== DayPart.FULL) {
       timeText += ` ${dayPart}`;
     }
   } else {
