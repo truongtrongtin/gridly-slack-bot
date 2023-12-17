@@ -1,16 +1,24 @@
-export async function getAccessTokenFromRefreshToken(): Promise<string> {
+let accessToken = '';
+
+export async function getAccessTokenFromRefreshToken() {
+  if (accessToken) {
+    console.log('use cached access token');
+    return accessToken;
+  }
+  console.log('request new access token');
   try {
-    const tokenResponse = await fetch('https://oauth2.googleapis.com/token', {
+    const response = await fetch('https://oauth2.googleapis.com/token', {
       method: 'POST',
-      body: JSON.stringify({
+      body: new URLSearchParams({
         client_id: process.env.GOOGLE_CLIENT_ID,
         client_secret: process.env.GOOGLE_CLIENT_SECRET,
         grant_type: 'refresh_token',
         refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
       }),
     });
-    const tokenObject = await tokenResponse.json();
-    if (!tokenResponse.ok) throw tokenObject;
+    const tokenObject = await response.json();
+    if (!response.ok) throw tokenObject;
+    accessToken = tokenObject.access_token;
     return tokenObject.access_token;
   } catch (error) {
     throw error;

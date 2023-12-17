@@ -47,3 +47,5 @@ jobs:
           --set-env-vars GOOGLE_REFRESH_TOKEN=${{ secrets.GOOGLE_REFRESH_TOKEN }}
           --set-env-vars GOOGLE_API_KEY=${{ secrets.GOOGLE_API_KEY }}
           --set-env-vars API_ENDPOINT=${{ secrets.API_ENDPOINT }}
+          --set-env-vars SPREADSHEET_ID=${{ secrets.SPREADSHEET_ID }}
+          --set-env-vars SHEET_NAME=${{ secrets.SHEET_NAME }}

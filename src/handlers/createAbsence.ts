@@ -1,7 +1,7 @@
-import { Request, Response } from '@google-cloud/functions-framework';
 import { addDays, format } from 'date-fns';
+import { Request, Response } from 'express';
 import { findMemberById, generateTimeText } from '../helpers.js';
-import { app } from '../main.js';
+import { slackApp } from '../main.js';
 import { getAccessTokenFromRefreshToken } from '../services/getAccessTokenFromRefreshToken.js';
 import { AbsencePayload, DayPart, Role } from '../types.js';
 
@@ -54,7 +54,7 @@ export async function createAbsence(req: Request, res: Response) {
     const summary = `${targetUserName} ${dayPartText}`;
     const timeText = generateTimeText(startDate, endDate, dayPart);
 
-    const newMessage = await app.client.chat.postMessage({
+    const newMessage = await slackApp.client.chat.postMessage({
       channel: process.env.SLACK_CHANNEL,
       text: `<@${targetUserId}> will be absent *${timeText}*.${messageText}`,
     });

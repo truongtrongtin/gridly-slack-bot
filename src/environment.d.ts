@@ -12,6 +12,8 @@ declare global {
       GOOGLE_REFRESH_TOKEN: string;
       GOOGLE_API_KEY: string;
       API_ENDPOINT: string;
+      SPREADSHEET_ID: string;
+      SHEET_NAME: string;
     }
   }
 }

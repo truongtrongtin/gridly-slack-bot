@@ -19,9 +19,7 @@ export type CalendarEvent = {
     date: string;
   };
   extendedProperties: {
-    private: {
-      [key: string]: string;
-    };
+    private: Record<string, string>;
   };
 };
 

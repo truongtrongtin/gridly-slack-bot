@@ -1,5 +1,7 @@
 import slackBolt from '@slack/bolt';
 import { createAbsence } from './handlers/createAbsence.js';
+import { getCalendarEvents } from './handlers/getCalendarEvents.js';
+import { getUsers } from './handlers/getUsers.js';
 import { reportTodayAbsences } from './handlers/reportTodayAbsences.js';
 import { createAbsenceFromSuggestion } from './listeners/actions/createAbsenceFromSuggestion.js';
 import { deleteAbsenceFromAppHome } from './listeners/actions/deleteAbsenceFromAppHome.js';
@@ -13,6 +15,8 @@ import { showPostSuggestionModalFromMessageShortcut } from './listeners/shortcut
 import { createAbsenceFromModal } from './listeners/views/createAbsenceFromModal.js';
 import { deleteMessageFromModal } from './listeners/views/deleteMessageFromModal.js';
 import { postSuggestionFromModal } from './listeners/views/postSuggestionFromModal.js';
+import { checkAccessToken } from './middlewares/checkAccessToken.js';
+import { cors } from './middlewares/cors.js';
 import { ignoreRetry } from './middlewares/ignoreRetry.js';
 const { App, ExpressReceiver, LogLevel } = slackBolt;
 
@@ -21,54 +25,61 @@ const expressReceiver = new ExpressReceiver({
   processBeforeResponse: true,
 });
 
+expressReceiver.router.use(cors);
 expressReceiver.router.get('/', (req, res) => res.send('Hello world!'));
 expressReceiver.router.post('/report-today-absences', reportTodayAbsences);
 expressReceiver.router.post('/create-absence', createAbsence);
 
-export const app = new App({
+expressReceiver.router.use('/events', checkAccessToken);
+expressReceiver.router.get('/events', getCalendarEvents);
+
+expressReceiver.router.use('/users', checkAccessToken);
+expressReceiver.router.get('/users', getUsers);
+
+export const slackApp = new App({
   token: process.env.SLACK_BOT_TOKEN,
   receiver: expressReceiver,
   logLevel: LogLevel.INFO,
 });
 
-app.use(ignoreRetry);
+slackApp.use(ignoreRetry);
 
-app.action(
+slackApp.action(
   { type: 'block_actions', action_id: 'absence-new' },
   showCreateAbsenceModalFromSuggestion,
 );
-app.action(
+slackApp.action(
   { type: 'block_actions', action_id: 'app-home-absence-delete' },
   deleteAbsenceFromAppHome,
 );
-app.action(
+slackApp.action(
   { type: 'block_actions', action_id: 'absence-suggestion-yes' },
   createAbsenceFromSuggestion,
 );
 
-app.event('app_home_opened', appHomeOpened);
-app.event('member_joined_channel', memberJoinedChannel);
+slackApp.event('app_home_opened', appHomeOpened);
+slackApp.event('member_joined_channel', memberJoinedChannel);
 
-app.shortcut(
+slackApp.shortcut(
   { callback_id: 'global_new_absence', type: 'shortcut' },
   showCreateAbsenceModalFromGlobalShortcut,
 );
-app.shortcut(
+slackApp.shortcut(
   { callback_id: 'message_new_suggestion', type: 'message_action' },
   showPostSuggestionModalFromMessageShortcut,
 );
-app.shortcut(
+slackApp.shortcut(
   { callback_id: 'message_delete', type: 'message_action' },
   showDeleteMessageModalFromMessageShortcut,
 );
 
-app.message(postSuggestionFromMessage);
+slackApp.message(postSuggestionFromMessage);
 
-app.view('new-absence-submit', createAbsenceFromModal);
-app.view('new-suggestion-submit', postSuggestionFromModal);
-app.view('delete-message-submit', deleteMessageFromModal);
+slackApp.view('new-absence-submit', createAbsenceFromModal);
+slackApp.view('new-suggestion-submit', postSuggestionFromModal);
+slackApp.view('delete-message-submit', deleteMessageFromModal);
 
-app.error(async (error) => {
+slackApp.error(async (error) => {
   console.error(error);
 });
 

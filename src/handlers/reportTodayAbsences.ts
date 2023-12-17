@@ -1,10 +1,10 @@
-import { Request, Response } from '@google-cloud/functions-framework';
 import { startOfToday, startOfTomorrow } from 'date-fns';
+import { Request, Response } from 'express';
 import {
   getDayPartFromEventSummary,
   getMemberNameFromEventSummary,
 } from '../helpers.js';
-import { app } from '../main.js';
+import { slackApp } from '../main.js';
 import { getAccessTokenFromRefreshToken } from '../services/getAccessTokenFromRefreshToken.js';
 import { CalendarEvent } from '../types.js';
 
@@ -55,7 +55,7 @@ export async function reportTodayAbsences(req: Request, res: Response) {
     const eventListObject = await eventListResponse.json();
     const absenceEvents: CalendarEvent[] = eventListObject.items;
 
-    await app.client.chat.postMessage({
+    await slackApp.client.chat.postMessage({
       channel: process.env.SLACK_CHANNEL,
       text:
         absenceEvents.length > 0
