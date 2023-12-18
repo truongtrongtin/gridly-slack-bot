@@ -3,7 +3,7 @@ import { Request, Response } from 'express';
 import { findMemberById, generateTimeText } from '../helpers.js';
 import { slackApp } from '../main.js';
 import { getAccessTokenFromRefreshToken } from '../services/getAccessTokenFromRefreshToken.js';
-import { AbsencePayload, DayPart, Role } from '../types.js';
+import { AbsencePayload, DayPart } from '../types.js';
 
 export async function createAbsence(req: Request, res: Response) {
   try {
@@ -21,7 +21,7 @@ export async function createAbsence(req: Request, res: Response) {
     const actionUser = findMemberById(actionUserId);
     if (!actionUser) throw Error('action user not found');
     const actionUserName = actionUser.name;
-    const isAdmin = actionUser.role === Role.ADMIN;
+    const isAdmin = actionUser.admin;
 
     if (targetUserId !== actionUserId && !isAdmin) {
       await fetch('https://slack.com/api/chat.postEphemeral', {

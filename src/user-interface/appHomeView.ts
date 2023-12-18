@@ -6,7 +6,7 @@ import {
   getDayPartFromEventSummary,
   getMemberNameFromEventSummary,
 } from '../helpers.js';
-import { CalendarEvent, Role } from '../types.js';
+import { CalendarEvent } from '../types.js';
 
 export function appHomeView(
   absenceEvents: CalendarEvent[],
@@ -71,7 +71,7 @@ export function appHomeView(
           const foundMember = findMemberById(userId);
           if (!foundMember) throw Error('member not found');
           const isBelongToMe = memberName === foundMember.name;
-          const isAdmin = foundMember.role === Role.ADMIN;
+          const isAdmin = foundMember.admin;
           const timeText = generateTimeText(
             new Date(event.start.date),
             subDays(new Date(event.end.date), 1),

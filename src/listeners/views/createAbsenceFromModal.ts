@@ -5,7 +5,7 @@ import {
 } from '@slack/bolt';
 import { addYears, startOfDay } from 'date-fns';
 import { findMemberById, isWeekendInRange } from '../../helpers.js';
-import { DayPart, Role } from '../../types.js';
+import { DayPart } from '../../types.js';
 
 export async function createAbsenceFromModal({
   ack,
@@ -42,7 +42,7 @@ export async function createAbsenceFromModal({
   const actionUser = findMemberById(actionUserId);
   if (!actionUser) throw Error('action user not found');
   const actionUserName = actionUser.name;
-  const isAdmin = actionUser.role === Role.ADMIN;
+  const isAdmin = actionUser.admin;
 
   const targetUserId =
     view.state.values?.['member-block']?.['member-action']?.selected_user || '';

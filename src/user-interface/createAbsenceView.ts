@@ -1,14 +1,14 @@
 import { KnownBlock, Option, View } from '@slack/bolt';
 import { format } from 'date-fns';
 import { findMemberById } from '../helpers.js';
-import { AbsencePayload, DayPart, Role } from '../types.js';
+import { AbsencePayload, DayPart } from '../types.js';
 
 export function createAbsenceView(
   actionUserId: string,
   absencePayload?: AbsencePayload,
 ): View {
   const foundMember = findMemberById(actionUserId)!;
-  const isAdmin = foundMember.role === Role.ADMIN;
+  const isAdmin = foundMember.admin;
   const isSingleMode =
     absencePayload?.startDateString === absencePayload?.endDateString;
 

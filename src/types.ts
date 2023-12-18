@@ -4,10 +4,12 @@ export enum DayPart {
   AFTERNOON = 'afternoon',
 }
 
-export enum Role {
-  MEMBER = 'member',
-  ADMIN = 'admin',
-}
+export type Member = {
+  id: string;
+  email: string;
+  name: string;
+  admin?: boolean;
+};
 
 export type CalendarEvent = {
   id: string;

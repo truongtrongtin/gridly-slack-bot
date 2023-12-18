@@ -1,6 +1,5 @@
 import { format, isSameDay } from 'date-fns';
-import { members } from './members.js';
-import { DayPart } from './types.js';
+import { DayPart, Member } from './types.js';
 
 export function getDayPartFromEventSummary(summary: string) {
   if (summary.includes(DayPart.MORNING)) {
@@ -55,6 +54,9 @@ export function isWeekendInRange(startDate: Date, endDate: Date) {
   return false;
 }
 
+const members: Member[] = JSON.parse(
+  Buffer.from(process.env.MEMBER_LIST_BASE64, 'base64').toString(),
+);
 export function findMemberById(id: string) {
   return members.find((member) => member.id === id);
 }
