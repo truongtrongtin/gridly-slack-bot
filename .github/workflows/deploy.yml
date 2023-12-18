@@ -33,7 +33,8 @@ jobs:
           --trigger-http
           --entry-point=expressApp
           --runtime=nodejs20
-          --memory=128MiB
+          --memory=256MiB
+          --max-instances=80
           --region=us-west1
           --source=.
           --allow-unauthenticated
