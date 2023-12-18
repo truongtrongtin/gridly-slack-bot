@@ -10,7 +10,7 @@ import { CalendarEvent } from '../types.js';
 
 export async function reportTodayAbsences(req: Request, res: Response) {
   try {
-    // verify token from Google Cloud Scheduler
+    // Verify token from Google Cloud Scheduler
     if (process.env.K_SERVICE) {
       const token = req.headers.authorization?.split('Bearer ')[1];
       const tokenInfoResponse = await fetch(
@@ -42,6 +42,13 @@ export async function reportTodayAbsences(req: Request, res: Response) {
       return res.end();
     }
 
+    // If today is Christmas, return also
+    const today = new Date();
+    if (today.getDate() === 25 && today.getMonth() === 11) {
+      return res.end();
+    }
+
+    // Get today's absense events
     const queryParams = new URLSearchParams({
       timeMin: startOfToday().toISOString(),
       timeMax: startOfTomorrow().toISOString(),
@@ -55,6 +62,7 @@ export async function reportTodayAbsences(req: Request, res: Response) {
     const eventListObject = await eventListResponse.json();
     const absenceEvents: CalendarEvent[] = eventListObject.items;
 
+    // Post message to Slack
     await slackApp.client.chat.postMessage({
       channel: process.env.SLACK_CHANNEL,
       text:
