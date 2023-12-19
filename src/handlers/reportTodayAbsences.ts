@@ -80,7 +80,7 @@ export async function reportTodayAbsences(req: Request, res: Response) {
                   type: 'text',
                   text:
                     absenceEvents.length > 0
-                      ? "Today's planned absences:"
+                      ? "Today's planned absences:\n"
                       : 'No planned absences today!',
                 },
               ],
