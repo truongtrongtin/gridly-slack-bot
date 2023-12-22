@@ -155,5 +155,6 @@ export async function createAbsenceFromModal({
       dayPart,
       messageText,
     }),
+    headers: { Authorization: process.env.SLACK_BOT_TOKEN },
   });
 }

@@ -18,5 +18,6 @@ export async function createAbsenceFromSuggestion({
       actionUserId: body.user.id,
       messageText: '', // no need to log reason
     }),
+    headers: { Authorization: process.env.SLACK_BOT_TOKEN },
   });
 }

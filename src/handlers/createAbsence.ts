@@ -7,6 +7,10 @@ import { AbsencePayload, DayPart } from '../types.js';
 
 export async function createAbsence(req: Request, res: Response) {
   try {
+    if (req.headers.authorization !== process.env.SLACK_BOT_TOKEN) {
+      return res.sendStatus(403);
+    }
+
     const {
       actionUserId,
       targetUserId,
