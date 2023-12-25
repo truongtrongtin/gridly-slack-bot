@@ -22,9 +22,15 @@ export async function reportTodayAbsences(req: Request, res: Response) {
       }
     }
 
+    // If today is Christmas, return
+    const today = new Date();
+    if (today.getDate() === 25 && today.getMonth() === 11) {
+      return res.end();
+    }
+
     const accessToken = await getAccessTokenFromRefreshToken();
 
-    // If today is public holiday, return immediately
+    // If today is public holiday, return
     const publicHolidaysQueryParams = new URLSearchParams({
       timeMin: startOfToday().toISOString(),
       timeMax: startOfTomorrow().toISOString(),
@@ -39,12 +45,6 @@ export async function reportTodayAbsences(req: Request, res: Response) {
     );
     const publicHolidaysData = await publicHolidaysResponse.json();
     if (publicHolidaysData.items.length > 0) {
-      return res.end();
-    }
-
-    // If today is Christmas, return also
-    const today = new Date();
-    if (today.getDate() === 25 && today.getMonth() === 11) {
       return res.end();
     }
 
