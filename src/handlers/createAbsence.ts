@@ -61,8 +61,9 @@ export async function createAbsence(req: Request, res: Response) {
     const dayPartText = dayPart === DayPart.FULL ? '(off)' : `(off ${dayPart})`;
     const summary = `${targetUserName} ${dayPartText}`;
     const timeText = generateTimeText(startDate, endDate, dayPart);
+    const trimmedReason = reason.trim();
     const messageText =
-      showReason === 'true' && reason ? ` Reason: ${reason}` : '';
+      showReason === 'true' && trimmedReason ? ` Reason: ${reason}` : '';
 
     const newMessage = await slackApp.client.chat.postMessage({
       channel: process.env.SLACK_CHANNEL,
@@ -74,7 +75,10 @@ export async function createAbsence(req: Request, res: Response) {
       `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events`,
       {
         method: 'POST',
-        headers: { Authorization: `Bearer ${accessToken}` },
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+        },
         body: JSON.stringify({
           start: {
             date: startDateString,
@@ -93,7 +97,7 @@ export async function createAbsence(req: Request, res: Response) {
           extendedProperties: {
             private: {
               message_ts: newMessage.message?.ts,
-              reason,
+              ...(trimmedReason ? { reason: trimmedReason } : {}),
             },
           },
           transparency: 'transparent',

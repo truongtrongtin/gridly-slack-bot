@@ -35,6 +35,7 @@ export async function postSuggestionFromMessage({
       `https://translation.googleapis.com/language/translate/v2?key=${process.env.GOOGLE_API_KEY}`,
       {
         method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           source: 'vi',
           target: 'en',
