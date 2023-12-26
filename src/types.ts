@@ -30,5 +30,5 @@ export type AbsencePayload = {
   startDateString: string;
   endDateString: string;
   dayPart: DayPart;
-  messageText: string;
+  reason: string;
 };

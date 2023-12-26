@@ -138,7 +138,7 @@ export function createAbsenceView(
         optional: true,
 
         element: {
-          initial_value: absencePayload?.messageText || '',
+          initial_value: absencePayload?.reason || '',
           type: 'plain_text_input',
           action_id: 'reason-action',
           placeholder: {

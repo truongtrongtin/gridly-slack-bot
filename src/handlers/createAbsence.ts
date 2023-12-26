@@ -17,8 +17,12 @@ export async function createAbsence(req: Request, res: Response) {
       startDateString,
       endDateString,
       dayPart,
-      messageText,
-    } = req.body as AbsencePayload & { actionUserId: string };
+      reason,
+      showReason,
+    } = req.body as AbsencePayload & {
+      actionUserId: string;
+      showReason: string;
+    };
 
     const startDate = new Date(startDateString);
     const endDate = new Date(endDateString);
@@ -57,6 +61,8 @@ export async function createAbsence(req: Request, res: Response) {
     const dayPartText = dayPart === DayPart.FULL ? '(off)' : `(off ${dayPart})`;
     const summary = `${targetUserName} ${dayPartText}`;
     const timeText = generateTimeText(startDate, endDate, dayPart);
+    const messageText =
+      showReason === 'true' && reason ? ` Reason: ${reason}` : '';
 
     const newMessage = await slackApp.client.chat.postMessage({
       channel: process.env.SLACK_CHANNEL,
@@ -87,7 +93,7 @@ export async function createAbsence(req: Request, res: Response) {
           extendedProperties: {
             private: {
               message_ts: newMessage.message?.ts,
-              ...(messageText ? { reason: messageText } : {}),
+              reason,
             },
           },
           transparency: 'transparent',

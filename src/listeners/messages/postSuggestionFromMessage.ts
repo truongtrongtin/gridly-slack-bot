@@ -149,7 +149,7 @@ export async function postSuggestionFromMessage({
         startDateString,
         endDateString,
         dayPart,
-        messageText: message.text,
+        reason: message.text,
       };
 
       await say({

@@ -37,9 +37,7 @@ export async function postSuggestionFromModal({
   const dayPart = view.state.values['day-part-block']['day-part-action']
     .selected_option?.value as DayPart;
 
-  const { targetUserId, messageText, messageTs } = JSON.parse(
-    view.private_metadata,
-  );
+  const { targetUserId, reason, messageTs } = JSON.parse(view.private_metadata);
   const isSingleMode = startDateString === endDateString;
   const startDate = new Date(startDateString);
   const endDate = new Date(endDateString);
@@ -123,13 +121,13 @@ export async function postSuggestionFromModal({
     startDateString,
     endDateString,
     dayPart,
-    messageText,
+    reason,
     targetUserId,
   };
   try {
     const timeText = generateTimeText(startDate, endDate, dayPart);
     const text = `<@${targetUser.id}>, are you going to be absent *${timeText}*?`;
-    const quote = messageText
+    const quote = reason
       .split('\n')
       .map((text: string) => `>${text}`)
       .join('\n');

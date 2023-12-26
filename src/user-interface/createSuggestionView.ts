@@ -4,7 +4,7 @@ import { DayPart } from '../types.js';
 
 export function createSuggestionView(
   targetUserId: string,
-  messageText: string,
+  reason: string,
   messageTs: string,
 ): View {
   const dayPartOptions: Option[] = [
@@ -38,11 +38,7 @@ export function createSuggestionView(
     type: 'modal',
     callback_id: 'new-suggestion-submit',
     // notify_on_close: true,
-    private_metadata: JSON.stringify({
-      targetUserId,
-      messageText,
-      messageTs,
-    }),
+    private_metadata: JSON.stringify({ targetUserId, reason, messageTs }),
     title: {
       type: 'plain_text',
       text: 'Suggestion submit',

@@ -143,8 +143,6 @@ export async function createAbsenceFromModal({
 
   await ack({ response_action: 'clear' });
 
-  const messageText = reason ? ` Reason: ${reason}` : '';
-
   fetch(`${process.env.API_ENDPOINT}/create-absence`, {
     method: 'POST',
     body: new URLSearchParams({
@@ -153,7 +151,8 @@ export async function createAbsenceFromModal({
       startDateString,
       endDateString,
       dayPart,
-      messageText,
+      reason,
+      showReason: 'true',
     }),
     headers: { Authorization: process.env.SLACK_BOT_TOKEN },
   });
