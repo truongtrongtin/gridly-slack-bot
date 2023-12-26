@@ -14,20 +14,14 @@ export async function showCreateAbsenceModalFromGlobalShortcut({
 }: AllMiddlewareArgs & SlackShortcutMiddlewareArgs<GlobalShortcut>) {
   await ack();
 
-  try {
-    await client.views.open({
-      trigger_id: shortcut.trigger_id,
-      view: createAbsenceView(shortcut.user.id),
-    });
+  await client.views.open({
+    trigger_id: shortcut.trigger_id,
+    view: createAbsenceView(shortcut.user.id),
+  });
 
-    const foundMember = findMemberById(shortcut.user.id);
-    if (!foundMember) throw Error('member not found');
-    logger.info(
-      `${foundMember.name} is opening new absence modal from global shortcut`,
-    );
-  } catch (error) {
-    if (error instanceof Error) {
-      logger.error(error.message);
-    }
-  }
+  const foundMember = findMemberById(shortcut.user.id);
+  if (!foundMember) throw Error('member not found');
+  logger.info(
+    `${foundMember.name} is opening new absence modal from global shortcut`,
+  );
 }

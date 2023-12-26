@@ -10,35 +10,29 @@ export async function appHomeOpened({
   client,
   logger,
 }: AllMiddlewareArgs & SlackEventMiddlewareArgs<'app_home_opened'>) {
-  try {
-    const foundMember = findMemberById(event.user);
-    if (!foundMember) throw Error('member not found');
-    logger.info(`${foundMember.name} is opening app home`);
+  const foundMember = findMemberById(event.user);
+  if (!foundMember) throw Error('member not found');
+  logger.info(`${foundMember.name} is opening app home`);
 
-    const accessToken = await getAccessTokenFromRefreshToken();
+  const accessToken = await getAccessTokenFromRefreshToken();
 
-    // Get future absences from google calendar
-    const queryParams = new URLSearchParams({
-      timeMin: startOfToday().toISOString(),
-      q: 'off',
-      orderBy: 'startTime',
-      singleEvents: 'true',
-      maxResults: '2500',
-    });
-    const eventListResponse = await fetch(
-      `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
-      { headers: { Authorization: `Bearer ${accessToken}` } },
-    );
-    const eventListObject = await eventListResponse.json();
-    const absenceEvents: CalendarEvent[] = eventListObject.items || [];
+  // Get future absences from google calendar
+  const queryParams = new URLSearchParams({
+    timeMin: startOfToday().toISOString(),
+    q: 'off',
+    orderBy: 'startTime',
+    singleEvents: 'true',
+    maxResults: '2500',
+  });
+  const eventListResponse = await fetch(
+    `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
+    { headers: { Authorization: `Bearer ${accessToken}` } },
+  );
+  const eventListObject = await eventListResponse.json();
+  const absenceEvents: CalendarEvent[] = eventListObject.items || [];
 
-    await client.views.publish({
-      user_id: event.user,
-      view: appHomeView(absenceEvents, event.user),
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      logger.error(error.message);
-    }
-  }
+  await client.views.publish({
+    user_id: event.user,
+    view: appHomeView(absenceEvents, event.user),
+  });
 }

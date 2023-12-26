@@ -44,34 +44,22 @@ export const slackApp = new App({
 
 slackApp.use(ignoreRetry);
 
-slackApp.action(
-  { type: 'block_actions', action_id: 'absence-new' },
-  showCreateAbsenceModalFromSuggestion,
-);
-slackApp.action(
-  { type: 'block_actions', action_id: 'app-home-absence-delete' },
-  deleteAbsenceFromAppHome,
-);
-slackApp.action(
-  { type: 'block_actions', action_id: 'absence-suggestion-yes' },
-  createAbsenceFromSuggestion,
-);
+slackApp.action('absence-new', showCreateAbsenceModalFromSuggestion);
+slackApp.action('app-home-absence-delete', deleteAbsenceFromAppHome);
+slackApp.action('absence-suggestion-yes', createAbsenceFromSuggestion);
 
 slackApp.event('app_home_opened', appHomeOpened);
 slackApp.event('member_joined_channel', memberJoinedChannel);
 
 slackApp.shortcut(
-  { callback_id: 'global_new_absence', type: 'shortcut' },
+  'global_new_absence',
   showCreateAbsenceModalFromGlobalShortcut,
 );
 slackApp.shortcut(
-  { callback_id: 'message_new_suggestion', type: 'message_action' },
+  'message_new_suggestion',
   showPostSuggestionModalFromMessageShortcut,
 );
-slackApp.shortcut(
-  { callback_id: 'message_delete', type: 'message_action' },
-  showDeleteMessageModalFromMessageShortcut,
-);
+slackApp.shortcut('message_delete', showDeleteMessageModalFromMessageShortcut);
 
 slackApp.message(postSuggestionFromMessage);
 

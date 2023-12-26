@@ -19,6 +19,6 @@ export async function checkAccessToken(
     await getUserInfo(clientAccessToken);
     next();
   } catch (error) {
-    res.send(401);
+    res.send(401).json(error);
   }
 }

@@ -16,24 +16,18 @@ export async function showPostSuggestionModalFromMessageShortcut({
   const targetUserId = shortcut.message.user;
   if (!targetUserId) return;
 
-  try {
-    await client.views.open({
-      trigger_id: shortcut.trigger_id,
-      view: createSuggestionView(
-        targetUserId,
-        shortcut.message.text || '',
-        shortcut.message_ts,
-      ),
-    });
+  await client.views.open({
+    trigger_id: shortcut.trigger_id,
+    view: createSuggestionView(
+      targetUserId,
+      shortcut.message.text || '',
+      shortcut.message_ts,
+    ),
+  });
 
-    const actionUser = findMemberById(shortcut.user.id);
-    if (!actionUser) throw Error('member not found');
-    logger.info(
-      `${actionUser.name} is opening new suggestion modal from message shortcut`,
-    );
-  } catch (error) {
-    if (error instanceof Error) {
-      logger.error(error.message);
-    }
-  }
+  const actionUser = findMemberById(shortcut.user.id);
+  if (!actionUser) throw Error('member not found');
+  logger.info(
+    `${actionUser.name} is opening new suggestion modal from message shortcut`,
+  );
 }

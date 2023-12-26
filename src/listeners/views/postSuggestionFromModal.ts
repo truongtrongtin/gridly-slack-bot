@@ -124,73 +124,67 @@ export async function postSuggestionFromModal({
     reason,
     targetUserId,
   };
-  try {
-    const timeText = generateTimeText(startDate, endDate, dayPart);
-    const text = `<@${targetUser.id}>, are you going to be absent *${timeText}*?`;
-    const quote = reason
-      .split('\n')
-      .map((text: string) => `>${text}`)
-      .join('\n');
-    await client.chat.postMessage({
-      channel: process.env.SLACK_CHANNEL,
-      thread_ts: messageTs,
-      blocks: [
-        {
-          type: 'section',
-          text: {
-            type: 'mrkdwn',
-            text: `${quote}\n${text}`,
-            verbatim: true,
-          },
+  const timeText = generateTimeText(startDate, endDate, dayPart);
+  const text = `<@${targetUser.id}>, are you going to be absent *${timeText}*?`;
+  const quote = reason
+    .split('\n')
+    .map((text: string) => `>${text}`)
+    .join('\n');
+  await client.chat.postMessage({
+    channel: process.env.SLACK_CHANNEL,
+    thread_ts: messageTs,
+    blocks: [
+      {
+        type: 'section',
+        text: {
+          type: 'mrkdwn',
+          text: `${quote}\n${text}`,
+          verbatim: true,
         },
-        {
-          type: 'actions',
-          elements: [
-            {
-              type: 'button',
-              action_id: 'absence-suggestion-yes',
-              text: {
+      },
+      {
+        type: 'actions',
+        elements: [
+          {
+            type: 'button',
+            action_id: 'absence-suggestion-yes',
+            text: {
+              type: 'plain_text',
+              emoji: true,
+              text: 'Yes',
+            },
+            style: 'primary',
+            value: JSON.stringify(absencePayload),
+            confirm: {
+              title: {
                 type: 'plain_text',
+                text: 'Absence confirm',
                 emoji: true,
-                text: 'Yes',
               },
-              style: 'primary',
-              value: JSON.stringify(absencePayload),
+              text: {
+                type: 'mrkdwn',
+                text: `Do you confirm to be absent ${timeText}?\n The submission will take some time, please be patient.`,
+                verbatim: true,
+              },
               confirm: {
-                title: {
-                  type: 'plain_text',
-                  text: 'Absence confirm',
-                  emoji: true,
-                },
-                text: {
-                  type: 'mrkdwn',
-                  text: `Do you confirm to be absent ${timeText}?\n The submission will take some time, please be patient.`,
-                  verbatim: true,
-                },
-                confirm: {
-                  type: 'plain_text',
-                  text: 'Confirm',
-                  emoji: true,
-                },
-              },
-            },
-            {
-              type: 'button',
-              action_id: 'absence-new',
-              text: {
                 type: 'plain_text',
+                text: 'Confirm',
                 emoji: true,
-                text: 'No, submit myself',
               },
             },
-          ],
-        },
-      ],
-      text,
-    });
-  } catch (error) {
-    if (error instanceof Error) {
-      logger.error(error.message);
-    }
-  }
+          },
+          {
+            type: 'button',
+            action_id: 'absence-new',
+            text: {
+              type: 'plain_text',
+              emoji: true,
+              text: 'No, submit myself',
+            },
+          },
+        ],
+      },
+    ],
+    text,
+  });
 }
