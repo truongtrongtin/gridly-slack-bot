@@ -3,12 +3,13 @@ import { getAccessTokenFromRefreshToken } from './getAccessTokenFromRefreshToken
 export async function getUsersFromSheet() {
   try {
     const accessToken = await getAccessTokenFromRefreshToken();
+    const sheetName = new Date().getFullYear().toString();
     const query = new URLSearchParams({
       valueRenderOption: 'UNFORMATTED_VALUE',
       dateTimeRenderOption: 'FORMATTED_STRING',
     });
     const response = await fetch(
-      `https://sheets.googleapis.com/v4/spreadsheets/${process.env.SPREADSHEET_ID}/values/${process.env.SHEET_NAME}?${query}`,
+      `https://sheets.googleapis.com/v4/spreadsheets/${process.env.SPREADSHEET_ID}/values/${sheetName}?${query}`,
       { headers: { Authorization: `Bearer ${accessToken}` } },
     );
     const sheetValues = await response.json();
