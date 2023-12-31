@@ -44,7 +44,7 @@ export async function reportTodayAbsences(req: Request, res: Response) {
   );
   const publicHolidaysData = await publicHolidaysResponse.json();
   if (publicHolidaysData.items.length > 0) {
-    return res.end();
+    return res.send('Skipped due to public holiday');
   }
 
   // Get today's absense events

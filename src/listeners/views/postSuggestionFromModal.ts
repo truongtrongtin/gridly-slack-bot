@@ -116,7 +116,7 @@ export async function postSuggestionFromModal({
     return;
   }
 
-  await ack({ response_action: 'clear' });
+  await ack();
   const absencePayload: AbsencePayload = {
     startDateString,
     endDateString,

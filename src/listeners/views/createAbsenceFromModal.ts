@@ -141,7 +141,7 @@ export async function createAbsenceFromModal({
     return;
   }
 
-  await ack({ response_action: 'clear' });
+  await ack();
 
   fetch(`${process.env.API_ENDPOINT}/create-absence`, {
     method: 'POST',

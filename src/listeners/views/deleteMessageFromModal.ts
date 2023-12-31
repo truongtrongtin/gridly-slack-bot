@@ -9,7 +9,7 @@ export async function deleteMessageFromModal({
   view,
   client,
 }: AllMiddlewareArgs & SlackViewMiddlewareArgs<ViewSubmitAction>) {
-  await ack({ response_action: 'clear' });
+  await ack();
   const { messageTs } = JSON.parse(view.private_metadata);
   await client.chat.delete({
     channel: process.env.SLACK_CHANNEL,
