@@ -153,6 +153,7 @@ export async function createAbsenceFromModal({
       dayPart,
       reason,
       showReason: 'true',
+      channelId: process.env.SLACK_CHANNEL,
     }),
     headers: { Authorization: process.env.SLACK_BOT_TOKEN },
   });

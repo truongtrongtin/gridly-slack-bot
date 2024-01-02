@@ -19,9 +19,13 @@ export async function createAbsence(req: Request, res: Response) {
       dayPart,
       reason,
       showReason,
+      threadTs,
+      channelId,
     } = req.body as AbsencePayload & {
       actionUserId: string;
       showReason: string;
+      channelId: string;
+      threadTs?: string;
     };
 
     const startDate = new Date(startDateString);
@@ -32,17 +36,12 @@ export async function createAbsence(req: Request, res: Response) {
     const isAdmin = actionUser.admin;
 
     if (targetUserId !== actionUserId && !isAdmin) {
-      await fetch('https://slack.com/api/chat.postEphemeral', {
-        method: 'POST',
-        body: new URLSearchParams({
-          token: process.env.SLACK_BOT_TOKEN,
-          channel: process.env.SLACK_CHANNEL,
-          user: actionUserId,
-          text: ':x: You are not authorized to perform this action!',
-        }),
+      await slackApp.client.chat.postEphemeral({
+        channel: process.env.SLACK_CHANNEL,
+        user: actionUserId,
+        text: ':x: You are not authorized to perform this action!',
       });
-      res.end();
-      return;
+      return res.end();
     }
 
     const targetUser = findMemberById(targetUserId);
@@ -66,8 +65,9 @@ export async function createAbsence(req: Request, res: Response) {
       showReason === 'true' && trimmedReason ? ` Reason: ${reason}` : '';
 
     const newMessage = await slackApp.client.chat.postMessage({
-      channel: process.env.SLACK_CHANNEL,
+      channel: channelId,
       text: `<@${targetUserId}> will be absent *${timeText}*.${messageText}`,
+      ...(threadTs ? { thread_ts: threadTs } : {}),
     });
 
     // Create new event on google calendar

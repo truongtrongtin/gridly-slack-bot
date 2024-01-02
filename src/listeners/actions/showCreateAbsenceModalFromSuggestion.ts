@@ -10,18 +10,12 @@ export async function showCreateAbsenceModalFromSuggestion({
   ack,
   body,
   client,
-  payload,
+  action,
 }: AllMiddlewareArgs & SlackActionMiddlewareArgs<BlockButtonAction>) {
   await ack();
-  if (!payload.value) {
-    await client.views.open({
-      trigger_id: body.trigger_id,
-      view: createAbsenceView(body.user.id),
-    });
-    return;
-  }
-
-  const absencePayload: AbsencePayload = JSON.parse(payload.value);
+  const absencePayload: AbsencePayload | undefined = action.value
+    ? JSON.parse(action.value)
+    : undefined;
   await client.views.open({
     trigger_id: body.trigger_id,
     view: createAbsenceView(body.user.id, absencePayload),

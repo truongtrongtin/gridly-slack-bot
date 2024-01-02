@@ -6,16 +6,19 @@ import {
 
 export async function createAbsenceFromSuggestion({
   ack,
-  payload,
+  action,
   body,
 }: AllMiddlewareArgs & SlackActionMiddlewareArgs<BlockButtonAction>) {
   await ack();
+  if (!body.channel || !body.message) return;
   fetch(`${process.env.API_ENDPOINT}/create-absence`, {
     method: 'POST',
     body: new URLSearchParams({
-      ...JSON.parse(payload.value),
+      ...JSON.parse(action.value),
       actionUserId: body.user.id,
       showReason: 'false',
+      channelId: body.channel.id,
+      threadTs: body.message.ts,
     }),
     headers: { Authorization: process.env.SLACK_BOT_TOKEN },
   });

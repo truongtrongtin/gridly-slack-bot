@@ -18,7 +18,7 @@ import { postSuggestionFromModal } from './listeners/views/postSuggestionFromMod
 import { checkAccessToken } from './middlewares/checkAccessToken.js';
 import { cors } from './middlewares/cors.js';
 import { ignoreRetry } from './middlewares/ignoreRetry.js';
-const { App, ExpressReceiver, LogLevel } = slackBolt;
+const { App, ExpressReceiver } = slackBolt;
 
 const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
@@ -39,7 +39,6 @@ expressReceiver.router.get('/users', getUsers);
 export const slackApp = new App({
   token: process.env.SLACK_BOT_TOKEN,
   receiver: expressReceiver,
-  logLevel: LogLevel.INFO,
 });
 
 slackApp.use(ignoreRetry);
