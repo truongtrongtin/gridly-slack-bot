@@ -30,22 +30,22 @@ export async function reportTodayAbsences(req: Request, res: Response) {
   const accessToken = await getAccessTokenFromRefreshToken();
 
   // If today is public holiday, return
-  const publicHolidaysQueryParams = new URLSearchParams({
-    timeMin: startOfToday().toISOString(),
-    timeMax: startOfTomorrow().toISOString(),
-    q: 'Public holiday',
-  });
-  const calendarId = encodeURIComponent(
-    'en.vietnamese#holiday@group.v.calendar.google.com',
-  );
-  const publicHolidaysResponse = await fetch(
-    `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${publicHolidaysQueryParams}`,
-    { headers: { Authorization: `Bearer ${accessToken}` } },
-  );
-  const publicHolidaysData = await publicHolidaysResponse.json();
-  if (publicHolidaysData.items.length > 0) {
-    return res.send('Skipped due to public holiday');
-  }
+  // const publicHolidaysQueryParams = new URLSearchParams({
+  //   timeMin: startOfToday().toISOString(),
+  //   timeMax: startOfTomorrow().toISOString(),
+  //   q: 'Public holiday',
+  // });
+  // const calendarId = encodeURIComponent(
+  //   'en.vietnamese#holiday@group.v.calendar.google.com',
+  // );
+  // const publicHolidaysResponse = await fetch(
+  //   `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?${publicHolidaysQueryParams}`,
+  //   { headers: { Authorization: `Bearer ${accessToken}` } },
+  // );
+  // const publicHolidaysData = await publicHolidaysResponse.json();
+  // if (publicHolidaysData.items.length > 0) {
+  //   return res.send('Skipped due to public holiday');
+  // }
 
   // Get today's absense events
   const queryParams = new URLSearchParams({
@@ -61,13 +61,14 @@ export async function reportTodayAbsences(req: Request, res: Response) {
   const eventListObject = await eventListResponse.json();
   const absenceEvents: CalendarEvent[] = eventListObject.items;
 
+  if (absenceEvents.length === 0) {
+    return res.end('No absences today');
+  }
+
   // Post message to Slack
   await slackApp.client.chat.postMessage({
     channel: process.env.SLACK_CHANNEL,
-    text:
-      absenceEvents.length > 0
-        ? `${absenceEvents.length} absences today!`
-        : 'No absences today!',
+    text: `${absenceEvents.length} absences today!`,
     blocks: [
       {
         type: 'rich_text',
@@ -77,10 +78,7 @@ export async function reportTodayAbsences(req: Request, res: Response) {
             elements: [
               {
                 type: 'text',
-                text:
-                  absenceEvents.length > 0
-                    ? "Today's planned absences:\n"
-                    : 'No planned absences today!',
+                text: "Today's planned absences:\n",
               },
             ],
           },
