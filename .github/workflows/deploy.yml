@@ -50,4 +50,3 @@ jobs:
           --set-env-vars API_ENDPOINT=${{ secrets.API_ENDPOINT }}
           --set-env-vars SPREADSHEET_ID=${{ secrets.SPREADSHEET_ID }}
           --set-env-vars MEMBER_LIST_BASE64=${{ secrets.MEMBER_LIST_BASE64 }}
-          
