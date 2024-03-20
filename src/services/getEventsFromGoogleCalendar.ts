@@ -1,4 +1,4 @@
-import { CalendarEvent } from '../types.js';
+import { CalendarEvent, CalendarListResponse } from '../types.js';
 import { getAccessTokenFromRefreshToken } from './getAccessTokenFromRefreshToken.js';
 
 export async function getEventsFromGoogleCalendar(query: URLSearchParams) {
@@ -9,7 +9,7 @@ export async function getEventsFromGoogleCalendar(query: URLSearchParams) {
       `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${query}`,
       { headers: { Authorization: `Bearer ${accessToken}` } },
     );
-    const data = await response.json();
+    const data = <CalendarListResponse>await response.json();
     if (!response.ok) throw data;
     events = events.concat(data.items);
     if (data.nextPageToken) {

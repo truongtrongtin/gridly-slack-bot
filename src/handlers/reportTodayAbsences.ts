@@ -6,7 +6,7 @@ import {
 } from '../helpers.js';
 import { slackApp } from '../main.js';
 import { getAccessTokenFromRefreshToken } from '../services/getAccessTokenFromRefreshToken.js';
-import { CalendarEvent } from '../types.js';
+import { CalendarEvent, CalendarListResponse } from '../types.js';
 
 export async function reportTodayAbsences(req: Request, res: Response) {
   // Verify token from Google Cloud Scheduler
@@ -58,8 +58,8 @@ export async function reportTodayAbsences(req: Request, res: Response) {
     `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
     { headers: { Authorization: `Bearer ${accessToken}` } },
   );
-  const eventListObject = await eventListResponse.json();
-  const absenceEvents: CalendarEvent[] = eventListObject.items;
+  const eventListObject = <CalendarListResponse>await eventListResponse.json();
+  const absenceEvents = eventListObject.items;
 
   if (absenceEvents.length === 0) {
     return res.end('No absences today');

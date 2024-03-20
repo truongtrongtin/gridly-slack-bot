@@ -51,7 +51,7 @@ export async function postSuggestionFromMessage({
       }),
     },
   );
-  const translationObject = await translationResponse.json();
+  const translationObject: any = await translationResponse.json();
   const translatedText = translationObject.data.translations[0].translatedText;
   logger.info('translatedText', translatedText);
 

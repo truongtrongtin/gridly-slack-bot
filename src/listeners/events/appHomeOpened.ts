@@ -2,7 +2,7 @@ import { AllMiddlewareArgs, SlackEventMiddlewareArgs } from '@slack/bolt';
 import { startOfToday } from 'date-fns';
 import { findMemberById } from '../../helpers.js';
 import { getAccessTokenFromRefreshToken } from '../../services/getAccessTokenFromRefreshToken.js';
-import { CalendarEvent } from '../../types.js';
+import { CalendarListResponse } from '../../types.js';
 import { appHomeView } from '../../user-interface/appHomeView.js';
 
 export async function appHomeOpened({
@@ -28,8 +28,8 @@ export async function appHomeOpened({
     `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
     { headers: { Authorization: `Bearer ${accessToken}` } },
   );
-  const eventListObject = await eventListResponse.json();
-  const absenceEvents: CalendarEvent[] = eventListObject.items || [];
+  const eventListObject = <CalendarListResponse>await eventListResponse.json();
+  const absenceEvents = eventListObject.items || [];
 
   await client.views.publish({
     user_id: event.user,

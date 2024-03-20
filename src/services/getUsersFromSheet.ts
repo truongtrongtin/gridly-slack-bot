@@ -11,7 +11,7 @@ export async function getUsersFromSheet() {
     `https://sheets.googleapis.com/v4/spreadsheets/${process.env.SPREADSHEET_ID}/values/${sheetName}?${query}`,
     { headers: { Authorization: `Bearer ${accessToken}` } },
   );
-  const sheetValues = await response.json();
+  const sheetValues: any = await response.json();
   if (!response.ok) throw sheetValues.error;
   const [header, ...rows] = sheetValues.values;
   const result: Record<string, string>[] = [];

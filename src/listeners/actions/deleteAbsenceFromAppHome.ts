@@ -6,7 +6,7 @@ import {
 import { startOfToday } from 'date-fns';
 import { findMemberById } from '../../helpers.js';
 import { getAccessTokenFromRefreshToken } from '../../services/getAccessTokenFromRefreshToken.js';
-import { CalendarEvent } from '../../types.js';
+import { CalendarEvent, CalendarListResponse } from '../../types.js';
 import { appHomeView } from '../../user-interface/appHomeView.js';
 
 export async function deleteAbsenceFromAppHome({
@@ -29,7 +29,7 @@ export async function deleteAbsenceFromAppHome({
     `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events/${eventId}`,
     { headers: { Authorization: `Bearer ${accessToken}` } },
   );
-  const eventObject: CalendarEvent = await eventResponse.json();
+  const eventObject = <CalendarEvent>await eventResponse.json();
 
   const startDate = eventObject.start.date;
   if (
@@ -68,8 +68,8 @@ export async function deleteAbsenceFromAppHome({
     `https://www.googleapis.com/calendar/v3/calendars/${process.env.GOOGLE_CALENDAR_ID}/events?${queryParams}`,
     { headers: { Authorization: `Bearer ${accessToken}` } },
   );
-  const eventListObject = await eventListResponse.json();
-  const absenceEvents: CalendarEvent[] = eventListObject.items || [];
+  const eventListObject = <CalendarListResponse>await eventListResponse.json();
+  const absenceEvents = eventListObject.items;
 
   // Update app home
   await client.views.update({

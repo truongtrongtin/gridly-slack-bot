@@ -25,6 +25,11 @@ export type CalendarEvent = {
   };
 };
 
+export type CalendarListResponse = {
+  items: CalendarEvent[];
+  nextPageToken: string;
+};
+
 export type AbsencePayload = {
   targetUserId: string;
   startDateString: string;

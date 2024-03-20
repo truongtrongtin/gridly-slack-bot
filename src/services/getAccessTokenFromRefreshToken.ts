@@ -1,5 +1,9 @@
 let accessToken = '';
 
+type TokenObject = {
+  access_token: string;
+};
+
 export async function getAccessTokenFromRefreshToken() {
   if (accessToken) {
     console.log('use cached access token');
@@ -15,7 +19,7 @@ export async function getAccessTokenFromRefreshToken() {
       refresh_token: process.env.GOOGLE_REFRESH_TOKEN,
     }),
   });
-  const tokenObject = await response.json();
+  const tokenObject = <TokenObject>await response.json();
   if (!response.ok) throw tokenObject;
   accessToken = tokenObject.access_token;
   return tokenObject.access_token;
