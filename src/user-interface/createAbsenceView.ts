@@ -16,7 +16,7 @@ export function createAbsenceView(
     {
       text: {
         type: 'plain_text',
-        text: ':beach_with_umbrella: All day',
+        text: ':beach_with_umbrella: Full',
         emoji: true,
       },
       value: DayPart.FULL,
