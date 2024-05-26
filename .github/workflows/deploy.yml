@@ -32,7 +32,7 @@ jobs:
           --gen2
           --trigger-http
           --entry-point=expressApp
-          --runtime=nodejs20
+          --runtime=nodejs22
           --memory=256MiB
           --max-instances=80
           --region=us-west1

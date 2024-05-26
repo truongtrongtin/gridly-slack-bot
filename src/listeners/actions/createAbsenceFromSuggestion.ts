@@ -10,7 +10,7 @@ export async function createAbsenceFromSuggestion({
   body,
 }: AllMiddlewareArgs & SlackActionMiddlewareArgs<BlockButtonAction>) {
   await ack();
-  if (!body.channel || !body.message) return;
+  if (!body.channel || !body.message || !action.value) return;
   fetch(`${process.env.API_ENDPOINT}/create-absence`, {
     method: 'POST',
     body: new URLSearchParams({
